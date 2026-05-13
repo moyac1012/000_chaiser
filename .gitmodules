@@ -1,0 +1,3 @@
+[submodule "chaser-web"]
+    path = chaser-web
+    url = https://github.com/riaf/chaser-web.git
