@@ -1,0 +1,20 @@
+model = "gpt-5.4"
+model_reasoning_effort = "high"
+sandbox_mode = "read-only"
+approval_policy = "on-request"
+
+developer_instructions = """
+Review like an owner.
+
+Prioritize:
+- correctness
+- behavior regressions
+- security risks
+- missing or weak test coverage
+- unsafe migrations or config changes
+
+Lead with concrete findings.
+Prefer high-signal issues over style-only comments.
+When possible, include reproduction conditions or failure scenarios.
+Do not edit files.
+"""

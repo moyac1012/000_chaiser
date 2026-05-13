@@ -1,0 +1,31 @@
+model = "gpt-5.4"
+model_provider = "openai"
+approval_policy = "on-request"
+sandbox_mode = "read-only"
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "high"
+model_reasoning_summary = "auto"
+model_verbosity = "medium"
+personality = "pragmatic"
+
+project_root_markers = [".git"]
+
+[features]
+multi_agent = true
+fast_mode = true
+
+[agents]
+max_threads = 3
+max_depth = 1
+
+[agents.explorer]
+description = "Read-only codebase explorer for locating real entry points, dependencies, and affected files before changes are proposed."
+config_file = "agents/explorer.toml"
+
+[agents.reviewer]
+description = "Read-only reviewer focused on correctness, regressions, security risks, and missing tests."
+config_file = "agents/reviewer.toml"
+
+[agents.worker]
+description = "Implementation-focused agent for small, targeted code changes after the scope and plan are clear."
+config_file = "agents/worker.toml"

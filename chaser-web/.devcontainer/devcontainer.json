@@ -1,0 +1,29 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/debian
+{
+  "name": "chaser-web-bun",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "openai.chatgpt",
+        "oven.bun-vscode",
+        "bradlc.vscode-tailwindcss",
+        "biomejs.biome"
+      ]
+    }
+  },
+
+  "remoteEnv": { "PATH": "/home/vscode/.bun/bin:${containerEnv:PATH}" }
+
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
+}

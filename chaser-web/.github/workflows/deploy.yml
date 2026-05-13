@@ -1,0 +1,91 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAR: chaser-web-${{ github.sha }}.tar.gz
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build
+        env:
+          NEXT_PUBLIC_WS_URL: ${{ secrets.NEXT_PUBLIC_WS_URL }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_CLERK_SIGN_IN_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}
+          NEXT_PUBLIC_CLERK_SIGN_UP_URL: ${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }}
+        run: bun run build
+
+      - name: Create bundle
+        run: |
+          RELEASE_TAR_PATH="$RUNNER_TEMP/$RELEASE_TAR"
+          tar \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=docs \
+            --exclude=tests \
+            --exclude=node_modules \
+            --exclude=.next/cache \
+            -czf "$RELEASE_TAR_PATH" .
+          echo "RELEASE_TAR_PATH=$RELEASE_TAR_PATH" >> "$GITHUB_ENV"
+
+      - name: Prepare SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "${{ secrets.VPS_PORT }}" "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Upload bundle
+        run: |
+          scp -P "${{ secrets.VPS_PORT }}" \
+            "$RELEASE_TAR_PATH" \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/tmp/$RELEASE_TAR"
+
+      - name: Deploy on server
+        run: |
+          ssh -p "${{ secrets.VPS_PORT }}" \
+            "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}" << EOF
+          set -euo pipefail
+          export PATH="\$HOME/.bun/bin:\$PATH"
+          RELEASE_TAR="$RELEASE_TAR"
+          RELEASE_DIR="/opt/chaser-web/releases/${{ github.sha }}"
+          CURRENT_DIR="/opt/chaser-web/current"
+          mkdir -p /opt/chaser-web/releases
+          rm -rf "\$RELEASE_DIR"
+          mkdir -p "\$RELEASE_DIR"
+          tar -xzf "/tmp/\$RELEASE_TAR" -C "\$RELEASE_DIR"
+          rm -f "/tmp/\$RELEASE_TAR"
+          cd "\$RELEASE_DIR"
+          set -a
+          . /etc/chaser-web.env
+          set +a
+          bun install
+          ln -sfn "\$RELEASE_DIR" "\$CURRENT_DIR"
+          sudo systemctl restart chaser-ws.service chaser-web.service caddy.service
+          KEEP_RELEASES=5
+          if ls -1d /opt/chaser-web/releases/* > /dev/null 2>&1; then
+            ls -1dt /opt/chaser-web/releases/* | tail -n +\$((KEEP_RELEASES + 1)) | xargs -r rm -rf
+          fi
+          EOF
