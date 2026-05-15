@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHaser チュートリアル ステージ一覧</title>
+<style>
+:root {
+  --cool: #38bdf8;
+  --hot:  #fb7185;
+  --ink:  #0f172a;
+  --ink-soft: #334155;
+  --panel: rgba(255,255,255,0.90);
+  --panel-strong: rgba(255,255,255,0.97);
+  --border: rgba(15,23,42,0.12);
+  --font-ui: "Space Grotesk", system-ui, sans-serif;
+  --font-display: "Oxanium", "Space Grotesk", system-ui, sans-serif;
+
+  /* phase colours */
+  --ph-a: #64748b; --ph-a-bg: #f1f5f9;
+  --ph-b: #0ea5e9; --ph-b-bg: #e0f2fe;
+  --ph-c: #8b5cf6; --ph-c-bg: #ede9fe;
+  --ph-d: #f59e0b; --ph-d-bg: #fef3c7;
+  --ph-e: #14b8a6; --ph-e-bg: #ccfbf1;
+  --ph-f: #ef4444; --ph-f-bg: #fee2e2;
+  --ph-g: #f97316; --ph-g-bg: #ffedd5;
+  --ph-h: #a855f7; --ph-h-bg: #f3e8ff;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-ui);
+  color: var(--ink);
+  background-color: #f8fafc;
+  background-image:
+    radial-gradient(700px 400px at 8% 12%, rgba(56,189,248,0.18), transparent 65%),
+    radial-gradient(680px 380px at 95% -4%, rgba(251,146,60,0.20), transparent 60%),
+    radial-gradient(520px 320px at 45% 0%, rgba(94,234,212,0.14), transparent 62%),
+    linear-gradient(rgba(15,23,42,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15,23,42,0.04) 1px, transparent 1px),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 55%, #eef2ff 100%);
+  background-size: auto,auto,auto,26px 26px,26px 26px,auto;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: linear-gradient(120deg,#0f172a 0%,#1e293b 55%,#0b1020 100%);
+  border-bottom: 1px solid rgba(148,163,184,0.2);
+  box-shadow: 0 4px 24px rgba(15,23,42,0.25);
+}
+.header-inner {
+  max-width: 1400px; margin: 0 auto;
+  padding: 12px 24px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.header-logo {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 800; letter-spacing: 0.1em;
+  color: #f8fafc;
+}
+.header-logo span { color: var(--cool); }
+.header-sub {
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(148,163,184,0.8); margin-left: 8px;
+}
+.header-count {
+  background: rgba(15,23,42,0.6);
+  border: 1px solid rgba(148,163,184,0.3);
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #e2e8f0;
+}
+.header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-btn {
+  background: rgba(15,23,42,0.5);
+  border: 1px solid rgba(148,163,184,0.3);
+  color: #e2e8f0;
+  border-radius: 999px;
+  padding: 4px 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.header-btn:hover {
+  background: rgba(56,189,248,0.2);
+  border-color: var(--cool);
+  color: #fff;
+}
+
+/* ── BLOCK SET MODAL ── */
+.bs-modal {
+  position: fixed; inset: 0;
+  background: rgba(15,23,42,0.7);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+.bs-modal.show { display: flex; }
+.bs-modal-inner {
+  background: #fff;
+  border-radius: 20px;
+  padding: 22px 26px;
+  max-width: 720px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+}
+.bs-modal-close {
+  position: absolute; top: 14px; right: 16px;
+  background: #f1f5f9; border: none;
+  border-radius: 50%;
+  width: 30px; height: 30px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #64748b;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.bs-modal-close:hover { background: #e2e8f0; color: var(--ink); }
+.bs-modal-title {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 800;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+.bs-modal-sub {
+  font-size: 11px; color: #64748b;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.bs-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 11px 14px;
+  margin-bottom: 8px;
+  background: #fafbfc;
+}
+.bs-card-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.bs-card-range { font-size: 10px; color: #94a3b8; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+.bs-card-inherits { font-size: 10px; color: #94a3b8; font-style: italic; }
+.bs-card-desc { font-size: 12px; color: #475569; margin-bottom: 7px; line-height: 1.5; }
+.bs-card-blocks {
+  display: flex; flex-wrap: wrap; gap: 4px;
+}
+.bs-block-chip {
+  font-family: monospace; font-size: 10px;
+  background: #fff; color: #475569;
+  padding: 3px 8px; border-radius: 6px;
+  border: 1px solid #cbd5e1;
+}
+
+/* ── PHASE NAV ── */
+.phase-nav {
+  max-width: 1400px; margin: 0 auto;
+  padding: 16px 24px 0;
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.phase-tab {
+  padding: 6px 16px; border-radius: 999px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.15s; text-decoration: none;
+  border: 1px solid transparent;
+}
+.phase-tab:hover { opacity: 0.85; }
+.phase-tab[data-ph="A"] { background: var(--ph-a-bg); color: var(--ph-a); border-color: var(--ph-a); }
+.phase-tab[data-ph="B"] { background: var(--ph-b-bg); color: var(--ph-b); border-color: var(--ph-b); }
+.phase-tab[data-ph="C"] { background: var(--ph-c-bg); color: var(--ph-c); border-color: var(--ph-c); }
+.phase-tab[data-ph="D"] { background: var(--ph-d-bg); color: var(--ph-d); border-color: var(--ph-d); }
+.phase-tab[data-ph="E"] { background: var(--ph-e-bg); color: var(--ph-e); border-color: var(--ph-e); }
+.phase-tab[data-ph="F"] { background: var(--ph-f-bg); color: var(--ph-f); border-color: var(--ph-f); }
+.phase-tab[data-ph="G"] { background: var(--ph-g-bg); color: var(--ph-g); border-color: var(--ph-g); }
+.phase-tab[data-ph="H"] { background: var(--ph-h-bg); color: var(--ph-h); border-color: var(--ph-h); }
+
+/* ── MAIN ── */
+.main { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+/* ── PHASE SECTION ── */
+.phase-section { margin-bottom: 48px; }
+.phase-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 16px; padding: 14px 20px;
+  border-radius: 20px;
+  color: #e2e8f0;
+  background: linear-gradient(120deg,#0f172a 0%,#1e293b 55%,#0b1020 100%);
+  border: 1px solid rgba(148,163,184,0.22);
+}
+.phase-label {
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 800; letter-spacing: 0.12em;
+}
+.phase-name { font-size: 15px; font-weight: 600; color: #cbd5e1; }
+.phase-range {
+  margin-left: auto;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+  color: rgba(226,232,240,0.6); text-transform: uppercase;
+}
+.phase-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 999px;
+  background: rgba(15,23,42,0.5); border: 1px solid rgba(148,163,184,0.3);
+}
+
+/* ── STAGE GRID ── */
+.stage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 16px;
+}
+
+/* ── STAGE CARD ── */
+.stage-card {
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.08), inset 0 1px 0 rgba(255,255,255,0.7);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.card-header {
+  padding: 14px 18px 10px;
+  display: flex; align-items: flex-start; gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.step-num {
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 800; letter-spacing: -0.01em;
+  line-height: 1; min-width: 42px;
+  color: var(--ink);
+}
+.card-title-area { flex: 1; }
+.card-title { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.card-id { font-size: 10px; color: #94a3b8; margin-top: 2px; font-family: monospace; }
+.phase-pip {
+  width: 10px; height: 10px; border-radius: 50%; margin-top: 4px; flex-shrink: 0;
+}
+
+/* badge strip */
+.card-badges {
+  padding: 8px 18px;
+  display: flex; flex-wrap: wrap; gap: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 999px;
+  border: 1px solid transparent;
+}
+.badge--block  { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+.badge--var    { background: #ede9fe; color: #7c3aed; border-color: #c4b5fd; }
+.badge--cond   { background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; }
+.badge--items  { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+.badge--look   { background: #ccfbf1; color: #0f766e; border-color: #5eead4; }
+.badge--put    { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+.badge--enemy  { background: #ffedd5; color: #9a3412; border-color: #fdba74; }
+.badge--count  { background: #f3e8ff; color: #7e22ce; border-color: #d8b4fe; }
+.badge--goal   { background: #f0fdf4; color: #166534; border-color: #86efac; }
+.badge--survive{ background: #fff1f2; color: #9f1239; border-color: #fda4af; }
+.badge--ai-r   { background: #fafaf9; color: #57534e; border-color: #a8a29e; }
+.badge--ai-p   { background: #fff7ed; color: #c2410c; border-color: #fdba74; }
+.badge--new-sys{ background: #fdf4ff; color: #86198f; border-color: #e879f9; }
+
+/* card body */
+.card-body { padding: 12px 18px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+.field-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  color: #94a3b8; margin-bottom: 3px;
+}
+.field-value { font-size: 12px; color: var(--ink-soft); line-height: 1.5; }
+.field-mono  { font-family: monospace; font-size: 11px; }
+
+/* ── MAP ── */
+.maps-wrap { display: flex; flex-wrap: wrap; gap: 12px; }
+.map-block { }
+.map-label { font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #94a3b8; margin-bottom: 4px; }
+.map-grid {
+  display: inline-grid;
+  gap: 1px;
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 4px;
+}
+.map-row { display: flex; }
+.cell {
+  width: 16px; height: 16px;
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 800; font-family: monospace;
+}
+.c-wall  { background: #1e293b; }
+.c-floor { background: #f8fafc; }
+.c-item  { background: #fbbf24; }
+.c-cool  { background: #38bdf8; }
+.c-hot   { background: #fb7185; }
+.c-goal  { background: #34d399; }
+
+/* variant note */
+.variant-note {
+  font-size: 10px; color: #64748b; background: #f8fafc;
+  border: 1px dashed #cbd5e1; border-radius: 10px; padding: 6px 10px;
+}
+
+/* ── SUMMARY TABLE ── */
+.summary-section { margin-bottom: 48px; }
+.summary-table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  background: var(--panel-strong);
+  border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+}
+.summary-table th {
+  background: #f1f5f9; padding: 10px 14px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #475569; text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+.summary-table td {
+  padding: 8px 14px; font-size: 12px;
+  border-bottom: 1px solid #f1f5f9; vertical-align: middle;
+}
+.summary-table tr:last-child td { border-bottom: none; }
+.summary-table tr:hover td { background: #f8fafc; }
+.num-cell { font-family: var(--font-display); font-weight: 800; font-size: 14px; }
+
+/* ── SCROLL TARGET ── */
+.phase-anchor { scroll-margin-top: 80px; }
+
+@media (max-width: 600px) {
+  .stage-grid { grid-template-columns: 1fr; }
+  .header-inner { padding: 10px 16px; }
+  .main { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div>
+      <span class="header-logo">CH<span>aser</span></span>
+      <span class="header-sub">Tutorial Stage Review</span>
+    </div>
+    <div class="header-right">
+      <button class="header-btn" id="btn-bs">ブロックセット</button>
+      <div class="header-count">50 Stages · 8 Phases</div>
+    </div>
+  </div>
+</header>
+
+<div class="bs-modal" id="bs-modal">
+  <div class="bs-modal-inner">
+    <button class="bs-modal-close" id="bs-modal-close" aria-label="閉じる">×</button>
+    <div class="bs-modal-title">ブロックセット一覧</div>
+    <div class="bs-modal-sub">各レベルで使えるブロック群。下位のセットは上位を含む（インクルード方式）。</div>
+    <div id="bs-modal-body"></div>
+  </div>
+</div>
+
+<nav class="phase-nav" aria-label="フェーズ">
+  <a class="phase-tab" data-ph="A" href="#phase-A">A 条件なし</a>
+  <a class="phase-tab" data-ph="B" href="#phase-B">B 壁判定</a>
+  <a class="phase-tab" data-ph="C" href="#phase-C">C 変数</a>
+  <a class="phase-tab" data-ph="D" href="#phase-D">D アイテム</a>
+  <a class="phase-tab" data-ph="E" href="#phase-E">E LOOK/SEARCH</a>
+  <a class="phase-tab" data-ph="F" href="#phase-F">F PUT</a>
+  <a class="phase-tab" data-ph="G" href="#phase-G">G 動く敵</a>
+  <a class="phase-tab" data-ph="H" href="#phase-H">H SEARCH×総合</a>
+</nav>
+
+<main class="main" id="main"></main>
+
+<script>
+/* ══════════════════════════════════════════
+   BLOCK SETS INFO
+══════════════════════════════════════════ */
+const BLOCK_SETS_INFO = [
+  { name:'BASIC', range:'Step 01〜', cls:'badge--block',
+    desc:'毎ターン同じ行動を繰り返す。最小構成。',
+    blocks:['chaser_on_turn','chaser_action_walk','chaser_turn_end'] },
+  { name:'CHECK', range:'Step 04〜', cls:'badge--cond', inherits:'BASIC',
+    desc:'条件分岐と壁判定。「毎ターン判断する」反応型の核心。',
+    blocks:['controls_if','logic_compare','chaser_is_tile','chaser_tile_value','chaser_get_tile','math_number'] },
+  { name:'STATE', range:'Step 11〜', cls:'badge--var', inherits:'CHECK',
+    desc:'変数による状態管理。過去の観測・判断を記憶する。',
+    blocks:['chaser_on_start','chaser_state_*','chaser_last_direction','chaser_direction_value','chaser_get_around','chaser_action_walk_last','chaser_turn_number','math_modulo','logic_operation'] },
+  { name:'LOOK', range:'Step 21〜', cls:'badge--look', inherits:'STATE',
+    desc:'look アクションで 3×3 視野を観測する。観測結果は配列で取得。',
+    blocks:['chaser_action_look','chaser_observation'] },
+  { name:'SEARCH', range:'Step 23〜', cls:'badge--look', inherits:'LOOK',
+    desc:'search アクションで直線9マスを観測。put でブロック設置・敵撃破。',
+    blocks:['chaser_action_search','chaser_action_put'] },
+  { name:'ENEMY', range:'Step 33〜', cls:'badge--enemy', inherits:'SEARCH',
+    desc:'動く敵（random/proximity AI）に対応。ランダム歩行ブロック追加。',
+    blocks:['chaser_action_walk_random'] },
+  { name:'COUNT', range:'Step 43〜', cls:'badge--count', inherits:'ENEMY',
+    desc:'観測結果からアイテム数を集計。複数バリアントの汎用処理に利用。',
+    blocks:['chaser_view_count_tile'] },
+];
+
+function renderBlockSetsModal() {
+  return BLOCK_SETS_INFO.map(bs => `
+    <div class="bs-card">
+      <div class="bs-card-head">
+        <span class="badge ${bs.cls}">${bs.name}</span>
+        <span class="bs-card-range">${bs.range}</span>
+        ${bs.inherits ? `<span class="bs-card-inherits">⊃ ${bs.inherits} のすべて</span>` : ''}
+      </div>
+      <div class="bs-card-desc">${bs.desc}</div>
+      <div class="bs-card-blocks">${bs.blocks.map(b=>`<span class="bs-block-chip">${b}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+document.getElementById('btn-bs').addEventListener('click', () => {
+  document.getElementById('bs-modal-body').innerHTML = renderBlockSetsModal();
+  document.getElementById('bs-modal').classList.add('show');
+});
+document.getElementById('bs-modal-close').addEventListener('click', () => {
+  document.getElementById('bs-modal').classList.remove('show');
+});
+document.getElementById('bs-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'bs-modal') document.getElementById('bs-modal').classList.remove('show');
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') document.getElementById('bs-modal').classList.remove('show');
+});
+
+/* ── colour helpers ── */
+const PH = {
+  A:{color:'#64748b',bg:'#f1f5f9'},
+  B:{color:'#0ea5e9',bg:'#e0f2fe'},
+  C:{color:'#8b5cf6',bg:'#ede9fe'},
+  D:{color:'#f59e0b',bg:'#fef3c7'},
+  E:{color:'#14b8a6',bg:'#ccfbf1'},
+  F:{color:'#ef4444',bg:'#fee2e2'},
+  G:{color:'#f97316',bg:'#ffedd5'},
+  H:{color:'#a855f7',bg:'#f3e8ff'},
+};
+
+function renderMap(rows) {
+  const map = {'#':'wall','.':'floor','I':'item','C':'cool','H':'hot','G':'goal',' ':'floor'};
+  const label = {wall:'',floor:'',item:'I',cool:'C',hot:'H',goal:'G'};
+  return rows.map(row =>
+    `<div class="map-row">${[...row].map(ch=>{
+      const cls = map[ch]||'floor';
+      return `<div class="cell c-${cls}">${label[cls]||''}</div>`;
+    }).join('')}</div>`
+  ).join('');
+}
+
+function mapBlock(varLabel, rows, note='') {
+  if (!rows || !rows.length) return '';
+  return `<div class="map-block">
+    <div class="map-label">${varLabel}</div>
+    <div class="map-grid">${renderMap(rows)}</div>
+    ${note?`<div style="font-size:10px;color:#64748b;margin-top:3px">${note}</div>`:''}
+  </div>`;
+}
+
+function blockBadge(set) {
+  const cls = {
+    BASIC:'badge--block',CHECK:'badge--cond',STATE:'badge--var',
+    LOOK:'badge--look',SEARCH:'badge--look',ENEMY:'badge--enemy',COUNT:'badge--count'
+  };
+  return `<span class="badge ${cls[set]||'badge--block'}">${set}</span>`;
+}
+
+function condBadge(cond) {
+  const c = cond.toLowerCase();
+  let cls = 'badge--goal';
+  if (c.includes('put')) cls='badge--put';
+  else if (c.includes('survive')) cls='badge--survive';
+  else if (c.includes('items')) cls='badge--items';
+  return `<span class="badge ${cls}">${cond}</span>`;
+}
+
+function aiBadge(ai) {
+  if (!ai) return '';
+  if (ai==='random')    return `<span class="badge badge--ai-r">AI: random</span>`;
+  if (ai==='proximity') return `<span class="badge badge--ai-p">AI: proximity</span>`;
+  if (ai==='patrol')    return `<span class="badge badge--ai-r">AI: patrol</span>`;
+  return `<span class="badge badge--ai-r">AI: ${ai}</span>`;
+}
+
+function stageCard(s, ph) {
+  const phColor = PH[ph].color;
+  const badgeHTML = [
+    blockBadge(s.blockSet),
+    `<span class="badge badge--block">${s.variants}バリアント</span>`,
+    condBadge(s.cond),
+    s.ai ? aiBadge(s.ai) : '',
+    s.newSys ? `<span class="badge badge--new-sys">⚠ ${s.newSys}</span>` : '',
+  ].filter(Boolean).join('');
+
+  const mapsHTML = s.maps && s.maps.length
+    ? `<div>
+        <div class="field-label">マップ</div>
+        <div class="maps-wrap">${s.maps.map(m=>mapBlock(m.label, m.rows, m.note||'')).join('')}</div>
+      </div>`
+    : s.mapsNote
+      ? `<div><div class="field-label">マップ</div><div class="variant-note">${s.mapsNote}</div></div>`
+      : '';
+
+  return `<div class="stage-card">
+    <div class="card-header">
+      <div class="step-num">${String(s.no).padStart(2,'0')}</div>
+      <div class="card-title-area">
+        <div class="card-title">${s.title}</div>
+        <div class="card-id">${s.id}</div>
+      </div>
+      <div class="phase-pip" style="background:${phColor}"></div>
+    </div>
+    <div class="card-badges">${badgeHTML}</div>
+    <div class="card-body">
+      <div>
+        <div class="field-label">学習目標</div>
+        <div class="field-value">${s.goal}</div>
+      </div>
+      <div>
+        <div class="field-label">反応型ルール</div>
+        <div class="field-value field-mono">${s.rule||'—'}</div>
+      </div>
+      ${mapsHTML}
+    </div>
+  </div>`;
+}
+
+/* ══════════════════════════════════════════
+   STAGE DATA
+══════════════════════════════════════════ */
+const PHASES = [
+  {
+    id:'A', name:'条件なし', range:'01〜03',
+    desc:'毎ターン同じ行動を繰り返す。プログラム構造の習得。',
+    stages:[
+      {
+        no:1, id:'step-01-walk-up', title:'上に1マス進もう',
+        blockSet:'BASIC', variants:1, cond:'goal（1手）',
+        goal:'「毎ターンやること」の構造を習得。行動ブロック＋ターンを終える。',
+        rule:'毎ターン walkUp',
+        maps:[{label:'マップ A',rows:['#######','#H#...#','#.#.G.#','#.#.C.#','#######'],note:'C(4,3)→上1歩→G(4,2)'}]
+      },
+      {
+        no:2, id:'step-02-walk-up-repeat', title:'上に進み続けよう',
+        blockSet:'BASIC', variants:1, cond:'goal（6手）',
+        goal:'同じ行動を毎ターン繰り返せば遠くまで進める。',
+        rule:'毎ターン walkUp',
+        maps:[{label:'マップ A',rows:['#######','#.##G##','#.##.##','#H##.##','#.##.##','#.##C##','#######'],note:'C(4,5)→walkUp×4→G(4,1)'}]
+      },
+      {
+        no:3, id:'step-03-walk-right', title:'右に進もう',
+        blockSet:'BASIC', variants:1, cond:'goal（6手）',
+        goal:'「毎ターン同じ行動」を別方向で確認する。',
+        rule:'毎ターン walkRight',
+        maps:[{label:'マップ A',rows:['#######','#H....#','#C...G#','#.....#','#######'],note:'C(1,2)→walkRight×4→G(5,2)'}]
+      },
+    ]
+  },
+  {
+    id:'B', name:'壁判定・1条件', range:'04〜07',
+    desc:'chaser_is_tile + if/else。現在の周囲状況を見て行動を決める反応型プログラミングの核心。',
+    stages:[
+      {
+        no:4, id:'step-04-wall-turn', title:'壁があったら曲がろう',
+        blockSet:'CHECK', variants:1, cond:'goal（10手）',
+        goal:'chaser_is_tileで壁判定とif/elseの基本。「毎ターン判断する」Chaiserの本質。迷路が複雑でもコードは変わらない体験への入口。',
+        rule:'上がブロック(2) → walkRight、そうでなければ walkUp',
+        maps:[{label:'マップ A',rows:['#######','#....G#','#.#####','#.#####','#.#####','#C...H#','#######'],note:'C(1,5)→up×4→右折→right×4→G(5,1)'}]
+      },
+      {
+        no:5, id:'step-05-wall-turn-variants', title:'同じルール、違う長さのL字',
+        blockSet:'CHECK', variants:2, cond:'goal（10手）',
+        goal:'マップが変わっても同じコードが動く体験。コードの汎用性の発見。',
+        rule:'上がブロック(2) → walkRight、そうでなければ walkUp（Step04と同じ）',
+        maps:[
+          {label:'マップ A（長い）',rows:['#######','#....G#','#.#####','#.#####','#.#####','#C...H#','#######'],note:'up×4→right×4'},
+          {label:'マップ B（短い）',rows:['#######','#...G.#','#.#####','#C...H#','#######'],note:'up×2→right×3'},
+        ]
+      },
+      {
+        no:6, id:'step-06-serpentine', title:'くねくね通路も同じルールで',
+        blockSet:'CHECK', variants:1, cond:'goal（14手）',
+        goal:'「迷路が複雑でもコードは変わらない」典型例。Step04と同一コードで蛇行路を解く。',
+        rule:'上がブロック(2) → walkRight、そうでなければ walkUp（Step04と全く同じ）',
+        maps:[{label:'マップ A',rows:['#########','#......G#','#.#####.#','#.......#','#######.#','#.......#','#.#######','#C.....H#','#########'],note:'C(1,7)→蛇行→G(7,1)。12手で到達'}]
+      },
+      {
+        no:7, id:'step-07-p-shape', title:'P字コースを進もう',
+        blockSet:'CHECK', variants:2, cond:'goal（11手）',
+        goal:'Step04/06と異なる別の1条件ルール。「下→右」という主軸の違いを習得。',
+        rule:'下がブロック(2) → walkRight、そうでなければ walkDown',
+        maps:[
+          {label:'マップ A（長い）',rows:['#########','#C.....H#','#.#######','#.#######','#.#######','#.....G.#','#########'],note:'C(1,1)→down×4→right×5→G(6,5)'},
+          {label:'マップ B（短い）',rows:['#########','#C.....H#','#.#######','#..G....#','#########'],note:'C(1,1)→down×2→right×2→G(3,3)'},
+        ]
+      },
+    ]
+  },
+  {
+    id:'C', name:'複数マップ・変数', range:'08〜12',
+    desc:'同コードで複数マップ対応。詰み体験→変数の必要性を自己発見。',
+    stages:[
+      {
+        no:8, id:'step-08-up-down-branch', title:'上か下かを見て進もう',
+        blockSet:'CHECK', variants:2, cond:'goal（2手）',
+        goal:'同コードで2バリアント対応。マップによって最適行動が変わることを体験。',
+        rule:'上がブロック(2) → walkDown、そうでなければ walkUp',
+        maps:[
+          {label:'マップ A（上がゴール）',rows:['#######','#..G..#','#..C..#','#..#H.#','#######'],note:'上は床→up→G'},
+          {label:'マップ B（下がゴール）',rows:['#######','#H.#..#','#..C..#','#..G..#','#######'],note:'上は壁→down→G'},
+        ]
+      },
+      {
+        no:9, id:'step-09-branch-left-right', title:'左右の分岐を選ぼう',
+        blockSet:'CHECK', variants:2, cond:'goal（10手）',
+        goal:'「上がふさがったとき左右どちらが開いているか」という2段階条件判断（ネストif）。',
+        rule:'上がブロック → 左がブロックでなければ walkLeft、そうでなければ walkRight。上が床 → walkUp',
+        maps:[
+          {label:'マップ A（左ゴール）',rows:['#######','##G####','##.####','##..###','###.###','#..C.H#','#######']},
+          {label:'マップ B（右ゴール）',rows:['#######','####G##','####.##','###..##','###.###','#H.C..#','#######']},
+        ]
+      },
+      {
+        no:10, id:'step-10-deadlock-discovery', title:'同じ分岐が2つ、どうする？（詰み体験）',
+        blockSet:'CHECK', variants:1, cond:'goal（12手）',
+        goal:'【意図的詰み体験】条件分岐だけでは解けない問題を体験し「記憶が必要だ」と自己発見する。次のStep11で変数を学ぶ強い動機付け。',
+        rule:'Step09のコードでは片方しか解けない → Step11（変数）を学んでから戻ると解ける',
+        maps:[{label:'マップ A',rows:['#########','#########','#########','########.','######.##','#G...C..#','#########'],note:'左がゴール。同じ見た目の分岐が2か所あり単純条件では汎用化できない。'}],
+        newSys:null
+      },
+      {
+        no:11, id:'step-11-remember-direction', title:'向きを変数に覚えよう',
+        blockSet:'STATE', variants:2, cond:'goal（8手）',
+        goal:'chaser_on_start と変数の初登場。「過去の観測結果を覚えておく」という状態管理の基本。',
+        rule:'最初に1回: around[0]にH(1)があれば向き変数←Left、なければ←Right。毎ターン: 変数の向きにwalk',
+        maps:[
+          {label:'マップ A（ゴール左）',rows:['#########','#########','#########','#########','#####H###','#G....C.#','#########'],note:'C(7,5)→Left×6→G(1,5)'},
+          {label:'マップ B（ゴール右）',rows:['#########','#########','#########','#########','###H#####','#.C....G#','#########'],note:'C(2,5)→Right×6→G(8,5)'},
+        ]
+      },
+      {
+        no:12, id:'step-12-zigzag', title:'ジグザグを同じコードで',
+        blockSet:'STATE', variants:2, cond:'goal（14手）',
+        goal:'chaser_last_direction の活用。前回の向きを使って横→縦→横→縦のリズムを実現。',
+        rule:'最初に1回: 左が床(0)なら向き変数←Left。毎ターン: 変数の向きに進み壁があれば上に切替',
+        maps:[
+          {label:'マップ A（左ジグザグ）',rows:['#######','#.#.#G#','#.#.#.#','#.#...#','#.#.#.#','#C..#H#','#######'],note:'C(1,5)→左ジグザグ→G(5,1)'},
+          {label:'マップ B（右ジグザグ）',rows:['#######','#G#.#.#','#.#.#.#','#...#.#','#.#.#.#','#H#..C#','#######'],note:'C(4,5)→右ジグザグ→G(1,1)'},
+        ]
+      },
+    ]
+  },
+  {
+    id:'D', name:'アイテム収集', range:'13〜20',
+    desc:'LOOK/SEARCH不使用。around[]とis_tileでアイテムを扱う。ブロック生成の仕組みを習得。',
+    stages:[
+      {
+        no:13, id:'step-13-item-intro', title:'はじめてのアイテム',
+        blockSet:'STATE', variants:1, cond:'goal+items（8手）',
+        goal:'アイテムを踏むと自動取得・直前マスにブロック生成。コードは walkRight のままでよい。',
+        rule:'毎ターン walkRight（条件なし）。アイテムは歩いて踏めば自動取得',
+        maps:[{label:'マップ A',rows:['#######','#H....#','#C.I.G#','#.....#','#######'],note:'C(1,2)→right×4→I自動取得→G(5,2)'}]
+      },
+      {
+        no:14, id:'step-14-collect-two', title:'アイテムを全部取ってゴール',
+        blockSet:'STATE', variants:1, cond:'goal+items（6手）',
+        goal:'複数アイテム取得とブロック連鎖生成。全てのブロックは後方に生成されるため前方の道は安全。',
+        rule:'毎ターン walkUp（条件なし）',
+        maps:[{label:'マップ A',rows:['#######','#..G..#','#..I..#','#.....#','#..I..#','#..C.H#','#######'],note:'walkUp×4。I取得毎に後方がブロック化'}]
+      },
+      {
+        no:15, id:'step-15-item-detour', title:'寄り道してアイテムを取ろう',
+        blockSet:'STATE', variants:2, cond:'goal+items（8手）',
+        goal:'アイテム検出（is_tile）と壁判定の複合条件。Step04のルールにアイテム検出を追加する形。',
+        rule:'右がアイテム(3) → walkRight。左がアイテム(3) → walkLeft。上がブロック(2) → walkRight。それ以外 → walkUp',
+        maps:[
+          {label:'マップ A（右にアイテム）',rows:['#######','#..G..#','#.....#','#..I..#','#.....#','#.C..H#','#######'],note:'C(2,5)→up×2→rightへ寄り道でI取得→up×2→G(3,1)'},
+          {label:'マップ B（左にアイテム）',rows:['#######','#..G..#','#.....#','#.I...#','#.....#','#H.C..#','#######'],note:'C(3,5)→up×2→leftへ寄り道でI取得→up→wall→right→G(3,1)'},
+        ]
+      },
+      {
+        no:16, id:'step-16-collect-all', title:'アイテムを全部集めてゴールへ',
+        blockSet:'STATE', variants:2, cond:'goal+items（18手）',
+        goal:'全アイテムを拾う順番を考える。取得後のブロック生成を意識したルート選択。',
+        rule:'around[]でアイテムを検出し最適順序で収集してからゴールへ',
+        maps:[
+          {label:'マップ A',rows:['#########','#H.....##','#.......#','#.C.I.G.#','#..I....#','#.......#','#########'],note:'I×2収集後G(6,3)へ'},
+          {label:'マップ B',rows:['#########','##.....H#','#.......#','#.G.I.C.#','#....I..#','#.......#','#########'],note:'I×2収集後G(2,3)へ'},
+        ]
+      },
+      {
+        no:17, id:'step-17-avoid-trap', title:'危険なアイテムを避けよう',
+        blockSet:'STATE', variants:2, cond:'goal（18手）',
+        goal:'3方向が壁に囲まれたアイテムは取ると閉じ込め。around[]で壁数を確認して回避。',
+        rule:'周囲の壁(2)が3個以上のアイテムには近づかない',
+        maps:[
+          {label:'マップ A',rows:['#######','#H#####','#..#G.#','#..I#.#','#..#..#','#C....#','#######'],note:'I(3,3)危険: 上・右・下が壁。左から入ると閉じ込め'},
+          {label:'マップ B',rows:['#######','#####H#','#.G#..#','#.#I..#','#..#..#','#....C#','#######'],note:'I(3,3)危険: 上・左・下が壁。右から入ると閉じ込め'},
+        ]
+      },
+      {
+        no:18, id:'step-18-safe-and-danger', title:'2つのアイテム、安全な方だけ取ろう',
+        blockSet:'STATE', variants:2, cond:'goal（20手）',
+        goal:'危険アイテム回避＋安全アイテム収集の組み合わせ。壁数確認と安全ルートの統合。',
+        rule:'危険アイテム（3方向が壁）を識別・回避し、安全なアイテムだけ取ってゴールへ',
+        maps:[
+          {label:'マップ A',rows:['#######','#H#####','#..#G.#','#..I#.#','#..#..#','#.I...#','#..C..#','#######'],note:'I(3,3)危険・I(2,5)安全。安全なI取得後G(4,2)へ'},
+          {label:'マップ B',rows:['#######','#####H#','#.G#..#','#.#I..#','#..#..#','#...I.#','#..C..#','#######'],note:'I(3,3)危険・I(4,5)安全。反転版'},
+        ]
+      },
+      {
+        no:19, id:'step-19-find-items', title:'探してアイテムを回収',
+        blockSet:'STATE', variants:2, cond:'goal+items（20手）',
+        goal:'アイテムが壁で区切られた場所にある。around[]で隣接アイテムを検出しながら内側通路を進む。',
+        rule:'around[]でアイテムを検出 → 隣接したら収集 → 全取得後ゴールへ',
+        maps:[
+          {label:'マップ A',rows:['#########','#..G....#','#.###.###','#..I.I..#','#.###.###','#C.....H#','#########'],note:'C(1,5)。内側にI×2。通路を通って収集後G(3,1)へ'},
+          {label:'マップ B',rows:['#########','#....G..#','#.###.###','#..I.I..#','#.###.###','#H.....C#','#########'],note:'C(7,5)。反転版'},
+        ]
+      },
+      {
+        no:20, id:'step-20-synthesis', title:'総合：アイテムを集めてゴールへ',
+        blockSet:'STATE', variants:2, cond:'goal+items（22手）',
+        goal:'フェーズD総まとめ。4個のアイテムを全収集してゴールへ。around[]・ブロック生成考慮・安全確認を組み合わせる。',
+        rule:'4方向のaroundでアイテムを探し、近い順に収集しながらゴールへ向かう',
+        maps:[
+          {label:'マップ A',rows:['#########','#...G...#','#.......#','#.I...I.#','#.......#','#.I...I.#','#.......#','#...C..H#','#########'],note:'I×4をaround[]で検出しながら全収集'},
+          {label:'マップ B',rows:['#########','#...G...#','#.......#','#..I.I..#','#.......#','#..I.I..#','#.......#','#H..C...#','#########'],note:'I配置が中央寄りのバリアント'},
+        ]
+      },
+    ]
+  },
+  {
+    id:'E', name:'LOOK / SEARCH', range:'21〜28',
+    desc:'1ターン使って先の様子を観測し、結果を変数に保存して次ターンで使う。',
+    stages:[
+      {
+        no:21, id:'step-21-look-intro', title:'先を見て分岐を選ぼう',
+        blockSet:'LOOK', variants:2, cond:'goal（7手）',
+        goal:'look で3×3を観測する。観測はそのターンの行動なので結果を変数に保存して次ターンで使う。',
+        rule:'walkUp×2 → lookLeft（保存）→ obs[4]が床(0)なら walkLeft×2+up×2、そうでなければ right方向へ',
+        maps:[
+          {label:'マップ A（左が正解）',rows:['#######','#G##.H#','#.#####','#....##','###.###','###C###','#######']},
+          {label:'マップ B（右が正解）',rows:['#######','#H.##G#','#####.#','##....#','###.###','###C###','#######']},
+        ]
+      },
+      {
+        no:22, id:'step-22-look-dead-end', title:'LOOKで行き止まりを見抜く',
+        blockSet:'LOOK', variants:1, cond:'goal（7手）',
+        goal:'around[]だけでは先が見えない状況でlookを活用して分岐判断。',
+        rule:'上に進みながら分岐でlookを使って道を確認し方向を決定',
+        maps:[{label:'マップ A',rows:['#######','#....G#','####..#','##....#','###.###','#..C.H#','#######']}]
+      },
+      {
+        no:23, id:'step-23-search-intro', title:'遠くまで一直線に見よう',
+        blockSet:'SEARCH', variants:2, cond:'goal（9手）',
+        goal:'searchで直線9マスを観測。lookとの違い（方向指定・直線のみ）を習得。行き止まりが近い方を避ける。',
+        rule:'walkUp×2 → searchLeft（保存）→ obs[1]がブロックなら右方向、そうでなければ左方向',
+        maps:[
+          {label:'マップ A（左が行き止まり）',rows:['###########','#H.######G#','#########.#','#..#......#','#####.#####','#####C#####','###########']},
+          {label:'マップ B（右が行き止まり）',rows:['###########','#G######.H#','#.#########','#......#..#','#####.#####','#####C#####','###########']},
+        ]
+      },
+      {
+        no:24, id:'step-24-search-dead-end', title:'SEARCHで遠回りを避ける',
+        blockSet:'SEARCH', variants:1, cond:'goal（7手）',
+        goal:'直線の先のブロック位置を確認し、より遠い（空きが多い）方向を選ぶ。',
+        rule:'searchで遠くのブロック位置を確認し、行き止まりが遠い方へ進む',
+        maps:[{label:'マップ A',rows:['#########','#H......#','####.####','#.#....G#','####.####','####C####','#########']}]
+      },
+      {
+        no:25, id:'step-25-look-search-combo', title:'LOOKとSEARCHを使い分けよう',
+        blockSet:'SEARCH', variants:2, cond:'goal（12手）',
+        goal:'近距離はlook（3×3）、遠距離はsearch（直線9マス）と場面で使い分ける。',
+        rule:'walkUp×3 → searchLeft → obs[2]がブロックなら right×6、そうでなければ left×6',
+        maps:[
+          {label:'マップ A（正解は右）',rows:['###############','#H..###########','###############','#########.#####','#########.#####','#########.#####','#####........G#','#######.#######','#######.#######','#######C#######','###############']},
+          {label:'マップ B（正解は左）',rows:['###############','###########..H#','###############','#####.#########','#####.#########','#####.#########','#G........#####','#######.#######','#######.#######','#######C#######','###############']},
+        ]
+      },
+      {
+        no:26, id:'step-26-look-items', title:'LOOKでアイテムを見つけよう',
+        blockSet:'LOOK', variants:2, cond:'goal+items（18手）',
+        goal:'lookで視野内のアイテムを検出し、移動先を決める。アイテムと観測の組み合わせ初登場。',
+        rule:'lookDown/Right/Left → アイテム(3)が含まれる方向を変数に保存 → 次ターンで移動',
+        maps:[
+          {label:'マップ A',rows:['#######','#..G..#','#.....#','#.....#','#.I...#','#.C..H#','#######'],note:'C(2,5)、I(2,4)。lookDownでアイテム発見→取得→ゴールへ'},
+          {label:'マップ B',rows:['#######','#..G..#','#.....#','#.....#','#...I.#','#H..C.#','#######'],note:'C(4,5)、I(4,4)。反転バリアント'},
+        ]
+      },
+      {
+        no:27, id:'step-27-search-items', title:'SEARCHでアイテムの方向を探そう',
+        blockSet:'SEARCH', variants:1, cond:'goal+items（20手）',
+        goal:'searchでアイテムの方向と距離を把握してから最適ルートで収集。観測とアイテムの本格統合。',
+        rule:'searchUp/Right/Left → アイテムがある方向を特定 → 収集 → ゴールへ',
+        maps:[{label:'マップ A',rows:['#########','#..G....#','#.###.###','#..I.I..#','#.###.###','#C.....H#','#########'],note:'C(1,5)。searchで通路内I×2の位置特定'}]
+      },
+      {
+        no:28, id:'step-28-observation-synthesis', title:'観測総合：探索してゴールへ',
+        blockSet:'SEARCH', variants:2, cond:'goal+items（20手）',
+        goal:'フェーズE総まとめ。look + search を組み合わせてアイテムを全収集後ゴールへ。',
+        rule:'look で近距離確認 + search で遠距離確認 → アイテム収集後ゴール',
+        maps:[
+          {label:'マップ A',rows:['#########','#..G....#','#.###.###','#..I.I..#','#.###.###','#C.....H#','#########']},
+          {label:'マップ B',rows:['#########','#....G..#','#.###.###','#..I.I..#','#.###.###','#H.....C#','#########']},
+        ]
+      },
+    ]
+  },
+  {
+    id:'F', name:'PUT・静止敵', range:'29〜32',
+    desc:'putアクションの習得。静止した敵の位置を確認してPUTで勝利。',
+    stages:[
+      {
+        no:29, id:'step-29-put-intro', title:'ブロックで勝ってみよう',
+        blockSet:'SEARCH', variants:2, cond:'put（2手）',
+        goal:'敵がいる方向にputすると即勝利になる仕組みを体験。',
+        rule:'上が敵(1) → putUp、右が敵(1) → putRight（バリアントで敵位置が変わる）',
+        maps:[
+          {label:'マップ A（敵が上）',rows:['#######','#..G..#','#..H..#','#..C..#','#.....#','#.....#','#######'],note:'C(3,3)、H(3,2)。putUpで即勝利'},
+          {label:'マップ B（敵が右）',rows:['#######','#..G..#','#.....#','#..CH.#','#.....#','#.....#','#######'],note:'C(3,3)、H(4,3)。putRightで即勝利'},
+        ]
+      },
+      {
+        no:30, id:'step-30-approach-put', title:'近づいてブロックを置く',
+        blockSet:'SEARCH', variants:1, cond:'put（5手）',
+        goal:'移動してから攻撃。「近づく→put」の2ステップを体験。',
+        rule:'walkUp×3 → putUp',
+        maps:[{label:'マップ A',rows:['#######','#..H..#','#G....#','#.....#','#.....#','#..C..#','#######'],note:'C(3,5)→up×3→H(3,2)の隣→putUp'}]
+      },
+      {
+        no:31, id:'step-31-put-caution', title:'自分が囲まれないよう注意',
+        blockSet:'SEARCH', variants:2, cond:'put（3手）',
+        goal:'putの後に自分がブロックで囲まれると即負け。安全な位置へ移動してから攻撃。',
+        rule:'右が床(0) → walkRight+putRight、そうでなければ walkDown+putDown',
+        maps:[
+          {label:'マップ A',rows:['#########','#...G...#','#########','####C####','####.####','####H####','#########'],note:'下へ移動してからputDown'},
+          {label:'マップ B',rows:['#########','#...G...#','#########','###C.H###','#########','#########','#########'],note:'右へ移動してからputRight'},
+        ]
+      },
+      {
+        no:32, id:'step-32-hunt-put', title:'探索して敵を見つけ PUT しよう',
+        blockSet:'SEARCH', variants:2, cond:'put（9手）',
+        goal:'search で敵の位置を探索してから接近→put。SEARCH+PUT の本格統合。',
+        rule:'walkUp×4 → searchLeft → obs[3]がプレイヤー(1)なら left×3+putLeft、そうでなければ right×3+putRight',
+        maps:[
+          {label:'マップ A（敵が左）',rows:['###########','#...G.....#','#####.#####','#####.#####','#####.#####','#H........#','#####.#####','#####.#####','#####.#####','#####C#####','###########']},
+          {label:'マップ B（敵が右）',rows:['###########','#...G.....#','#####.#####','#####.#####','#####.#####','#........H#','#####.#####','#####.#####','#####.#####','#####C#####','###########']},
+        ]
+      },
+    ]
+  },
+  {
+    id:'G', name:'動く敵', range:'33〜42',
+    desc:'敵がproximit/randomで移動する。around[]で敵を検知し反応する。敵はプレイヤーの位置をグローバルに知らない。',
+    stages:[
+      {
+        no:33, id:'step-33-enemy-intro', title:'敵が動き始めた！',
+        blockSet:'ENEMY', variants:1, cond:'goal（15手）', ai:'random',
+        goal:'敵がランダムに動く状況を初体験。壁の通路を使えば干渉しにくいことに気づく。「どこかに歩く」ブロック初登場。',
+        rule:'左列の通路を通って上へ進む。敵は右エリアでランダム移動するため干渉しにくい',
+        maps:[{label:'マップ A',rows:['#######','#..G..#','#.###.#','#.###.#','#.###.#','#C...H#','#######'],note:'C(1,5)→left corridor→G(3,1)。H(5,5)はrandom移動'}]
+      },
+      {
+        no:34, id:'step-34-enemy-corridor', title:'通路で敵をやり過ごす',
+        blockSet:'ENEMY', variants:2, cond:'goal（20手）', ai:'random',
+        goal:'開けたフィールドで敵がランダム移動。around[]で敵を検知したら別方向を選んでゴールへ。',
+        rule:'上が敵(1) → 別方向を選ぶ、そうでなければ walkUp（方向を状況に応じて調整）',
+        maps:[
+          {label:'マップ A',rows:['#######','#G....#','#.....#','#.....#','#.....#','#.H...#','#C....#','#######'],note:'C(1,6)、G(1,1)、H(2,5)。H隣接4方向全て床✓'},
+          {label:'マップ B',rows:['#######','#....G#','#.....#','#.....#','#.....#','#...H.#','#....C#','#######'],note:'C(5,6)、G(5,1)、H(4,5)。反転版'},
+        ]
+      },
+      {
+        no:35, id:'step-35-survive-proximity', title:'近づいてくる敵から逃げよう',
+        blockSet:'ENEMY', variants:1, cond:'survive（15T）', ai:'proximity',
+        goal:'proximity AI（隣接したら追跡）から15ターン生き延びる。渦巻き通路で距離を保つ。',
+        rule:'時計回りに渦巻きを進む。敵がaround[]に入ったら反転方向へ退避',
+        maps:[{label:'マップ A',rows:['#########','#.......#','#.#####.#','#.#...#.#','#.#.#.#.#','#.#...#.#','#.#####.#','#.......#','##C###H##'],note:'C(2,8)、H(6,8)。渦巻きをproxAIが追跡'}]
+      },
+      {
+        no:36, id:'step-36-escape-proximity', title:'敵が来たら反対方向へ逃げよう',
+        blockSet:'ENEMY', variants:2, cond:'survive（20T）', ai:'proximity',
+        goal:'2バリアントで敵の初期位置が左右に変わる。敵がaround[]に入ったとき「どちらから来たか」を判断して逃げる。',
+        rule:'右に敵(1)があれば walkLeft、左に敵(1)があれば walkRight。上/下の迂回路で距離を稼ぐ',
+        maps:[
+          {label:'マップ A（敵が右）',rows:['#########','#.......#','#.#####.#','#.#...#.#','#.#####.#','#C.....H#','#########'],note:'C(1,5)、H(7,5)。近づいたら左へ退避'},
+          {label:'マップ B（敵が左）',rows:['#########','#.......#','#.#####.#','#.#...#.#','#.#####.#','#H.....C#','#########'],note:'C(7,5)、H(1,5)。反転版'},
+        ]
+      },
+      {
+        no:37, id:'step-37-avoid-and-goal', title:'敵を避けながらゴールへ',
+        blockSet:'ENEMY', variants:2, cond:'goal（20手）', ai:'random',
+        goal:'ランダム移動の敵がいる中でゴールに到達。敵がaround[]に入ったら別ルートを選ぶ。',
+        rule:'周囲に敵(1)がなければゴール方向へ進む。敵が隣接したら迂回',
+        maps:[
+          {label:'マップ A',rows:['#######','#....G#','#.###.#','#..H..#','#.###.#','#C....#','#######'],note:'C(1,5)、G(5,1)、H中央でrandom移動'},
+          {label:'マップ B',rows:['#######','#G....#','#.###.#','#..H..#','#.###.#','#....C#','#######'],note:'G位置が左上に変化'},
+        ]
+      },
+      {
+        no:38, id:'step-38-put-moving', title:'動く敵を倒してみよう',
+        blockSet:'ENEMY', variants:1, cond:'put（15手）', ai:'random',
+        goal:'ランダム移動する敵が隣に来たときputを使う。「待ち構える」戦術。',
+        rule:'毎ターン: 上/下/左/右のいずれかに敵(1) → その方向にput。なければ walkRandom で待機',
+        maps:[{label:'マップ A',rows:['#######','#.....#','#.###.#','#.###.#','#.###.#','#C...H#','#######'],note:'C(1,5)、H(5,5)。Hがrandom移動で隣に来たらput'}]
+      },
+      {
+        no:39, id:'step-39-counter-proximity', title:'近づいた敵を返り討ち',
+        blockSet:'ENEMY', variants:2, cond:'put（12手）', ai:'proximity',
+        goal:'proximity AIで追跡してくる敵を逆利用する。近づいてくる敵を待ち構えてput。',
+        rule:'隣接した方向に敵(1) → put。なければ walkRandom で待つ',
+        maps:[
+          {label:'マップ A（敵が上から）',rows:['#######','#..H..#','#.###.#','#.###.#','#.###.#','#..C..#','#######'],note:'H(3,1)→proximityでCに近づく→隣でput'},
+          {label:'マップ B（敵が右から）',rows:['#######','#.....#','#.###H#','#.###.#','#.###.#','#..C..#','#######'],note:'H(5,2)→proximityでCに近づく'},
+        ]
+      },
+      {
+        no:40, id:'step-40-items-enemy', title:'敵がいてもアイテムを集めよう',
+        blockSet:'ENEMY', variants:2, cond:'goal+items（25手）', ai:'random',
+        goal:'ランダム移動の敵と共存しながらアイテムを2つ取ってゴールへ。敵検知+アイテム検知の複合。',
+        rule:'隣接に敵がなければアイテム方向へ進む。敵が近ければ迂回して引き離す',
+        maps:[
+          {label:'マップ A',rows:['#########','#..G....#','#.#####.#','#.#I.I#.#','#.#.#.#.#','#.#...#.#','#.#####.#','#C.....H#','#########']},
+          {label:'マップ B',rows:['#########','#....G..#','#.#####.#','#.#I.I#.#','#.#.#.#.#','#.#...#.#','#.#####.#','#H.....C#','#########']},
+        ]
+      },
+      {
+        no:41, id:'step-41-wall-trap', title:'壁で敵を封じ込めよう',
+        blockSet:'ENEMY', variants:2, cond:'put（10手）', ai:'random',
+        goal:'putをアイテムへの攻撃だけでなく「壁として配置」する使い方。敵の逃げ場を狭める戦術。',
+        rule:'隣接に敵 → put（勝利）。そうでなければ敵を囲む位置にputしながら接近',
+        maps:[
+          {label:'マップ A',rows:['#######','#.....#','##.##.#','#..H..#','##.##.#','#..C..#','#######']},
+          {label:'マップ B',rows:['#######','#.....#','#.###.#','#..H..#','#.###.#','#.C...#','#######']},
+        ]
+      },
+      {
+        no:42, id:'step-42-choose-strategy', title:'倒すかゴールか判断しよう',
+        blockSet:'ENEMY', variants:2, cond:'goal または put（20手）', ai:'random',
+        goal:'マップによって「ゴールへ急ぐ方が早い」か「敵を倒す方が早い」かが変わる。状況判断の初体験。',
+        rule:'隣接に敵 → put（勝利）。そうでなければゴール方向へ進む',
+        maps:[
+          {label:'マップ A（ゴールが近い）',rows:['#########','#G......#','#.#####.#','#.#...#.#','#.#...#.#','#.#####.#','#.......#','#C.....H#','#########'],note:'Gが近いのでゴール優先が有利'},
+          {label:'マップ B（敵が近い）',rows:['#########','#......G#','#.#####.#','#.#...#.#','#.#...#.#','#.#####.#','#.......#','#H.....C#','#########'],note:'Hが近いのでput狙いも有効'},
+        ]
+      },
+    ]
+  },
+  {
+    id:'H', name:'SEARCH × アイテム総合', range:'43〜50',
+    desc:'SEARCH結果のアイテム数カウント。バリアントごとにアイテム位置が変わるため必ずSEARCHが必要。敵あり段階はrandom AIのみ（SEARCH中に不利にならないため）。',
+    stages:[
+      {
+        no:43, id:'step-43-count-items', title:'アイテムの数を数えよう',
+        blockSet:'COUNT', variants:3, cond:'goal+items（20手）',
+        goal:'chaser_view_count_tile ブロック初登場。SEARCHした結果配列中のアイテム数を取得。バリアントでアイテム方向が右/左/上と変わるためSEARCH必須。',
+        rule:'searchRight→count_R、searchLeft→count_L、searchUp→count_U → 最大方向へ移動',
+        newSys:'chaser_view_count_tile 要実装',
+        maps:[
+          {label:'バリアント A（アイテムが右）',rows:['#########','#...G...#','#.......#','#.....I.#','#.....I.#','#.......#','#...C..H#','#########'],note:'I×2 at (6,3)(6,4). searchRight最多'},
+          {label:'バリアント B（アイテムが左）',rows:['#########','#...G...#','#.......#','#.I.....#','#.I.....#','#.......#','#H..C...#','#########'],note:'I×2 at (2,3)(2,4). searchLeft最多'},
+          {label:'バリアント C（アイテムが上）',rows:['#########','#...G...#','#...I...#','#...I...#','#.......#','#.......#','#H..C...#','#########'],note:'I×2 at (4,2)(4,3). searchUp最多'},
+        ]
+      },
+      {
+        no:44, id:'step-44-go-to-most', title:'多い方向に進もう',
+        blockSet:'COUNT', variants:4, cond:'goal+items（22手）',
+        goal:'4方向（右/左/上/下）のいずれかにアイテムが集中。4バリアントで全方向に対応するコードが必要。PLAN.md「一番多いところに進む」を実現。',
+        rule:'searchRight/Left/Up/Down → count比較 → 最多方向へ移動。Dでは下方向が最多になることに注意',
+        maps:[
+          {label:'バリアント A（右）',rows:['#########','#...G...#','#.......#','#......I#','#......I#','#......I#','#...C..H#','#########'],note:'I×3 at右列。searchRight最多'},
+          {label:'バリアント B（左）',rows:['#########','#...G...#','#.......#','#I......#','#I......#','#I......#','#H..C...#','#########'],note:'I×3 at左列。searchLeft最多'},
+          {label:'バリアント C（上）',rows:['#########','#...G...#','#...I...#','#...I...#','#...I...#','#.......#','#H..C...#','#########'],note:'I×3 at上列。searchUp最多'},
+          {label:'バリアント D（下）',rows:['#########','#...G...#','#.......#','#.......#','#...I...#','#...I...#','#H.ICI..#','#########'],note:'I×3 at下/周辺。searchDown最多'},
+        ]
+      },
+      {
+        no:45, id:'step-45-shift-search', title:'1マスずらして探索しよう',
+        blockSet:'COUNT', variants:3, cond:'goal+items（25手）',
+        goal:'PLAN.md「右向いてサーチして数えて、1個上行って右向いてサーチして…」を実装。2地点のSEARCH結果を比較して最適経路を選択。',
+        rule:'現在地でsearchRight→countA。walkUp。再びsearchRight→countB。A>BならA側列へ、B>AならB側列へ進む',
+        maps:[
+          {label:'バリアント A（右上に集中）',rows:['#########','#...G...#','#.....I.#','#.....I.#','#.....I.#','#.......#','#...C..H#','#########'],note:'I×3 at(6,2-4)。2地点のsearchで列を特定'},
+          {label:'バリアント B（左上に集中）',rows:['#########','#...G...#','#.I.....#','#.I.....#','#.I.....#','#.......#','#H..C...#','#########'],note:'I×3 at(2,2-4)'},
+          {label:'バリアント C（斜め分布）',rows:['#########','#...G...#','#.......#','#......I#','#.....I.#','#....I..#','#H..C...#','#########'],note:'I×3散在。1マスずらしで密集列を発見'},
+        ]
+      },
+      {
+        no:46, id:'step-46-collect-n', title:'N個以上アイテムを集めよう',
+        blockSet:'COUNT', variants:4, cond:'items 3個（20手）',
+        goal:'PLAN.md「ターンに制限があって、アイテムをこれだけ取らなきゃいけない」。4バリアントで配置が変わるためSEARCH必須。ゴールなし（items≥3でクリア）。',
+        rule:'searchで最も多い方向を特定 → その方向へ進んでアイテム収集を3個になるまで繰り返す',
+        maps:[
+          {label:'バリアント A（右上エリア）',rows:['#########','#......H#','#....III#','#.....I.#','#.......#','#.......#','#...C...#','#########'],note:'I×4 at右上。searchRightで検出'},
+          {label:'バリアント B（左上エリア）',rows:['#########','#H......#','#III....#','#.I.....#','#.......#','#.......#','#...C...#','#########'],note:'I×4 at左上。searchLeftで検出'},
+          {label:'バリアント C（下エリア）',rows:['#########','#H......#','#.......#','#.......#','#.I.I...#','#..III..#','#...C...#','#########'],note:'I×5 at下。searchDownで検出'},
+          {label:'バリアント D（中央散在）',rows:['#########','#H......#','#.......#','#.I.I.I.#','#.......#','#.I.I...#','#...C...#','#########'],note:'I×5散在。全方向searchして最多方向へ'},
+        ]
+      },
+      {
+        no:47, id:'step-47-multi-pattern', title:'4パターンを同じコードでクリア',
+        blockSet:'COUNT', variants:4, cond:'items 2個（20手）',
+        goal:'PLAN.md「2つだけじゃなくて4つとかでもいいんですけど」。4方向にアイテムが分散する4パターンを同一コードでクリア。',
+        rule:'全方向searchしてアイテムが多い方向へ進む。2個取れたらクリア',
+        maps:[
+          {label:'バリアント A（右）',rows:['#########','#H......#','#.......#','#......I#','#.....I.#','#.......#','#...C...#','#########']},
+          {label:'バリアント B（左）',rows:['#########','#......H#','#.......#','#I......#','#.I.....#','#.......#','#...C...#','#########']},
+          {label:'バリアント C（上）',rows:['#########','#..I.I..#','#.......#','#.......#','#.......#','#.......#','#H..C...#','#########']},
+          {label:'バリアント D（下）',rows:['#########','#H......#','#.......#','#.......#','#.......#','#.I...I.#','#...C...#','#########']},
+        ]
+      },
+      {
+        no:48, id:'step-48-enemy-and-items', title:'敵を避けながらアイテム回収',
+        blockSet:'COUNT', variants:3, cond:'goal+items（25手）', ai:'random',
+        goal:'SEARCH×アイテム収集に敵（random）を追加。SEARCHとaround[]（敵検知）を並行して使う。',
+        rule:'searchで多い方向を特定。周囲に敵がなければその方向へ。敵が近ければ迂回',
+        maps:[
+          {label:'バリアント A（アイテム右・敵左上）',rows:['#########','#H....G.#','#.......#','#.....I.#','#.....I.#','#.......#','#...C...#','#########']},
+          {label:'バリアント B（アイテム左・敵右上）',rows:['#########','#.G....H#','#.......#','#.I.....#','#.I.....#','#.......#','#...C...#','#########']},
+          {label:'バリアント C（アイテム上・敵右下）',rows:['#########','#...G...#','#...I...#','#...I...#','#.......#','#.......#','#...C..H#','#########']},
+        ]
+      },
+      {
+        no:49, id:'step-49-collect-avoid', title:'敵をかわしながらアイテムを集めよう',
+        blockSet:'COUNT', variants:3, cond:'items 3個（25手）', ai:'random',
+        goal:'random AI の敵がいる中でSEARCHでアイテムを探して3個取る。ゴールなし。敵もアイテム位置もバリアントで変化。',
+        rule:'searchで最多アイテム方向を確認。敵がaround[]に入ったら迂回。3個取得でクリア',
+        maps:[
+          {label:'バリアント A（アイテム右・敵左）',rows:['#########','#H......#','#.......#','#.......#','#.....I.#','#.....I.#','#.....I.#','#...C...#','#########']},
+          {label:'バリアント B（アイテム左・敵右）',rows:['#########','#......H#','#.......#','#.......#','#.I.....#','#.I.....#','#.I.....#','#...C...#','#########']},
+          {label:'バリアント C（アイテム上・敵下）',rows:['#########','#.......#','#...I...#','#...I...#','#...I...#','#.......#','#H..C...#','#########']},
+        ]
+      },
+      {
+        no:50, id:'step-50-grand-finale', title:'総仕上げ：探索して敵を見つけ勝利せよ',
+        blockSet:'COUNT', variants:3, cond:'put（25手）', ai:'random',
+        goal:'SEARCHで敵の位置（方向）を探索 → 接近 → put で勝利。全50ステージの集大成。3バリアントで敵の初期位置が変わるためSEARCH必須。',
+        rule:'searchRight/Left/Up → プレイヤー(1)がある方向を特定 → その方向へ接近 → 隣接したらput',
+        maps:[
+          {label:'バリアント A（敵が左上）',rows:['#########','#H......#','#.#####.#','#.#...#.#','#.#...#.#','#.#...#.#','#.#####.#','#...C...#','#########'],note:'searchLeft最多 → 左上へ接近'},
+          {label:'バリアント B（敵が右上）',rows:['#########','#......H#','#.#####.#','#.#...#.#','#.#...#.#','#.#...#.#','#.#####.#','#...C...#','#########'],note:'searchRight最多 → 右上へ接近'},
+          {label:'バリアント C（敵が内側）',rows:['#########','#.......#','#.#####.#','#.#.H.#.#','#.#...#.#','#.#...#.#','#.#####.#','#...C...#','#########'],note:'search全方向比較で検出'},
+        ]
+      },
+    ]
+  },
+];
+
+/* ── RENDER ── */
+const main = document.getElementById('main');
+
+// summary table
+const allStages = PHASES.flatMap(p => p.stages.map(s => ({...s, phase: p.id})));
+const summaryRows = allStages.map(s => {
+  const ph = PH[s.phase];
+  return `<tr>
+    <td class="num-cell" style="color:${ph.color}">${String(s.no).padStart(2,'0')}</td>
+    <td><span class="badge" style="background:${ph.bg};color:${ph.color};border-color:${ph.color}">${s.phase}</span></td>
+    <td><strong>${s.title}</strong><br><span style="font-size:10px;color:#94a3b8;font-family:monospace">${s.id}</span></td>
+    <td>${blockBadge(s.blockSet)}</td>
+    <td style="text-align:center">${s.variants}</td>
+    <td>${condBadge(s.cond)}</td>
+    <td>${s.ai ? aiBadge(s.ai) : '<span style="color:#cbd5e1;font-size:11px">—</span>'}</td>
+  </tr>`;
+}).join('');
+
+main.innerHTML += `
+<section class="summary-section">
+  <div style="margin-bottom:12px">
+    <h2 style="font-size:18px;font-weight:700;color:#0f172a">全ステージ一覧</h2>
+    <p style="font-size:12px;color:#64748b;margin-top:4px">50ステージ / フェーズA〜H</p>
+  </div>
+  <table class="summary-table">
+    <thead>
+      <tr>
+        <th>#</th><th>Ph</th><th>タイトル</th>
+        <th>ブロックセット</th><th>V</th><th>クリア条件</th><th>敵AI</th>
+      </tr>
+    </thead>
+    <tbody>${summaryRows}</tbody>
+  </table>
+</section>
+`;
+
+PHASES.forEach(ph => {
+  const phStyle = PH[ph.id];
+  main.innerHTML += `
+<section class="phase-section phase-anchor" id="phase-${ph.id}">
+  <div class="phase-header">
+    <div class="phase-label" style="color:${phStyle.color}">Phase ${ph.id}</div>
+    <div>
+      <div class="phase-name">${ph.name}</div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:2px">${ph.desc}</div>
+    </div>
+    <div class="phase-range">Step ${ph.range}</div>
+  </div>
+  <div class="stage-grid">
+    ${ph.stages.map(s => stageCard(s, ph.id)).join('')}
+  </div>
+</section>`;
+});
+</script>
+</body>
+</html>
