@@ -429,6 +429,75 @@ body {
   text-align: center; color: #94a3b8;
   font-size: 14px;
 }
+
+/* ── BLOCK SET MODAL ── */
+.bs-modal {
+  position: fixed; inset: 0;
+  background: rgba(15,23,42,0.7);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+.bs-modal.show { display: flex; }
+.bs-modal-inner {
+  background: #fff;
+  border-radius: 20px;
+  padding: 22px 26px;
+  max-width: 720px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+}
+.bs-modal-close {
+  position: absolute; top: 14px; right: 16px;
+  background: #f1f5f9; border: none;
+  border-radius: 50%;
+  width: 30px; height: 30px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #64748b;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.bs-modal-close:hover { background: #e2e8f0; color: var(--ink); }
+.bs-modal-title {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 800;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+.bs-modal-sub {
+  font-size: 11px; color: #64748b;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.bs-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 11px 14px;
+  margin-bottom: 8px;
+  background: #fafbfc;
+}
+.bs-card-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.bs-card-range { font-size: 10px; color: #94a3b8; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; }
+.bs-card-inherits { font-size: 10px; color: #94a3b8; font-style: italic; }
+.bs-card-desc { font-size: 12px; color: #475569; margin-bottom: 7px; line-height: 1.5; }
+.bs-card-blocks {
+  display: flex; flex-wrap: wrap; gap: 4px;
+}
+.bs-block-chip {
+  font-family: monospace; font-size: 10px;
+  background: #fff; color: #475569;
+  padding: 3px 8px; border-radius: 6px;
+  border: 1px solid #cbd5e1;
+}
 </style>
 </head>
 <body>
@@ -440,6 +509,7 @@ body {
       <span class="header-sub">Stage Editor</span>
     </div>
     <div class="header-actions">
+      <button class="hbtn" id="btn-bs">ブロックセット</button>
       <button class="hbtn" id="btn-load">JSON読込</button>
       <input type="file" id="file-input" accept=".json" style="display:none">
       <button class="hbtn" id="btn-save">JSON保存</button>
@@ -472,9 +542,72 @@ body {
   </div>
 </div>
 
+<div class="bs-modal" id="bs-modal">
+  <div class="bs-modal-inner">
+    <button class="bs-modal-close" id="bs-modal-close" aria-label="閉じる">×</button>
+    <div class="bs-modal-title">ブロックセット一覧</div>
+    <div class="bs-modal-sub">各レベルで使えるブロック群。下位のセットは上位を含む（インクルード方式）。</div>
+    <div id="bs-modal-body"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
+/* ══════════════════════════════════════════
+   BLOCK SETS INFO
+══════════════════════════════════════════ */
+const BLOCK_SETS_INFO = [
+  { name:'BASIC', range:'Step 01〜', cls:'badge--block',
+    desc:'毎ターン同じ行動を繰り返す。最小構成。',
+    blocks:['chaser_on_turn','chaser_action_walk','chaser_turn_end'] },
+  { name:'CHECK', range:'Step 04〜', cls:'badge--cond', inherits:'BASIC',
+    desc:'条件分岐と壁判定。「毎ターン判断する」反応型の核心。',
+    blocks:['controls_if','logic_compare','chaser_is_tile','chaser_tile_value','chaser_get_tile','math_number'] },
+  { name:'STATE', range:'Step 11〜', cls:'badge--var', inherits:'CHECK',
+    desc:'変数による状態管理。過去の観測・判断を記憶する。',
+    blocks:['chaser_on_start','chaser_state_*','chaser_last_direction','chaser_direction_value','chaser_get_around','chaser_action_walk_last','chaser_turn_number','math_modulo','logic_operation'] },
+  { name:'LOOK', range:'Step 21〜', cls:'badge--look', inherits:'STATE',
+    desc:'look アクションで 3×3 視野を観測する。観測結果は配列で取得。',
+    blocks:['chaser_action_look','chaser_observation'] },
+  { name:'SEARCH', range:'Step 23〜', cls:'badge--look', inherits:'LOOK',
+    desc:'search アクションで直線9マスを観測。put でブロック設置・敵撃破。',
+    blocks:['chaser_action_search','chaser_action_put'] },
+  { name:'ENEMY', range:'Step 33〜', cls:'badge--enemy', inherits:'SEARCH',
+    desc:'動く敵（random/proximity AI）に対応。ランダム歩行ブロック追加。',
+    blocks:['chaser_action_walk_random'] },
+  { name:'COUNT', range:'Step 43〜', cls:'badge--count', inherits:'ENEMY',
+    desc:'観測結果からアイテム数を集計。複数バリアントの汎用処理に利用。',
+    blocks:['chaser_view_count_tile'] },
+];
+
+function renderBlockSetsModal() {
+  return BLOCK_SETS_INFO.map(bs => `
+    <div class="bs-card">
+      <div class="bs-card-head">
+        <span class="badge ${bs.cls}">${bs.name}</span>
+        <span class="bs-card-range">${bs.range}</span>
+        ${bs.inherits ? `<span class="bs-card-inherits">⊃ ${bs.inherits} のすべて</span>` : ''}
+      </div>
+      <div class="bs-card-desc">${bs.desc}</div>
+      <div class="bs-card-blocks">${bs.blocks.map(b=>`<span class="bs-block-chip">${b}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+document.getElementById('btn-bs').addEventListener('click', () => {
+  document.getElementById('bs-modal-body').innerHTML = renderBlockSetsModal();
+  document.getElementById('bs-modal').classList.add('show');
+});
+document.getElementById('bs-modal-close').addEventListener('click', () => {
+  document.getElementById('bs-modal').classList.remove('show');
+});
+document.getElementById('bs-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'bs-modal') document.getElementById('bs-modal').classList.remove('show');
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') document.getElementById('bs-modal').classList.remove('show');
+});
+
 /* ══════════════════════════════════════════
    INITIAL DATA (stage_review.html から抽出)
 ══════════════════════════════════════════ */
@@ -1448,7 +1581,24 @@ background-size:auto,auto,auto,26px 26px,26px 26px,auto;min-height:100vh;}
 .header-logo{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:0.1em;color:#f8fafc;}
 .header-logo span{color:var(--cool);}
 .header-sub{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(148,163,184,0.8);margin-left:8px;}
-.header-count{margin-left:auto;background:rgba(15,23,42,0.6);border:1px solid rgba(148,163,184,0.3);border-radius:999px;padding:4px 14px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#e2e8f0;}
+.header-count{background:rgba(15,23,42,0.6);border:1px solid rgba(148,163,184,0.3);border-radius:999px;padding:4px 14px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#e2e8f0;}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.header-btn{background:rgba(15,23,42,0.5);border:1px solid rgba(148,163,184,0.3);color:#e2e8f0;border-radius:999px;padding:4px 14px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.15s;font-family:inherit;}
+.header-btn:hover{background:rgba(56,189,248,0.2);border-color:var(--cool);color:#fff;}
+.bs-modal{position:fixed;inset:0;background:rgba(15,23,42,0.7);display:none;align-items:center;justify-content:center;z-index:200;padding:20px;}
+.bs-modal.show{display:flex;}
+.bs-modal-inner{background:#fff;border-radius:20px;padding:22px 26px;max-width:720px;width:100%;max-height:88vh;overflow-y:auto;position:relative;box-shadow:0 24px 60px rgba(0,0,0,0.4);}
+.bs-modal-close{position:absolute;top:14px;right:16px;background:#f1f5f9;border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:18px;color:#64748b;display:flex;align-items:center;justify-content:center;line-height:1;}
+.bs-modal-close:hover{background:#e2e8f0;color:var(--ink);}
+.bs-modal-title{font-family:var(--font-display);font-size:18px;font-weight:800;letter-spacing:0.06em;margin-bottom:4px;}
+.bs-modal-sub{font-size:11px;color:#64748b;margin-bottom:16px;line-height:1.5;}
+.bs-card{border:1px solid var(--border);border-radius:12px;padding:11px 14px;margin-bottom:8px;background:#fafbfc;}
+.bs-card-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.bs-card-range{font-size:10px;color:#94a3b8;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;}
+.bs-card-inherits{font-size:10px;color:#94a3b8;font-style:italic;}
+.bs-card-desc{font-size:12px;color:#475569;margin-bottom:7px;line-height:1.5;}
+.bs-card-blocks{display:flex;flex-wrap:wrap;gap:4px;}
+.bs-block-chip{font-family:monospace;font-size:10px;background:#fff;color:#475569;padding:3px 8px;border-radius:6px;border:1px solid #cbd5e1;}
 .phase-nav{max-width:1400px;margin:0 auto;padding:16px 24px 0;display:flex;gap:8px;flex-wrap:wrap;}
 .phase-tab{padding:6px 16px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.15s;text-decoration:none;border:1px solid transparent;}
 .phase-tab:hover{opacity:0.85;}
@@ -1499,12 +1649,32 @@ background-size:auto,auto,auto,26px 26px,26px 26px,auto;min-height:100vh;}
 <body>
 <header class="site-header"><div class="header-inner">
   <div><span class="header-logo">CH<span>aser</span></span><span class="header-sub">Tutorial Stage Review</span></div>
-  <div class="header-count">${total} Stages · ${phases.length} Groups</div>
+  <div class="header-right">
+    <button class="header-btn" id="btn-bs">ブロックセット</button>
+    <div class="header-count">${total} Stages · ${phases.length} Groups</div>
+  </div>
 </div></header>
+<div class="bs-modal" id="bs-modal">
+  <div class="bs-modal-inner">
+    <button class="bs-modal-close" id="bs-modal-close" aria-label="閉じる">×</button>
+    <div class="bs-modal-title">ブロックセット一覧</div>
+    <div class="bs-modal-sub">各レベルで使えるブロック群。下位のセットは上位を含む（インクルード方式）。</div>
+    <div id="bs-modal-body"></div>
+  </div>
+</div>
 <nav class="phase-nav" aria-label="フェーズ" id="phase-nav"></nav>
 <main class="main" id="main"></main>
 <script>
 const PHASES = ${dataJSON};
+const BLOCK_SETS_INFO = [
+  {name:'BASIC',range:'Step 01〜',cls:'badge--block',desc:'毎ターン同じ行動を繰り返す。最小構成。',blocks:['chaser_on_turn','chaser_action_walk','chaser_turn_end']},
+  {name:'CHECK',range:'Step 04〜',cls:'badge--cond',inherits:'BASIC',desc:'条件分岐と壁判定。「毎ターン判断する」反応型の核心。',blocks:['controls_if','logic_compare','chaser_is_tile','chaser_tile_value','chaser_get_tile','math_number']},
+  {name:'STATE',range:'Step 11〜',cls:'badge--var',inherits:'CHECK',desc:'変数による状態管理。過去の観測・判断を記憶する。',blocks:['chaser_on_start','chaser_state_*','chaser_last_direction','chaser_direction_value','chaser_get_around','chaser_action_walk_last','chaser_turn_number','math_modulo','logic_operation']},
+  {name:'LOOK',range:'Step 21〜',cls:'badge--look',inherits:'STATE',desc:'look アクションで 3×3 視野を観測する。観測結果は配列で取得。',blocks:['chaser_action_look','chaser_observation']},
+  {name:'SEARCH',range:'Step 23〜',cls:'badge--look',inherits:'LOOK',desc:'search アクションで直線9マスを観測。put でブロック設置・敵撃破。',blocks:['chaser_action_search','chaser_action_put']},
+  {name:'ENEMY',range:'Step 33〜',cls:'badge--enemy',inherits:'SEARCH',desc:'動く敵（random/proximity AI）に対応。ランダム歩行ブロック追加。',blocks:['chaser_action_walk_random']},
+  {name:'COUNT',range:'Step 43〜',cls:'badge--count',inherits:'ENEMY',desc:'観測結果からアイテム数を集計。複数バリアントの汎用処理に利用。',blocks:['chaser_view_count_tile']},
+];
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function renderMap(rows){
   const map={'#':'wall','.':'floor','I':'item','C':'cool','H':'hot','G':'goal',' ':'floor'};
@@ -1529,6 +1699,11 @@ nav.innerHTML=PHASES.map(p=>'<a class="phase-tab" style="background:'+p.bg+';col
 PHASES.forEach(ph=>{
   main.innerHTML+='<section class="phase-section phase-anchor" id="phase-'+ph.id+'"><div class="phase-header"><div class="phase-label" style="color:'+ph.color+'">Phase '+ph.id+'</div><div><div class="phase-name">'+esc(ph.name)+'</div><div style="font-size:11px;color:#94a3b8;margin-top:2px">'+esc(ph.desc)+'</div></div><div class="phase-range">Step '+esc(ph.range)+'</div></div><div class="stage-grid">'+ph.stages.map(s=>stageCard(s,ph.color)).join('')+'</div></section>';
 });
+function renderBlockSetsModal(){return BLOCK_SETS_INFO.map(bs=>'<div class="bs-card"><div class="bs-card-head"><span class="badge '+bs.cls+'">'+bs.name+'</span><span class="bs-card-range">'+bs.range+'</span>'+(bs.inherits?'<span class="bs-card-inherits">⊃ '+bs.inherits+' のすべて</span>':'')+'</div><div class="bs-card-desc">'+bs.desc+'</div><div class="bs-card-blocks">'+bs.blocks.map(b=>'<span class="bs-block-chip">'+b+'</span>').join('')+'</div></div>').join('');}
+document.getElementById('btn-bs').addEventListener('click',()=>{document.getElementById('bs-modal-body').innerHTML=renderBlockSetsModal();document.getElementById('bs-modal').classList.add('show');});
+document.getElementById('bs-modal-close').addEventListener('click',()=>{document.getElementById('bs-modal').classList.remove('show');});
+document.getElementById('bs-modal').addEventListener('click',e=>{if(e.target.id==='bs-modal')document.getElementById('bs-modal').classList.remove('show');});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('bs-modal').classList.remove('show');});
 </`+`script>
 </body></html>`;
 }
