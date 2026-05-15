@@ -1105,6 +1105,42 @@ function renumberAll() {
   });
 }
 
+function copyStage() {
+  const s = curStage();
+  if (!s) return;
+  const ph = curPhase();
+  const idx = state.selStage;
+
+  const copy = deepClone(s);
+
+  // 既存slug一覧を集めて重複しない slug を生成
+  const m = (copy.id || '').match(/^step-\d+-(.+)$/);
+  const baseSlug = m ? m[1] : (copy.id || 'new');
+  const existingSlugs = new Set(
+    state.phases.flatMap(p => p.stages).map(st => {
+      const sm = (st.id || '').match(/^step-\d+-(.+)$/);
+      return sm ? sm[1] : (st.id || '');
+    })
+  );
+  let slug = baseSlug + '-copy';
+  let n = 2;
+  while (existingSlugs.has(slug)) {
+    slug = baseSlug + '-copy-' + n;
+    n++;
+  }
+  copy.id = `step-00-${slug}`;
+  copy.title = (copy.title || '無題') + '（コピー）';
+
+  // 現在の直後に挿入
+  ph.stages.splice(idx + 1, 0, copy);
+  state.selStage = idx + 1;
+
+  renumberAll();
+  saveState();
+  renderAll();
+  toast('ステージを複製しました', 'ok');
+}
+
 function addStage(phId) {
   const ph = state.phases.find(p => p.id === phId);
   if (!ph) return;
@@ -1187,6 +1223,7 @@ function renderEditForm(s) {
     <div class="section-title">マップ
       <div class="section-title-actions">
         <button class="mini-btn" id="btn-add-map">＋ バリアント追加</button>
+        <button class="mini-btn" id="btn-copy-stage">⎘ ステージ複製</button>
         <button class="mini-btn danger" id="btn-del-stage">ステージ削除</button>
       </div>
     </div>`;
@@ -1309,6 +1346,9 @@ function wireEditForm(s) {
       saveState(); renderEditor();
     });
   });
+
+  const copyBtn = ed.querySelector('#btn-copy-stage');
+  if (copyBtn) copyBtn.addEventListener('click', copyStage);
 
   const addMap = ed.querySelector('#btn-add-map');
   if (addMap) addMap.addEventListener('click', () => {
