@@ -136,6 +136,20 @@ body {
   font-size: 10px;
 }
 .sb-stage-title { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-stage-actions {
+  display: flex; gap: 1px; opacity: 0.4; transition: opacity 0.12s; flex-shrink: 0;
+}
+.sb-stage:hover .sb-stage-actions, .sb-stage.active .sb-stage-actions { opacity: 1; }
+.sb-stage-btn {
+  width: 18px; height: 18px;
+  border: none; background: transparent;
+  font-size: 9px; line-height: 1; cursor: pointer;
+  border-radius: 4px;
+  color: inherit;
+  padding: 0;
+}
+.sb-stage-btn:hover { background: rgba(15,23,42,0.12); }
+.sb-stage.active .sb-stage-btn:hover { background: rgba(255,255,255,0.18); }
 .sb-add {
   margin-top: 6px;
   font-size: 10px; color: #94a3b8;
@@ -192,6 +206,19 @@ body {
 }
 .field input.mono, .field textarea.mono { font-family: monospace; }
 .field textarea { resize: vertical; min-height: 50px; }
+.field-display {
+  padding: 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px; font-family: var(--font-display); font-weight: 800;
+  background: #f8fafc;
+  color: var(--ink);
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+.field-hint {
+  font-size: 10px; color: #94a3b8; margin-top: 3px;
+}
 
 .section-title {
   font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
@@ -862,6 +889,10 @@ function renderSidebar() {
       html += `<div class="sb-stage ${active}" data-act="sel" data-ph="${ph.id}" data-idx="${i}">
         <div class="sb-stage-no">${String(s.no).padStart(2,'0')}</div>
         <div class="sb-stage-title">${esc(s.title)}</div>
+        <div class="sb-stage-actions">
+          <button class="sb-stage-btn" data-act="move-up" data-ph="${ph.id}" data-idx="${i}" title="上へ">▲</button>
+          <button class="sb-stage-btn" data-act="move-down" data-ph="${ph.id}" data-idx="${i}" title="下へ">▼</button>
+        </div>
       </div>`;
     });
     html += `<button class="sb-add" data-act="add-stage" data-ph="${ph.id}">＋ ステージ追加</button>`;
@@ -880,15 +911,73 @@ function handleSidebarClick(d, ev) {
   else if (d.act === 'ph-edit') { openPhaseDialog(d.ph); }
   else if (d.act === 'add-stage') { addStage(d.ph); }
   else if (d.act === 'add-phase') { openPhaseDialog(null); }
+  else if (d.act === 'move-up') { moveStage(d.ph, parseInt(d.idx), -1); }
+  else if (d.act === 'move-down') { moveStage(d.ph, parseInt(d.idx), 1); }
+}
+
+function moveStage(phId, idx, dir) {
+  const phIdx = state.phases.findIndex(p => p.id === phId);
+  if (phIdx < 0) return;
+  const ph = state.phases[phIdx];
+  if (idx < 0 || idx >= ph.stages.length) return;
+
+  const selRef = curStage();
+  const stage = ph.stages[idx];
+
+  if (dir === -1) {
+    if (idx > 0) {
+      ph.stages.splice(idx, 1);
+      ph.stages.splice(idx - 1, 0, stage);
+    } else if (phIdx > 0) {
+      ph.stages.splice(idx, 1);
+      state.phases[phIdx - 1].stages.push(stage);
+    } else return;
+  } else if (dir === 1) {
+    if (idx < ph.stages.length - 1) {
+      ph.stages.splice(idx, 1);
+      ph.stages.splice(idx + 1, 0, stage);
+    } else if (phIdx < state.phases.length - 1) {
+      ph.stages.splice(idx, 1);
+      state.phases[phIdx + 1].stages.unshift(stage);
+    } else return;
+  }
+
+  if (selRef) {
+    for (const ph2 of state.phases) {
+      const i = ph2.stages.indexOf(selRef);
+      if (i >= 0) {
+        state.selPhase = ph2.id;
+        state.selStage = i;
+        break;
+      }
+    }
+  }
+
+  renumberAll();
+  saveState();
+  renderAll();
+}
+
+function renumberAll() {
+  let counter = 1;
+  state.phases.forEach(ph => {
+    ph.stages.forEach(s => {
+      s.no = counter;
+      const m = s.id && s.id.match(/^step-\d+-(.+)$/);
+      if (m) {
+        s.id = `step-${String(counter).padStart(2, '0')}-${m[1]}`;
+      }
+      counter++;
+    });
+  });
 }
 
 function addStage(phId) {
   const ph = state.phases.find(p => p.id === phId);
   if (!ph) return;
-  const maxNo = state.phases.flatMap(p=>p.stages).reduce((a,s)=>Math.max(a,s.no),0);
   const newStage = {
-    no: maxNo+1,
-    id: `step-${String(maxNo+1).padStart(2,'0')}-new`,
+    no: 0,
+    id: 'step-00-new',
     title: '新規ステージ',
     blockSet: 'BASIC',
     variants: 1,
@@ -899,6 +988,7 @@ function addStage(phId) {
   };
   ph.stages.push(newStage);
   state.selPhase = phId; state.selStage = ph.stages.length - 1;
+  renumberAll();
   saveState(); renderAll();
 }
 
@@ -944,8 +1034,8 @@ function renderEditForm(s) {
   const ph = curPhase();
   let html = `
     <div class="field-row">
-      <div class="field" style="max-width:80px"><label>番号</label><input type="number" id="f-no" value="${s.no}"></div>
-      <div class="field"><label>ID</label><input type="text" class="mono" id="f-id" value="${esc(s.id)}"></div>
+      <div class="field" style="max-width:80px"><label>番号（自動）</label><div class="field-display">${String(s.no).padStart(2,'0')}</div></div>
+      <div class="field"><label>ID</label><input type="text" class="mono" id="f-id" value="${esc(s.id)}"><div class="field-hint">step-NN- プレフィックスは並び順から自動更新</div></div>
       <div class="field"><label>所属グループ</label><select id="f-ph">${state.phases.map(p=>`<option value="${p.id}" ${p.id===ph.id?'selected':''}>${esc(p.id)} · ${esc(p.name)}</option>`).join('')}</select></div>
     </div>
     <div class="field"><label>タイトル</label><input type="text" id="f-title" value="${esc(s.title)}"></div>
@@ -1008,7 +1098,6 @@ function wireEditForm(s) {
 
   // metadata fields
   const fieldMap = {
-    'f-no': v => { s.no = parseInt(v)||s.no; renderSidebar(); },
     'f-id': v => { s.id = v; },
     'f-title': v => { s.title = v; renderSidebar(); },
     'f-blockset': v => { s.blockSet = v; },
@@ -1026,6 +1115,7 @@ function wireEditForm(s) {
       toPh.stages.push(s);
       state.selPhase = v;
       state.selStage = toPh.stages.length - 1;
+      renumberAll();
       saveState(); renderAll();
     },
   };
@@ -1103,7 +1193,19 @@ function wireEditForm(s) {
     if (!confirm(`ステージ「${s.title}」を削除しますか？`)) return;
     const ph = curPhase();
     ph.stages.splice(state.selStage, 1);
-    state.selStage = Math.max(0, state.selStage - 1);
+    state.selStage = Math.max(0, Math.min(state.selStage, ph.stages.length - 1));
+    if (ph.stages.length === 0) {
+      // フェーズが空になった場合は前のフェーズの末尾へ
+      const phIdx = state.phases.indexOf(ph);
+      for (let i = phIdx - 1; i >= 0; i--) {
+        if (state.phases[i].stages.length > 0) {
+          state.selPhase = state.phases[i].id;
+          state.selStage = state.phases[i].stages.length - 1;
+          break;
+        }
+      }
+    }
+    renumberAll();
     saveState(); renderAll();
   });
 }
@@ -1258,6 +1360,7 @@ document.getElementById('phase-dialog-ok').addEventListener('click', () => {
    FILE I/O
 ══════════════════════════════════════════ */
 document.getElementById('btn-save').addEventListener('click', () => {
+  renumberAll();
   const data = JSON.stringify({version:1, phases:state.phases}, null, 2);
   const blob = new Blob([data], {type:'application/json'});
   const url = URL.createObjectURL(blob);
@@ -1283,6 +1386,7 @@ document.getElementById('file-input').addEventListener('change', ev => {
       state.phases = obj.phases;
       state.selPhase = obj.phases[0]?.id || 'A';
       state.selStage = 0;
+      renumberAll();
       saveState(); renderAll();
       toast('JSON読込しました', 'ok');
     } catch (e) { toast('読込失敗: '+e.message, 'error'); }
@@ -1296,11 +1400,13 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   localStorage.removeItem(STORAGE_KEY);
   state.phases = deepClone(INITIAL_PHASES);
   state.selPhase = 'A'; state.selStage = 0;
+  renumberAll();
   saveState(); renderAll();
   toast('リセットしました', 'ok');
 });
 
 document.getElementById('btn-export-html').addEventListener('click', () => {
+  renumberAll();
   const html = buildReviewHTML(state.phases);
   const blob = new Blob([html], {type:'text/html;charset=utf-8'});
   const url = URL.createObjectURL(blob);
@@ -1443,6 +1549,7 @@ function toast(msg, type='') {
    INIT
 ══════════════════════════════════════════ */
 loadState();
+renumberAll();
 renderAll();
 </script>
 </body>
