@@ -8,6 +8,42 @@
   const TILE_OPTIONS = [['床 (0)','0'],['プレイヤー (1)','1'],['ブロック (2)','2'],['アイテム (3)','3']];
   const AROUND_INDEX = {Up:1,Down:7,Left:3,Right:5};
 
+  const makeBlock = (type) => ({kind:'block',type});
+  const CHASER_ACTIONS = ['chaser_on_turn','chaser_action_walk','chaser_action_put','chaser_action_walk_last','chaser_action_walk_random','chaser_action_look','chaser_action_search','chaser_action_look_store','chaser_action_search_store','chaser_turn_end'];
+  const CHASER_VIEW = ['chaser_get_tile','chaser_is_tile','chaser_get_around','chaser_view_get_around','chaser_view_has_tile','chaser_view_count_tile','chaser_discard_value','chaser_tile_value'];
+  const CHASER_STATE = ['chaser_state_create','chaser_state_set','chaser_state_get','chaser_state_change','chaser_turn_number','chaser_last_direction','chaser_direction_value'];
+  const STD_LOGIC = ['controls_if','logic_compare','logic_operation','logic_boolean','logic_negate'];
+  const STD_MATH = ['math_number','math_arithmetic','math_modulo','math_number_property','math_random_int','math_random_float'];
+
+  window.fullToolbox = function fullToolbox() {
+    return {kind:'categoryToolbox',contents:[
+      {kind:'category',name:'スタート・行動',colour:COLOR_ON_TURN,contents:CHASER_ACTIONS.map(makeBlock)},
+      {kind:'category',name:'まわりを見る',colour:COLOR_VIEW,contents:CHASER_VIEW.map(makeBlock)},
+      {kind:'category',name:'変数',colour:COLOR_STATE,contents:[{kind:'button',text:'変数を作成',callbackkey:'CREATE_VAR'},...CHASER_STATE.map(makeBlock)]},
+      {kind:'sep'},
+      {kind:'category',name:'条件',colour:'210',contents:STD_LOGIC.map(makeBlock)},
+      {kind:'category',name:'数',colour:'230',contents:STD_MATH.map(makeBlock)}
+    ]};
+  };
+
+  window.filterToolbox = function filterToolbox(tb, allowed) {
+    const filterItems = (items) => items.flatMap(item => {
+      if (item.kind === 'category') {
+        const children = filterItems(item.contents || []);
+        return children.length ? [{...item,contents:children}] : [];
+      }
+      if (item.kind === 'block') return allowed.has(item.type) ? [item] : [];
+      if (item.kind === 'button') return [...allowed].some(x => x.startsWith('chaser_state_')) ? [item] : [];
+      return [item];
+    });
+    const contents = filterItems(tb.contents).filter((item,i,arr) => item.kind !== 'sep' || (i > 0 && i < arr.length - 1 && arr[i-1].kind !== 'sep' && arr[i+1].kind !== 'sep'));
+    return {...tb,contents};
+  };
+
+  window.toolbox = function toolbox(set) {
+    return window.filterToolbox(window.fullToolbox(), new Set(window.BLOCK_SET_ALLOWED?.[set] || BLOCK_SET_ALLOWED?.[set] || []));
+  };
+
   window.blockJson = function blockJson() {
     return [
       {type:'chaser_on_start',message0:'最初に1回だけ',message1:'やること %1',args1:[{type:'input_statement',name:'DO'}],colour:COLOR_ON_TURN,tooltip:'最初の1回だけ動くブロックです。',hat:'cap'},
@@ -131,9 +167,7 @@
     }
   };
 
-  window.delta = function delta(d) {
-    return {Up:{x:0,y:-1},Down:{x:0,y:1},Left:{x:-1,y:0},Right:{x:1,y:0}}[d] || {x:0,y:0};
-  };
+  window.delta = d => ({Up:{x:0,y:-1},Down:{x:0,y:1},Left:{x:-1,y:0},Right:{x:1,y:0}}[d] || {x:0,y:0});
 
   window.tileAt = function tileAt(p,x,y) {
     if (y < 0 || y >= p.tiles.length || x < 0 || x >= p.tiles[y].length) return 2;
@@ -150,7 +184,7 @@
     return arr;
   };
 
-  window.look = function look() { return window.around(); };
+  window.look = () => window.around();
   window.search = function search(dir) {
     const p = window.st.play;
     const d = window.delta(dir);
