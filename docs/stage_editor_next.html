@@ -1,275 +1,88 @@
-<!DOCTYPE html>
-<html lang="ja">
+<!doctype html>
+<html lang='ja'>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CHaser ステージエディタ NEXT</title>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>CHaser ステージエディタ Blockly</title>
+<script src='https://unpkg.com/blockly/blockly.min.js'></script>
+<script src='https://unpkg.com/blockly/javascript_compressed.js'></script>
 <style>
-:root{
-  --cool:#38bdf8;--hot:#fb7185;--ink:#0f172a;--muted:#64748b;--soft:#f1f5f9;--panel:#ffffff;--border:#cbd5e1;
-  --ok:#16a34a;--ng:#dc2626;--warn:#d97706;
-}
-*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:#f8fafc;background-image:radial-gradient(600px 300px at 0 0,rgba(56,189,248,.18),transparent),radial-gradient(520px 260px at 100% 0,rgba(251,113,133,.16),transparent)}
-button,input,select,textarea{font:inherit} button{cursor:pointer}
-.header{position:sticky;top:0;z-index:20;background:#0f172a;color:#f8fafc;border-bottom:1px solid rgba(148,163,184,.25);box-shadow:0 6px 24px rgba(15,23,42,.22)}
-.header-inner{max-width:1500px;margin:auto;padding:10px 18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.brand{font-weight:900;letter-spacing:.08em}.brand span{color:var(--cool)}.sub{font-size:11px;color:#94a3b8;letter-spacing:.16em;text-transform:uppercase}.actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #334155;background:#1e293b;color:#e2e8f0;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700}.btn:hover{border-color:var(--cool);color:white}.btn.primary{background:var(--cool);border-color:var(--cool);color:#082f49}.btn.danger{border-color:#fca5a5;color:#fecdd3}.btn.small{border-radius:8px;padding:5px 8px;font-size:11px}.btn.ok{background:#dcfce7;color:#166534;border-color:#86efac}.btn.warn{background:#fef3c7;color:#92400e;border-color:#fcd34d}
-.app{max-width:1500px;margin:auto;padding:16px 18px;display:grid;grid-template-columns:300px 1fr;gap:16px}.sidebar,.main{background:rgba(255,255,255,.95);border:1px solid var(--border);border-radius:18px;box-shadow:0 8px 24px rgba(15,23,42,.06)}.sidebar{padding:12px;max-height:calc(100vh - 84px);overflow:auto;position:sticky;top:70px}.main{padding:18px}.hint{font-size:12px;color:var(--muted);line-height:1.6}.sb-title{font-size:11px;color:#94a3b8;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin:4px 0 10px}.phase{margin-bottom:12px}.phase-head{font-size:12px;font-weight:800;padding:7px 8px;border-radius:10px;background:#f8fafc;display:flex;gap:7px;align-items:center}.pip{width:10px;height:10px;border-radius:50%;background:#94a3b8}.stage{display:flex;gap:7px;align-items:center;padding:5px 8px;border-radius:9px;font-size:12px;color:#334155;cursor:pointer}.stage:hover{background:#f1f5f9}.stage.active{background:#0f172a;color:#f8fafc}.stage-no{font-weight:900;font-variant-numeric:tabular-nums;min-width:26px}.stage-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap}.tab{padding:9px 14px;border-bottom:3px solid transparent;color:#64748b;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}.tab.active{color:#0284c7;border-color:var(--cool)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{margin-bottom:13px}.field label{display:block;font-size:11px;color:#64748b;font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--border);border-radius:10px;background:white;padding:8px 10px;font-size:13px}.field textarea{min-height:90px;resize:vertical}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.section{font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid var(--border);padding-bottom:6px;margin:20px 0 12px}.map-board{display:inline-grid;gap:2px;background:#cbd5e1;border:1px solid #94a3b8;border-radius:12px;padding:5px;margin:8px 0}.cell{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;font-family:ui-monospace,monospace}.wall{background:#1e293b;color:white}.floor{background:#f8fafc;color:#cbd5e1}.item{background:#fbbf24;color:#78350f}.cool{background:var(--cool);color:#075985}.hot{background:var(--hot);color:#7f1d1d}.goal{background:#34d399;color:#064e3b}.panel{border:1px solid var(--border);border-radius:16px;background:#fafafa;padding:14px}.play-layout{display:grid;grid-template-columns:minmax(280px,420px) 1fr;gap:16px}.status{font-weight:900;border-radius:12px;padding:8px 10px;background:#f1f5f9}.status.success{background:#dcfce7;color:#166534}.status.failed{background:#fee2e2;color:#991b1b}.status.running{background:#e0f2fe;color:#075985}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.log{background:#0f172a;color:#e2e8f0;border-radius:14px;padding:12px;min-height:160px;max-height:280px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;line-height:1.55}.image-preview{max-width:100%;border:1px solid var(--border);border-radius:14px;background:white;padding:8px}.image-preview img{max-width:100%;display:block;border-radius:8px}.empty{padding:50px 20px;text-align:center;color:#94a3b8}.toast{position:fixed;right:18px;bottom:18px;background:#0f172a;color:white;padding:10px 15px;border-radius:999px;font-size:13px;font-weight:800;opacity:0;transform:translateY(8px);transition:.2s;z-index:50}.toast.show{opacity:1;transform:translateY(0)}.toast.error{background:#991b1b}.toast.ok{background:#166534}@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{position:static;max-height:none}.grid2,.play-layout{grid-template-columns:1fr}}
+body{margin:0;font-family:system-ui,sans-serif;background:#f8fafc;color:#0f172a}button,input,select,textarea{font:inherit}.head{position:sticky;top:0;z-index:5;background:#0f172a;color:white;padding:10px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.head b{letter-spacing:.08em}.head span{color:#38bdf8}.head .right{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid #334155;background:#1e293b;color:#e2e8f0;border-radius:999px;padding:6px 12px;font-weight:700;font-size:12px}.btn.primary{background:#38bdf8;color:#082f49;border-color:#38bdf8}.btn.warn{background:#fef3c7;color:#92400e;border-color:#fcd34d}.btn.danger{border-color:#fca5a5;color:#fecdd3}.wrap{display:grid;grid-template-columns:300px 1fr;gap:14px;padding:14px;max-width:1500px;margin:auto}.side,.main{background:white;border:1px solid #cbd5e1;border-radius:16px;padding:14px}.side{max-height:calc(100vh - 78px);overflow:auto;position:sticky;top:64px}.phase{margin:0 0 12px}.ph{font-size:12px;font-weight:800;padding:6px 8px;background:#f1f5f9;border-radius:10px}.st{display:flex;gap:6px;padding:5px 8px;border-radius:8px;font-size:12px;cursor:pointer}.st:hover{background:#f1f5f9}.st.active{background:#0f172a;color:white}.tabs{display:flex;gap:4px;border-bottom:1px solid #cbd5e1;margin-bottom:14px;flex-wrap:wrap}.tab{padding:8px 12px;font-weight:800;font-size:12px;color:#64748b;border-bottom:3px solid transparent;cursor:pointer}.tab.active{color:#0284c7;border-color:#38bdf8}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin:0 0 12px}.field label{display:block;font-size:11px;font-weight:800;color:#64748b;margin-bottom:4px}.field input,.field select,.field textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:8px}.field textarea{min-height:80px}.section{font-size:12px;font-weight:900;border-bottom:1px solid #cbd5e1;padding-bottom:6px;margin:18px 0 10px}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}.hint{font-size:12px;color:#64748b;line-height:1.6}.map{display:inline-grid;gap:2px;background:#cbd5e1;border:1px solid #94a3b8;border-radius:12px;padding:5px;margin:8px 0}.cell{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-weight:900;font-family:ui-monospace,monospace;user-select:none}.edit .cell{cursor:pointer}.edit .cell:hover{outline:2px solid #0f172a}.wall{background:#1e293b;color:white}.floor{background:#f8fafc}.item{background:#fbbf24;color:#78350f}.cool{background:#38bdf8;color:#075985}.hot{background:#fb7185;color:#7f1d1d}.goal{background:#34d399;color:#064e3b}.pal{width:30px;height:30px;border-radius:7px;border:2px solid transparent;font-weight:900}.pal.active{border-color:#0f172a;box-shadow:0 0 0 2px rgba(56,189,248,.45)}.play{display:grid;grid-template-columns:minmax(280px,430px) 1fr;gap:14px}.panel{border:1px solid #cbd5e1;border-radius:14px;background:#fafafa;padding:12px}.blockly{height:560px;border:1px solid #cbd5e1;border-radius:12px;overflow:hidden}.status{font-weight:800;border-radius:10px;padding:8px;margin:8px 0;background:#e0f2fe;color:#075985}.status.success{background:#dcfce7;color:#166534}.status.failed{background:#fee2e2;color:#991b1b}.controls{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.log{background:#0f172a;color:#e2e8f0;border-radius:12px;padding:10px;min-height:120px;max-height:220px;overflow:auto;font-size:12px}.preview-img{max-width:100%;border:1px solid #cbd5e1;border-radius:12px;padding:8px}.preview-img img{max-width:100%;display:block}.empty{padding:40px;text-align:center;color:#94a3b8}.toast{position:fixed;right:16px;bottom:16px;background:#0f172a;color:white;padding:10px 14px;border-radius:999px;opacity:0;transform:translateY(8px);transition:.2s}.toast.show{opacity:1;transform:translateY(0)}@media(max-width:900px){.wrap,.grid,.play{grid-template-columns:1fr}.side{position:static;max-height:none}}
 </style>
 </head>
 <body>
-<header class="header"><div class="header-inner">
-  <div><span class="brand">CH<span>aser</span></span> <span class="sub">Stage Editor NEXT</span></div>
-  <div class="actions">
-    <button class="btn" id="btn-load-default">既定JSON読込</button>
-    <button class="btn" id="btn-load-json">JSON読込</button><input type="file" id="json-input" accept=".json,application/json" hidden>
-    <button class="btn" id="btn-save-json">JSON保存</button>
-    <button class="btn primary" id="btn-export-review">レビューHTML書き出し</button>
-    <button class="btn danger" id="btn-clear-local">ローカル破棄</button>
-  </div>
-</div></header>
-<div class="app">
-  <aside class="sidebar" id="sidebar"></aside>
-  <main class="main" id="main"></main>
-</div>
-<div class="toast" id="toast"></div>
+<header class='head'><b>CH<span>aser</span></b><small>Stage Editor Blockly</small><div class='right'><button class='btn' id='load-default'>既定JSON読込</button><button class='btn' id='load-json'>JSON読込</button><input type='file' id='json-file' accept='.json,application/json' hidden><button class='btn' id='save-json'>JSON保存</button><button class='btn primary' id='export-review'>レビューHTML書き出し</button><button class='btn danger' id='clear-local'>ローカル破棄</button></div></header>
+<div class='wrap'><aside class='side' id='side'></aside><main class='main' id='main'></main></div><div class='toast' id='toast'></div>
 <script>
-const STORAGE_KEY = 'chaiserStageEditorNext';
-const DEFAULT_JSON_URL = '../json/chaiser-stages-2026-05-15%20(8).json';
-const TABS = [
-  ['edit','編集'],
-  ['play','テストプレイ'],
-  ['solution','模範解答'],
-  ['preview','プレビュー'],
-];
-const BLOCK_SETS = ['BASIC','CHECK','STATE','LOOK','SEARCH','ENEMY','COUNT'];
-const CELL_CLASS = {'#':'wall','.':'floor',' ':'floor','I':'item','C':'cool','H':'hot','G':'goal'};
-let state = { phases: [], selPhase: '', selStage: 0, tab: 'edit', mapIndex: 0, play: null };
-
-function escapeHtml(value){return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function deepClone(value){return JSON.parse(JSON.stringify(value));}
-function toast(message,type=''){const el=document.getElementById('toast');el.textContent=message;el.className='toast show '+type;setTimeout(()=>{el.className='toast '+type},2200);}
-function getAllStages(){return state.phases.flatMap(p => p.stages.map((s,i)=>({phase:p,stage:s,index:i})));}
-function currentPhase(){return state.phases.find(p => p.id === state.selPhase) ?? state.phases[0] ?? null;}
-function currentStage(){const p=currentPhase();return p ? p.stages[state.selStage] ?? p.stages[0] ?? null : null;}
-function saveLocal(){localStorage.setItem(STORAGE_KEY, JSON.stringify({version:2, phases:state.phases}));}
-function loadLocal(){try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;const obj=JSON.parse(raw);loadDataObject(obj);return true;}catch(e){console.warn(e);return false;}}
-
-function normalizeDataObject(obj){
-  const phases = Array.isArray(obj?.phases) ? obj.phases : [];
-  phases.forEach((phase, phaseIndex) => {
-    phase.id ||= String.fromCharCode(65 + phaseIndex);
-    phase.name ||= '無題グループ';
-    phase.color ||= '#64748b';
-    phase.bg ||= '#f1f5f9';
-    phase.stages ||= [];
-    phase.stages.forEach((stage, stageIndex) => normalizeStage(stage, stageIndex + 1));
-  });
-  return phases;
+const STORAGE='chaiserStageBlockly';
+const DEFAULT_JSON='../json/chaiser-stages-2026-05-15%20(8).json';
+const TABS=[['edit','編集'],['play','Blockly実行'],['solution','模範解答'],['preview','プレビュー']];
+const SETS=['BASIC','CHECK','STATE','LOOK','SEARCH','ENEMY','COUNT'];
+const PAL=['#','.','I','C','H','G'];
+const CLS={'#':'wall','.':'floor',' ':'floor',I:'item',C:'cool',H:'hot',G:'goal'};
+let st={phases:[],phase:'',idx:0,tab:'edit',map:0,paint:'#',play:null,ws:null,timer:null};
+let blocksReady=false;
+const escMap={'&':'&amp;','<':'&lt;','>':'&gt;'};
+function esc(v){return String(v??'').replace(/[&<>']/g,c=>c===String.fromCharCode(39)?'&#39;':escMap[c]);}
+function msg(t){const e=document.getElementById('toast');e.textContent=t;e.className='toast show';setTimeout(()=>e.className='toast',1800);}
+function saveLocal(){localStorage.setItem(STORAGE,JSON.stringify({version:2,phases:st.phases}));}
+function loadLocal(){try{const raw=localStorage.getItem(STORAGE);if(!raw)return false;loadObj(JSON.parse(raw));return true}catch(e){return false}}
+function curPhase(){return st.phases.find(p=>p.id===st.phase)||st.phases[0]||null}
+function curStage(){const p=curPhase();return p?p.stages[st.idx]||p.stages[0]||null:null}
+function normalize(obj){const ps=Array.isArray(obj?.phases)?obj.phases:[];ps.forEach((p,pi)=>{p.id||=String.fromCharCode(65+pi);p.name||='無題グループ';p.color||='#64748b';p.stages||=[];p.stages.forEach((s,i)=>normStage(s,i+1))});return ps}
+function normStage(s,no){s.no=Number(s.no||no);s.id||=`step-${String(s.no).padStart(2,'0')}-new`;s.title||='無題ステージ';s.blockSet||='BASIC';s.cond||='goal';s.goal||='';s.rule||='';s.maps=normMaps(s.maps);s.variants=s.maps.length;s.play||={};s.play.validation||=infer(s.cond);s.play.savedBlocklyXml||='';s.solution||={};s.solution.imageDataUrl||='';s.solution.imageName||='';s.solution.imageMimeType||='';s.solution.note||='';s.solution.updatedAt||=''}
+function normMaps(ms){if(!Array.isArray(ms)||!ms.length)return[{label:'マップ A',rows:['#####','#C.G#','#####'],note:''}];return ms.map((m,i)=>({label:m.label||`マップ ${String.fromCharCode(65+i)}`,rows:Array.isArray(m.rows)&&m.rows.length?m.rows:['#####','#C.G#','#####'],note:m.note||''}))}
+function num(t){const m=String(t||'').replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xfee0)).match(/\d+/);return m?Number(m[0]):undefined}
+function infer(cond){const c=String(cond||'').toLowerCase(),n=num(c);if(c.includes('survive'))return{kind:'survive',minTurns:n||10,maxActions:n};if(c.includes('put'))return{kind:'winByPut',maxActions:n};if(c.includes('items')&&!c.includes('goal'))return{kind:'collectItems',minItems:n||1,maxActions:n};return{kind:'reachGoal',maxActions:n,requireAllItems:c.includes('items')||c.includes('goal+items')}}
+function loadObj(obj){disposeBlockly();st.phases=normalize(obj);st.phase=st.phases[0]?.id||'';st.idx=0;st.map=0;st.play=null;saveLocal();render()}
+async function loadDefault(){try{const r=await fetch(DEFAULT_JSON,{cache:'no-store'});if(!r.ok)throw Error(r.status);loadObj(await r.json());msg('既定JSONを読み込みました')}catch(e){msg('既定JSON読込に失敗しました')}}
+function render(){renderSide();renderMain()}
+function renderSide(){const side=document.getElementById('side');if(!st.phases.length){side.innerHTML='<div class=empty>JSONを読み込んでください</div>';return}let h='<div class=section>グループ／ステージ</div>';st.phases.forEach(p=>{h+=`<div class=phase><div class=ph>${esc(p.id)} · ${esc(p.name)}</div>`;p.stages.forEach((s,i)=>{h+=`<div class='st ${p.id===st.phase&&i===st.idx?'active':''}' data-p='${esc(p.id)}' data-i='${i}'><b>${String(s.no).padStart(2,'0')}</b><span>${esc(s.title)}</span></div>`});h+='</div>'});side.innerHTML=h;side.querySelectorAll('.st').forEach(e=>e.onclick=()=>{disposeBlockly();st.phase=e.dataset.p;st.idx=Number(e.dataset.i);st.map=0;st.play=null;render()})}
+function renderMain(){const s=curStage(),main=document.getElementById('main');if(!s){main.innerHTML='<div class=empty>JSONを読み込んでください</div>';return}main.innerHTML=`<div class=tabs>${TABS.map(([id,l])=>`<div class='tab ${st.tab===id?'active':''}' data-tab='${id}'>${l}</div>`).join('')}</div><div id=body></div>`;main.querySelectorAll('.tab').forEach(e=>e.onclick=()=>{if(st.tab==='play')saveXml();disposeBlockly();st.tab=e.dataset.tab;renderMain()});if(st.tab==='edit')renderEdit(s);if(st.tab==='play')renderPlay(s);if(st.tab==='solution')renderSolution(s);if(st.tab==='preview')renderPreview(s)}
+function bind(id,fn){const e=document.getElementById(id);e.oninput=()=>{fn(e.value);saveLocal()};e.onchange=e.oninput}
+function renderEdit(s){const b=document.getElementById('body'),m=s.maps[st.map]||s.maps[0];b.innerHTML=`<div class=grid><div class=field><label>ID</label><input id=f-id class=mono value='${esc(s.id)}'></div><div class=field><label>タイトル</label><input id=f-title value='${esc(s.title)}'></div><div class=field><label>ブロックセット</label><select id=f-set>${SETS.map(x=>`<option ${x===s.blockSet?'selected':''}>${x}</option>`)}</select></div><div class=field><label>クリア条件</label><input id=f-cond value='${esc(s.cond)}'></div></div><div class=field><label>学習目標</label><textarea id=f-goal>${esc(s.goal)}</textarea></div><div class=field><label>反応型ルール</label><textarea id=f-rule class=mono>${esc(s.rule)}</textarea></div><div class=section>マップ編集</div><div class=field><label>対象マップ</label><select id=map-sel>${s.maps.map((x,i)=>`<option value='${i}' ${i===st.map?'selected':''}>${esc(x.label)}</option>`)}</select></div><div class=grid><div class=field><label>マップ名</label><input id=f-map-label value='${esc(m.label)}'></div><div class=field><label>マップ注記</label><input id=f-map-note value='${esc(m.note)}'></div></div><div>${PAL.map(ch=>`<button class='pal ${CLS[ch]} ${st.paint===ch?'active':''}' data-paint='${ch}'>${ch==='.'||ch==='#'?'':ch}</button>`).join('')}</div><div id=edit-map></div><div class=field><label>ASCIIマップ</label><textarea id=f-rows class=mono>${esc(m.rows.join('
+'))}</textarea><div class=hint>グリッドをマウスでドラッグして塗れます。ASCIIも直接編集できます。</div></div>`;bind('f-id',v=>s.id=v);bind('f-title',v=>{s.title=v;renderSide()});bind('f-set',v=>s.blockSet=v);bind('f-cond',v=>{s.cond=v;s.play.validation=infer(v)});bind('f-goal',v=>s.goal=v);bind('f-rule',v=>s.rule=v);document.getElementById('map-sel').onchange=e=>{st.map=Number(e.target.value);st.play=null;renderMain()};bind('f-map-label',v=>m.label=v);bind('f-map-note',v=>m.note=v);bind('f-rows',v=>{m.rows=v.split(/?
+/).filter(Boolean);st.play=null;drawEditMap(m)});document.querySelectorAll('.pal').forEach(e=>e.onclick=()=>{st.paint=e.dataset.paint;document.querySelectorAll('.pal').forEach(x=>x.classList.toggle('active',x.dataset.paint===st.paint))});drawEditMap(m)}
+function drawEditMap(m){const w=Math.max(...m.rows.map(r=>r.length)),el=document.getElementById('edit-map');let h=`<div class='map edit' style='grid-template-columns:repeat(${w},28px)'>`;m.rows.forEach((r,y)=>{for(let x=0;x<w;x++){const ch=r[x]||'#';h+=`<div class='cell ${CLS[ch]||'floor'}' data-x='${x}' data-y='${y}'>${ch==='.'||ch==='#'?'':ch}</div>`}});h+='</div>';el.innerHTML=h;let down=false;const paint=c=>{const x=Number(c.dataset.x),y=Number(c.dataset.y);m.rows[y]=(m.rows[y]||'').padEnd(w,'#');m.rows[y]=m.rows[y].slice(0,x)+st.paint+m.rows[y].slice(x+1);document.getElementById('f-rows').value=m.rows.join('
+');saveLocal();drawEditMap(m)};el.querySelectorAll('.cell').forEach(c=>{c.onmousedown=e=>{down=true;paint(c);e.preventDefault()};c.onmouseenter=()=>{if(down)paint(c)}});document.onmouseup=()=>down=false}
+function registerBlocks(){if(blocksReady||typeof Blockly==='undefined')return;blocksReady=true;Blockly.defineBlocksWithJsonArray([{type:'chaser_on_turn',message0:'毎ターン %1',args0:[{type:'input_statement',name:'DO'}],colour:210,hat:'cap'},{type:'chaser_action_walk',message0:'歩く %1',args0:[{type:'field_dropdown',name:'DIR',options:[['↑ 上','Up'],['↓ 下','Down'],['← 左','Left'],['→ 右','Right']]}],previousStatement:null,nextStatement:null,colour:30},{type:'chaser_turn_end',message0:'ターンを終える',previousStatement:null,colour:210},{type:'chaser_is_tile',message0:'%1 が %2',args0:[{type:'field_dropdown',name:'DIR',options:[['上','Up'],['下','Down'],['左','Left'],['右','Right']]},{type:'field_dropdown',name:'TILE',options:[['床 0','0'],['人 1','1'],['壁 2','2'],['アイテム 3','3']]}],output:'Boolean',colour:190},{type:'chaser_get_tile',message0:'%1 のタイル',args0:[{type:'field_dropdown',name:'DIR',options:[['上','Up'],['下','Down'],['左','Left'],['右','Right']]}],output:'Number',colour:190},{type:'chaser_turn_number',message0:'現在のターン数',output:'Number',colour:120}]);const g=gen();g.forBlock.chaser_on_turn=(b,gg)=>`function onTurn(api){
+${gg.statementToCode(b,'DO')}return api.none();
 }
-function normalizeStage(stage, fallbackNo){
-  stage.no = Number(stage.no || fallbackNo);
-  stage.id ||= `step-${String(stage.no).padStart(2,'0')}-new`;
-  stage.title ||= '無題ステージ';
-  stage.blockSet ||= 'BASIC';
-  stage.variants = Array.isArray(stage.maps) ? stage.maps.length : Number(stage.variants || 1);
-  stage.cond ||= 'goal';
-  stage.goal ||= '';
-  stage.rule ||= '';
-  stage.maps = normalizeMaps(stage.maps);
-  stage.play ||= {};
-  stage.play.validation ||= inferValidationFromCond(stage.cond);
-  stage.play.defaultVariantIndex = Number(stage.play.defaultVariantIndex || 0);
-  stage.play.savedBlocklyXml ||= '';
-  stage.solution ||= {};
-  stage.solution.imageDataUrl ||= '';
-  stage.solution.imageName ||= '';
-  stage.solution.imageMimeType ||= '';
-  stage.solution.note ||= '';
-  stage.solution.updatedAt ||= '';
-}
-function normalizeMaps(maps){
-  if(!Array.isArray(maps) || maps.length===0) return [makeBlankMap(7,7)];
-  return maps.map((m,i)=>({label:m.label || `マップ ${String.fromCharCode(65+i)}`, rows:Array.isArray(m.rows)&&m.rows.length?m.rows:['#####','#C.G#','#####'], note:m.note || ''}));
-}
-function makeBlankMap(cols, rows){
-  const arr=[];
-  for(let y=0;y<rows;y++){let line='';for(let x=0;x<cols;x++)line += y===0||y===rows-1||x===0||x===cols-1 ? '#' : '.';arr.push(line);}
-  if(rows>=3&&cols>=4){arr[1]=setChar(arr[1],1,'C');arr[1]=setChar(arr[1],cols-2,'G');}
-  return {label:'マップ A',rows:arr,note:''};
-}
-function setChar(s,i,ch){return s.slice(0,i)+ch+s.slice(i+1);}
-function extractFirstNumber(text){const normalized=String(text||'').replace(/[０-９]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0));const m=normalized.match(/\d+/);return m?Number(m[0]):undefined;}
-function inferValidationFromCond(cond){
-  const c=String(cond||'').toLowerCase();
-  const n=extractFirstNumber(c);
-  if(c.includes('survive')) return {kind:'survive', minTurns:n || 10, maxActions:n || undefined};
-  if(c.includes('put')) return {kind:'winByPut', maxActions:n};
-  if(c.includes('items') && !c.includes('goal')) return {kind:'collectItems', minItems:n || 1, maxActions:extractParenthesizedTurn(c)};
-  return {kind:'reachGoal', maxActions:n, requireAllItems:c.includes('items') || c.includes('item') || c.includes('goal+items')};
-}
-function extractParenthesizedTurn(text){const normalized=String(text||'').replace(/[０-９]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0xFEE0));const m=normalized.match(/[（(](\d+)\s*手[）)]/);return m?Number(m[1]):undefined;}
-function loadDataObject(obj){state.phases=normalizeDataObject(obj);state.selPhase=state.phases[0]?.id || '';state.selStage=0;state.mapIndex=0;state.play=null;saveLocal();renderAll();}
-async function loadDefaultJson(){
-  try{const res=await fetch(DEFAULT_JSON_URL,{cache:'no-store'});if(!res.ok)throw new Error(`${res.status} ${res.statusText}`);const obj=await res.json();loadDataObject(obj);toast('既定JSONを読み込みました','ok');}
-  catch(e){toast('既定JSON読込に失敗しました。JSON読込を使ってください。','error');console.warn(e);}
-}
-
-function renderAll(){renderSidebar();renderMain();}
-function renderSidebar(){
-  const sb=document.getElementById('sidebar');
-  if(state.phases.length===0){sb.innerHTML='<div class="empty">JSONを読み込んでください</div>';return;}
-  let html='<div class="sb-title">グループ／ステージ</div>';
-  state.phases.forEach(phase=>{
-    html+=`<div class="phase"><div class="phase-head"><span class="pip" style="background:${escapeHtml(phase.color)}"></span><span>${escapeHtml(phase.id)} · ${escapeHtml(phase.name)}</span></div>`;
-    phase.stages.forEach((stage,index)=>{const active=phase.id===state.selPhase&&index===state.selStage?'active':'';html+=`<div class="stage ${active}" data-phase="${escapeHtml(phase.id)}" data-index="${index}"><span class="stage-no">${String(stage.no).padStart(2,'0')}</span><span class="stage-title">${escapeHtml(stage.title)}</span></div>`;});
-    html+='</div>';
-  });
-  sb.innerHTML=html;
-  sb.querySelectorAll('.stage').forEach(el=>el.addEventListener('click',()=>{state.selPhase=el.dataset.phase;state.selStage=Number(el.dataset.index);state.mapIndex=0;state.play=null;renderAll();}));
-}
-function renderMain(){
-  const main=document.getElementById('main'); const stage=currentStage();
-  if(!stage){main.innerHTML='<div class="empty">JSONを読み込んでください</div>';return;}
-  const tabs=TABS.map(([id,label])=>`<div class="tab ${state.tab===id?'active':''}" data-tab="${id}">${label}</div>`).join('');
-  main.innerHTML=`<div class="tabs">${tabs}</div><div id="tab-body"></div>`;
-  main.querySelectorAll('.tab').forEach(el=>el.addEventListener('click',()=>{state.tab=el.dataset.tab;renderMain();}));
-  if(state.tab==='edit') renderEditTab(stage);
-  if(state.tab==='play') renderPlayTab(stage);
-  if(state.tab==='solution') renderSolutionTab(stage);
-  if(state.tab==='preview') renderPreviewTab(stage);
-}
-function renderEditTab(stage){
-  const body=document.getElementById('tab-body'); const map=stage.maps[state.mapIndex] ?? stage.maps[0];
-  body.innerHTML=`
-    <div class="grid2">
-      <div class="field"><label>ID</label><input id="f-id" class="mono" value="${escapeHtml(stage.id)}"></div>
-      <div class="field"><label>タイトル</label><input id="f-title" value="${escapeHtml(stage.title)}"></div>
-      <div class="field"><label>ブロックセット</label><select id="f-blockset">${BLOCK_SETS.map(b=>`<option ${b===stage.blockSet?'selected':''}>${b}</option>`).join('')}</select></div>
-      <div class="field"><label>クリア条件</label><input id="f-cond" value="${escapeHtml(stage.cond)}"></div>
-    </div>
-    <div class="field"><label>学習目標</label><textarea id="f-goal">${escapeHtml(stage.goal)}</textarea></div>
-    <div class="field"><label>反応型ルール</label><textarea id="f-rule" class="mono">${escapeHtml(stage.rule)}</textarea></div>
-    <div class="section">マップ簡易編集</div>
-    <div class="field"><label>対象マップ</label><select id="map-select">${stage.maps.map((m,i)=>`<option value="${i}" ${i===state.mapIndex?'selected':''}>${escapeHtml(m.label)}</option>`).join('')}</select></div>
-    <div class="grid2">
-      <div class="field"><label>マップ名</label><input id="f-map-label" value="${escapeHtml(map.label)}"></div>
-      <div class="field"><label>マップ注記</label><input id="f-map-note" value="${escapeHtml(map.note)}"></div>
-    </div>
-    <div class="field"><label>ASCIIマップ</label><textarea id="f-map-rows" class="mono">${escapeHtml(map.rows.join('\n'))}</textarea><div class="hint">使用文字: # 壁 / . 床 / I アイテム / C 自機 / H 敵 / G ゴール</div></div>`;
-  bindValue('f-id',v=>stage.id=v);bindValue('f-title',v=>{stage.title=v;renderSidebar();});bindValue('f-blockset',v=>stage.blockSet=v);bindValue('f-cond',v=>{stage.cond=v;stage.play.validation=inferValidationFromCond(v);});bindValue('f-goal',v=>stage.goal=v);bindValue('f-rule',v=>stage.rule=v);
-  document.getElementById('map-select').addEventListener('change',e=>{state.mapIndex=Number(e.target.value);state.play=null;renderMain();});
-  bindValue('f-map-label',v=>map.label=v);bindValue('f-map-note',v=>map.note=v);bindValue('f-map-rows',v=>{map.rows=v.split(/\r?\n/).filter(Boolean);state.play=null;});
-}
-function bindValue(id,fn){const el=document.getElementById(id);el.addEventListener('input',()=>{fn(el.value);saveLocal();});el.addEventListener('change',()=>{fn(el.value);saveLocal();});}
-
-function renderPlayTab(stage){
-  const body=document.getElementById('tab-body');
-  if(!state.play) state.play = createInitialPlayState(stage, state.mapIndex);
-  body.innerHTML=`
-    <div class="play-layout">
-      <div class="panel">
-        <div class="field"><label>対象マップ</label><select id="play-map-select">${stage.maps.map((m,i)=>`<option value="${i}" ${i===state.mapIndex?'selected':''}>${escapeHtml(m.label)}</option>`).join('')}</select></div>
-        <div id="play-board"></div>
-        <div id="play-status"></div>
-        <div class="controls">
-          <button class="btn small" data-walk="Up">↑ 上へ歩く</button>
-          <button class="btn small" data-walk="Left">← 左へ歩く</button>
-          <button class="btn small" data-walk="Right">→ 右へ歩く</button>
-          <button class="btn small" data-walk="Down">↓ 下へ歩く</button>
-          <button class="btn small warn" id="btn-play-reset">リセット</button>
-        </div>
-        <div class="hint">第1段階では手動テストプレイのみです。Blockly実行は次段階で追加します。</div>
-      </div>
-      <div>
-        <div class="section">実行ログ</div>
-        <div class="log" id="play-log"></div>
-      </div>
-    </div>`;
-  document.getElementById('play-map-select').addEventListener('change',e=>{state.mapIndex=Number(e.target.value);state.play=createInitialPlayState(stage,state.mapIndex);renderPlayTab(stage);});
-  document.getElementById('btn-play-reset').addEventListener('click',()=>{state.play=createInitialPlayState(stage,state.mapIndex);renderPlayTab(stage);});
-  body.querySelectorAll('[data-walk]').forEach(btn=>btn.addEventListener('click',()=>{walk(btn.dataset.walk);renderPlayTab(stage);}));
-  renderPlayBoard();renderPlayStatus();renderPlayLog();
-}
-function createInitialPlayState(stage,mapIndex){
-  const map=stage.maps[mapIndex] ?? stage.maps[0]; const parsed=parseMap(map.rows); const validation=stage.play?.validation || inferValidationFromCond(stage.cond);
-  return {stageId:stage.id,mapIndex,tiles:parsed.tiles,cool:parsed.cool,hot:parsed.hot,goal:parsed.goal,turn:0,items:0,status:'running',message:'テストプレイ開始',logs:[`map: ${map.label}`],validation};
-}
-function parseMap(rows){
-  let cool=null,hot=null,goal=null; const tiles=rows.map((row,y)=>[...row].map((ch,x)=>{if(ch==='C'){cool={x,y};return'.';}if(ch==='H'){hot={x,y};return'.';}if(ch==='G'){goal={x,y};return'.';}return ch;}));
-  return {tiles,cool:cool||{x:1,y:1},hot:hot||null,goal:goal||null};
-}
-function directionDelta(dir){return {Up:{x:0,y:-1},Down:{x:0,y:1},Left:{x:-1,y:0},Right:{x:1,y:0}}[dir];}
-function walk(dir){
-  const p=state.play; if(!p||p.status!=='running')return; const d=directionDelta(dir); const nx=p.cool.x+d.x, ny=p.cool.y+d.y; p.turn++;
-  if(ny<0||ny>=p.tiles.length||nx<0||nx>=p.tiles[ny].length){fail(`盤面外へ移動しました: ${dir}`);return;}
-  const tile=p.tiles[ny][nx]; if(tile==='#'){fail(`壁にぶつかりました: ${dir}`);return;}
-  p.cool={x:nx,y:ny}; if(tile==='I'){p.items++;p.tiles[ny][nx]='.';p.logs.push(`${p.turn}: walk${dir} / item +1`);} else {p.logs.push(`${p.turn}: walk${dir}`);} judgePlayResult();
-}
-function fail(message){state.play.status='failed';state.play.message=message;state.play.logs.push(`失敗: ${message}`);}
-function countRemainingItems(p){return p.tiles.reduce((sum,row)=>sum+row.filter(ch=>ch==='I').length,0);}
-function judgePlayResult(){
-  const p=state.play; const v=p.validation;
-  if(v.kind==='reachGoal' && p.goal && p.cool.x===p.goal.x && p.cool.y===p.goal.y){
-    if(v.requireAllItems && countRemainingItems(p)>0){fail('アイテムを残したままゴールしました');return;}
-    p.status='success';p.message='ゴールに到達しました';p.logs.push('成功: ゴール到達');return;
-  }
-  if(v.kind==='collectItems' && p.items >= v.minItems){p.status='success';p.message=`アイテムを${p.items}個取得しました`;p.logs.push('成功: アイテム条件達成');return;}
-  if(v.kind==='survive' && p.turn >= v.minTurns){p.status='success';p.message=`${p.turn}ターン生存しました`;p.logs.push('成功: 生存条件達成');return;}
-  if(v.maxActions && p.turn >= v.maxActions){fail(`最大${v.maxActions}手以内に条件を満たせませんでした`);}
-}
-function renderPlayBoard(){
-  const p=state.play; const width=Math.max(...p.tiles.map(r=>r.length)); let html=`<div class="map-board" style="grid-template-columns:repeat(${width},28px)">`;
-  p.tiles.forEach((row,y)=>{for(let x=0;x<width;x++){let ch=row[x]||'#';let show=ch;if(p.goal&&p.goal.x===x&&p.goal.y===y){ch='G';show='G';}if(p.hot&&p.hot.x===x&&p.hot.y===y){ch='H';show='H';}if(p.cool.x===x&&p.cool.y===y){ch='C';show='C';}html+=`<div class="cell ${CELL_CLASS[ch]||'floor'}">${show==='.'||show==='#'?'':show}</div>`;}});
-  html+='</div>';document.getElementById('play-board').innerHTML=html;
-}
-function renderPlayStatus(){const p=state.play;document.getElementById('play-status').innerHTML=`<div class="status ${p.status}">${escapeHtml(p.status)} · ${escapeHtml(p.message)}<br>turn: ${p.turn} / items: ${p.items} / pos: (${p.cool.x}, ${p.cool.y})</div>`;}
-function renderPlayLog(){document.getElementById('play-log').textContent=state.play.logs.join('\n');}
-
-function renderSolutionTab(stage){
-  const body=document.getElementById('tab-body'); const sol=stage.solution;
-  body.innerHTML=`
-    <div class="grid2">
-      <div class="panel">
-        <div class="section">模範解答画像</div>
-        <div class="field"><label>画像アップロード</label><input type="file" id="solution-input" accept="image/png,image/jpeg,image/webp"><div class="hint">Blocklyの画面をスクリーンショットした画像を登録してください。推奨1MB以下、3MB超過は拒否します。</div></div>
-        <div class="field"><label>メモ</label><textarea id="solution-note">${escapeHtml(sol.note)}</textarea></div>
-        <div class="controls"><button class="btn small danger" id="solution-delete">画像を削除</button></div>
-        <div class="hint">保存されるのは画像です。Blockly XMLやコードは模範解答としては保存しません。</div>
-      </div>
-      <div class="panel"><div class="section">プレビュー</div>${renderSolutionImage(stage)}</div>
-    </div>`;
-  document.getElementById('solution-input').addEventListener('change',e=>handleSolutionImageUpload(stage,e.target.files[0]));
-  bindValue('solution-note',v=>{stage.solution.note=v;stage.solution.updatedAt=new Date().toISOString();});
-  document.getElementById('solution-delete').addEventListener('click',()=>{if(!confirm('模範解答画像を削除しますか？'))return;stage.solution.imageDataUrl='';stage.solution.imageName='';stage.solution.imageMimeType='';stage.solution.updatedAt=new Date().toISOString();saveLocal();renderSolutionTab(stage);toast('画像を削除しました','ok');});
-}
-function handleSolutionImageUpload(stage,file){
-  if(!file)return; const allowed=['image/png','image/jpeg','image/webp'];
-  if(!allowed.includes(file.type)){toast('PNG / JPEG / WebP の画像を選んでください','error');return;}
-  if(file.size>3*1024*1024){toast('画像が大きすぎます。3MB以下にしてください','error');return;}
-  if(file.size>1024*1024 && !confirm('1MBを超えています。JSONが大きくなりますが保存しますか？'))return;
-  const reader=new FileReader();reader.onload=()=>{stage.solution.imageDataUrl=String(reader.result);stage.solution.imageName=file.name;stage.solution.imageMimeType=file.type;stage.solution.updatedAt=new Date().toISOString();saveLocal();renderSolutionTab(stage);toast('模範解答画像を保存しました','ok');};reader.readAsDataURL(file);
-}
-function renderSolutionImage(stage){const sol=stage.solution;if(!sol?.imageDataUrl)return '<div class="empty">模範解答画像は未登録です</div>';return `<div class="image-preview"><img src="${sol.imageDataUrl}" alt="模範解答画像"><div class="hint">${escapeHtml(sol.imageName)}${sol.updatedAt?` / ${escapeHtml(sol.updatedAt)}`:''}</div>${sol.note?`<div class="hint">${escapeHtml(sol.note)}</div>`:''}</div>`;}
-function renderPreviewTab(stage){
-  document.getElementById('tab-body').innerHTML=`<div class="panel"><h2>${String(stage.no).padStart(2,'0')} ${escapeHtml(stage.title)}</h2><p class="hint mono">${escapeHtml(stage.id)}</p><p><b>blockSet:</b> ${escapeHtml(stage.blockSet)} / <b>cond:</b> ${escapeHtml(stage.cond)}</p><div class="section">学習目標</div><p>${escapeHtml(stage.goal)}</p><div class="section">反応型ルール</div><pre class="mono">${escapeHtml(stage.rule)}</pre><div class="section">マップ</div>${stage.maps.map(m=>renderStaticMap(m)).join('')}<div class="section">模範解答</div>${renderSolutionImage(stage)}</div>`;
-}
-function renderStaticMap(map){const width=Math.max(...map.rows.map(r=>r.length));let html=`<div style="margin-bottom:12px"><div class="hint"><b>${escapeHtml(map.label)}</b> ${escapeHtml(map.note||'')}</div><div class="map-board" style="grid-template-columns:repeat(${width},28px)">`;map.rows.forEach(row=>{for(let x=0;x<width;x++){const ch=row[x]||'#';html+=`<div class="cell ${CELL_CLASS[ch]||'floor'}">${ch==='.'||ch==='#'?'':ch}</div>`;}});return html+'</div></div>';}
-
-function saveJson(){const data=JSON.stringify({version:2,phases:state.phases},null,2);downloadText(data,`chaiser-stages-v2-${new Date().toISOString().slice(0,10)}.json`,'application/json');toast('JSONを保存しました','ok');}
-function exportReview(){downloadText(buildReviewHtml(state.phases),'stage_review_next.html','text/html;charset=utf-8');toast('レビューHTMLを書き出しました','ok');}
-function downloadText(text,filename,type){const blob=new Blob([text],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);}
-function buildReviewHtml(phases){
-  const safeJson=JSON.stringify(phases).replace(/<\/script/gi,'<\\/script');
-  return `<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CHaser ステージレビュー NEXT</title><style>body{font-family:system-ui,sans-serif;background:#f8fafc;color:#0f172a;margin:0}.wrap{max-width:1300px;margin:auto;padding:24px}.phase{margin:0 0 36px}.phase h2{background:#0f172a;color:white;border-radius:16px;padding:14px 18px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}.card{background:white;border:1px solid #cbd5e1;border-radius:18px;padding:16px;box-shadow:0 8px 24px rgba(15,23,42,.06)}.muted{color:#64748b;font-size:12px}.mono{font-family:ui-monospace,monospace}.map{display:inline-grid;gap:1px;background:#cbd5e1;border-radius:10px;padding:4px}.cell{width:18px;height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900}.wall{background:#1e293b}.floor{background:#f8fafc}.item{background:#fbbf24}.cool{background:#38bdf8}.hot{background:#fb7185}.goal{background:#34d399}.answer{margin-top:10px;border-top:1px solid #e2e8f0;padding-top:10px}.answer img{max-width:100%;border:1px solid #cbd5e1;border-radius:12px}</style></head><body><div class="wrap"><h1>CHaser ステージレビュー NEXT</h1><div id="app"></div></div><script>const PHASES=${safeJson};const C={'#':'wall','.':'floor',' ':'floor','I':'item','C':'cool','H':'hot','G':'goal'};const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));function mapHtml(m){const w=Math.max(...m.rows.map(r=>r.length));let h='<div class="muted"><b>'+e(m.label)+'</b> '+e(m.note||'')+'</div><div class="map" style="grid-template-columns:repeat('+w+',18px)">';m.rows.forEach(r=>{for(let x=0;x<w;x++){const ch=r[x]||'#';h+='<div class="cell '+(C[ch]||'floor')+'">'+(ch==='.'||ch==='#'?'':ch)+'</div>';}});return h+'</div>'}function answerHtml(s){if(!s.solution||!s.solution.imageDataUrl)return '';return '<div class="answer"><b>模範解答</b><br><img src="'+s.solution.imageDataUrl+'" alt="模範解答"><div class="muted">'+e(s.solution.note||'')+'</div></div>'}document.getElementById('app').innerHTML=PHASES.map(p=>'<section class="phase"><h2>'+e(p.id)+' · '+e(p.name)+'</h2><div class="grid">'+p.stages.map(s=>'<article class="card"><h3>'+String(s.no).padStart(2,'0')+' '+e(s.title)+'</h3><div class="muted mono">'+e(s.id)+'</div><p><b>'+e(s.blockSet)+'</b> / '+e(s.cond)+'</p><p>'+e(s.goal)+'</p><pre class="mono">'+e(s.rule)+'</pre>'+s.maps.map(mapHtml).join('')+answerHtml(s)+'</article>').join('')+'</div></section>').join('');<\/script></body></html>`;
-}
-
-document.getElementById('btn-load-default').addEventListener('click',loadDefaultJson);
-document.getElementById('btn-load-json').addEventListener('click',()=>document.getElementById('json-input').click());
-document.getElementById('json-input').addEventListener('change',e=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{loadDataObject(JSON.parse(reader.result));toast('JSONを読み込みました','ok');}catch(err){toast('JSON読込に失敗しました','error');console.error(err);}};reader.readAsText(file);e.target.value='';});
-document.getElementById('btn-save-json').addEventListener('click',saveJson);
-document.getElementById('btn-export-review').addEventListener('click',exportReview);
-document.getElementById('btn-clear-local').addEventListener('click',()=>{if(!confirm('ローカル保存を破棄しますか？'))return;localStorage.removeItem(STORAGE_KEY);state={phases:[],selPhase:'',selStage:0,tab:'edit',mapIndex:0,play:null};renderAll();toast('ローカル保存を破棄しました','ok');});
-if(!loadLocal()) renderAll();
+`;g.forBlock.chaser_action_walk=b=>`return api.walk('${b.getFieldValue('DIR')}');
+`;g.forBlock.chaser_turn_end=()=>'';g.forBlock.chaser_is_tile=b=>[`api.getTile('${b.getFieldValue('DIR')}')===${Number(b.getFieldValue('TILE'))}`,0];g.forBlock.chaser_get_tile=b=>[`api.getTile('${b.getFieldValue('DIR')}')`,0];g.forBlock.chaser_turn_number=()=>['api.turnNumber()',0]}
+function gen(){return window.javascript?.javascriptGenerator||Blockly.JavaScript}
+function toolbox(set){const adv=set!=='BASIC';return{kind:'categoryToolbox',contents:[{kind:'category',name:'CHaser',colour:210,contents:[{kind:'block',type:'chaser_on_turn'},{kind:'block',type:'chaser_action_walk'},{kind:'block',type:'chaser_turn_end'},...(adv?[{kind:'block',type:'chaser_is_tile'},{kind:'block',type:'chaser_get_tile'},{kind:'block',type:'chaser_turn_number'}]:[])]},...(adv?[{kind:'category',name:'条件',colour:210,contents:[{kind:'block',type:'controls_if'},{kind:'block',type:'logic_compare'},{kind:'block',type:'logic_boolean'},{kind:'block',type:'logic_operation'}]},{kind:'category',name:'数',colour:230,contents:[{kind:'block',type:'math_number'},{kind:'block',type:'math_arithmetic'}]}]:[])]}}
+function defaultXml(){return `<xml xmlns='https://developers.google.com/blockly/xml'><block type='chaser_on_turn' x='40' y='40'><statement name='DO'><block type='chaser_action_walk'><field name='DIR'>Up</field></block></statement></block></xml>`}
+function disposeBlockly(){if(st.ws){saveXml();st.ws.dispose();st.ws=null}stopAuto()}
+function renderPlay(s){const b=document.getElementById('body');if(!st.play)st.play=initPlay(s,st.map);b.innerHTML=`<div class=play><div class=panel><div class=field><label>対象マップ</label><select id=play-map>${s.maps.map((m,i)=>`<option value='${i}' ${i===st.map?'selected':''}>${esc(m.label)}</option>`)}</select></div><div id=board></div><div id=status></div><div class=controls><button class='btn ok' id=one>1ターン実行</button><button class=btn id=auto>自動実行</button><button class='btn warn' id=stop>停止</button><button class='btn warn' id=reset>リセット</button><button class=btn id=xml-save>Blockly保存</button></div><div class=section>実行ログ</div><pre class=log id=log></pre></div><div><div class=hint>手動移動ではなく、Blocklyの「毎ターン」を実行します。現在の対応は walk と隣接タイル判定です。</div><div class=blockly id=blockly></div></div></div>`;document.getElementById('play-map').onchange=e=>{st.map=Number(e.target.value);st.play=initPlay(s,st.map);renderPlay(s)};document.getElementById('one').onclick=()=>{runTurn(s);renderPlay(s)};document.getElementById('auto').onclick=()=>startAuto(s);document.getElementById('stop').onclick=stopAuto;document.getElementById('reset').onclick=()=>{st.play=initPlay(s,st.map);renderPlay(s)};document.getElementById('xml-save').onclick=()=>{saveXml();msg('Blockly XMLを保存しました')};drawBoard();drawStatus();drawLog();initBlockly(s)}
+function initBlockly(s){registerBlocks();st.ws=Blockly.inject('blockly',{toolbox:toolbox(s.blockSet),trashcan:true,scrollbars:true});try{Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(s.play.savedBlocklyXml||defaultXml()),st.ws)}catch(e){Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom(defaultXml()),st.ws)}}
+function saveXml(){const s=curStage();if(s&&st.ws){s.play.savedBlocklyXml=Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(st.ws));saveLocal()}}
+function initPlay(s,i){const m=s.maps[i]||s.maps[0],p=parseMap(m.rows);return{tiles:p.tiles,cool:p.cool,hot:p.hot,goal:p.goal,turn:0,items:0,status:'running',msg:'Blockly実行待機中',logs:[`map: ${m.label}`],validation:s.play.validation||infer(s.cond)}}
+function parseMap(rows){let cool=null,hot=null,goal=null;const tiles=rows.map((r,y)=>[...r].map((ch,x)=>{if(ch==='C'){cool={x,y};return'.'}if(ch==='H'){hot={x,y};return'.'}if(ch==='G'){goal={x,y};return'.'}return ch}));return{tiles,cool:cool||{x:1,y:1},hot,goal}}
+function delta(d){return{Up:{x:0,y:-1},Down:{x:0,y:1},Left:{x:-1,y:0},Right:{x:1,y:0}}[d]}
+function api(){return{walk:d=>({kind:'walk',dir:d}),none:()=>({kind:'none'}),turnNumber:()=>st.play.turn+1,getTile:d=>{const dd=delta(d),p=st.play,x=p.cool.x+dd.x,y=p.cool.y+dd.y;if(y<0||y>=p.tiles.length||x<0||x>=p.tiles[y].length)return 2;if(p.hot&&p.hot.x===x&&p.hot.y===y)return 1;const ch=p.tiles[y][x];return ch==='#'?2:ch==='I'?3:0}}}
+function runTurn(s){if(!st.play||st.play.status!=='running')return;try{saveXml();const g=gen();g.init(st.ws);const code=g.workspaceToCode(st.ws);const fn=new Function(`${code}
+return typeof onTurn==='function'?onTurn:null`)();if(!fn){fail('毎ターンブロックがありません');return}apply(fn(api()))}catch(e){fail(`Blockly実行エラー: ${e.message}`)}}
+function apply(a){const p=st.play;if(!a||a.kind==='none'){p.turn++;p.logs.push(`${p.turn}: actionなし`);judge();return}if(a.kind!=='walk'){fail(`未対応アクション: ${a.kind}`);return}const d=delta(a.dir),x=p.cool.x+d.x,y=p.cool.y+d.y;p.turn++;if(y<0||y>=p.tiles.length||x<0||x>=p.tiles[y].length){fail(`盤面外: walk${a.dir}`);return}const tile=p.tiles[y][x];if(tile==='#'){fail(`壁: walk${a.dir}`);return}p.cool={x,y};if(tile==='I'){p.items++;p.tiles[y][x]='.';p.logs.push(`${p.turn}: walk${a.dir} / item +1`)}else p.logs.push(`${p.turn}: walk${a.dir}`);judge()}
+function fail(m){st.play.status='failed';st.play.msg=m;st.play.logs.push(`失敗: ${m}`)}
+function remain(p){return p.tiles.reduce((a,r)=>a+r.filter(c=>c==='I').length,0)}
+function judge(){const p=st.play,v=p.validation;if(v.kind==='reachGoal'&&p.goal&&p.cool.x===p.goal.x&&p.cool.y===p.goal.y){if(v.requireAllItems&&remain(p)>0){fail('アイテム未回収');return}p.status='success';p.msg='ゴール到達';p.logs.push('成功: ゴール到達');return}if(v.kind==='collectItems'&&p.items>=v.minItems){p.status='success';p.msg='アイテム条件達成';return}if(v.maxActions&&p.turn>=v.maxActions)fail(`最大${v.maxActions}手を超過`)}
+function startAuto(s){stopAuto();st.timer=setInterval(()=>{if(!st.play||st.play.status!=='running'){stopAuto();renderPlay(s);return}runTurn(s);renderPlay(s)},350)}
+function stopAuto(){if(st.timer){clearInterval(st.timer);st.timer=null}}
+function drawBoard(){const p=st.play,w=Math.max(...p.tiles.map(r=>r.length));let h=`<div class=map style='grid-template-columns:repeat(${w},28px)'>`;p.tiles.forEach((r,y)=>{for(let x=0;x<w;x++){let ch=r[x]||'#',show=ch;if(p.goal&&p.goal.x===x&&p.goal.y===y){ch='G';show='G'}if(p.hot&&p.hot.x===x&&p.hot.y===y){ch='H';show='H'}if(p.cool.x===x&&p.cool.y===y){ch='C';show='C'}h+=`<div class='cell ${CLS[ch]||'floor'}'>${show==='.'||show==='#'?'':show}</div>`}});document.getElementById('board').innerHTML=h+'</div>'}
+function drawStatus(){const p=st.play;document.getElementById('status').innerHTML=`<div class='status ${p.status}'>${esc(p.status)} · ${esc(p.msg)}<br>turn:${p.turn} items:${p.items} pos:(${p.cool.x},${p.cool.y})</div>`}
+function drawLog(){document.getElementById('log').textContent=st.play.logs.join('
+')}
+function renderSolution(s){document.getElementById('body').innerHTML=`<div class=grid><div class=panel><div class=field><label>画像アップロード</label><input type=file id=sol-file accept='image/png,image/jpeg,image/webp'></div><div class=field><label>メモ</label><textarea id=sol-note>${esc(s.solution.note)}</textarea></div><button class='btn danger' id=sol-del>画像を削除</button></div><div class=panel>${solutionImg(s)}</div></div>`;document.getElementById('sol-file').onchange=e=>uploadSolution(s,e.target.files[0]);bind('sol-note',v=>{s.solution.note=v;s.solution.updatedAt=new Date().toISOString()});document.getElementById('sol-del').onclick=()=>{s.solution.imageDataUrl='';s.solution.imageName='';s.solution.imageMimeType='';s.solution.updatedAt=new Date().toISOString();saveLocal();renderSolution(s)}}
+function uploadSolution(s,f){if(!f)return;if(!['image/png','image/jpeg','image/webp'].includes(f.type)){msg('画像形式が違います');return}if(f.size>3*1024*1024){msg('3MB以下にしてください');return}const r=new FileReader();r.onload=()=>{s.solution.imageDataUrl=String(r.result);s.solution.imageName=f.name;s.solution.imageMimeType=f.type;s.solution.updatedAt=new Date().toISOString();saveLocal();renderSolution(s);msg('保存しました')};r.readAsDataURL(f)}
+function solutionImg(s){const x=s.solution;if(!x.imageDataUrl)return '<div class=empty>模範解答画像は未登録です</div>';return `<div class=preview-img><img src='${x.imageDataUrl}' alt='模範解答'><div class=hint>${esc(x.imageName)} ${esc(x.note)}</div></div>`}
+function renderPreview(s){document.getElementById('body').innerHTML=`<div class=panel><h2>${String(s.no).padStart(2,'0')} ${esc(s.title)}</h2><p class='hint mono'>${esc(s.id)}</p><p><b>${esc(s.blockSet)}</b> / ${esc(s.cond)}</p><p>${esc(s.goal)}</p><pre class=mono>${esc(s.rule)}</pre>${s.maps.map(mapView).join('')}<div class=section>模範解答</div>${solutionImg(s)}</div>`}
+function mapView(m){const w=Math.max(...m.rows.map(r=>r.length));let h=`<div><p class=hint><b>${esc(m.label)}</b> ${esc(m.note)}</p><div class=map style='grid-template-columns:repeat(${w},28px)'>`;m.rows.forEach(r=>{for(let x=0;x<w;x++){const ch=r[x]||'#';h+=`<div class='cell ${CLS[ch]||'floor'}'>${ch==='.'||ch==='#'?'':ch}</div>`}});return h+'</div></div>'}
+function saveJson(){saveXml();download(JSON.stringify({version:2,phases:st.phases},null,2),`chaiser-stages-v2-${new Date().toISOString().slice(0,10)}.json`,'application/json')}
+function exportReview(){saveXml();download(reviewHtml(st.phases),'stage_review_next.html','text/html')}
+function download(text,name,type){const b=new Blob([text],{type});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
+function reviewHtml(phases){const data=JSON.stringify(phases).replace(/<\/script/gi,'<\/script');return `<!doctype html><html lang='ja'><meta charset='utf-8'><title>CHaser Review</title><body><pre id=out></pre><script>document.getElementById('out').textContent=JSON.stringify(${data},null,2)<\/script></body></html>`}
+document.getElementById('load-default').onclick=loadDefault;document.getElementById('load-json').onclick=()=>document.getElementById('json-file').click();document.getElementById('json-file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{loadObj(JSON.parse(r.result));msg('JSONを読み込みました')}catch(e){msg('読込失敗')}};r.readAsText(f);e.target.value=''};document.getElementById('save-json').onclick=saveJson;document.getElementById('export-review').onclick=exportReview;document.getElementById('clear-local').onclick=()=>{localStorage.removeItem(STORAGE);st.phases=[];disposeBlockly();render()};if(!loadLocal())render();
 </script>
 </body>
 </html>
