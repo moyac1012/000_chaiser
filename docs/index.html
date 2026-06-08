@@ -74,10 +74,10 @@ body {
 }
 
 .cards {
-  max-width: 1180px; margin: 0 auto;
-  padding: 24px 24px 64px;
+  max-width: 1000px; margin: 0 auto;
+  padding: 24px 24px 24px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   gap: 20px;
 }
 
@@ -107,7 +107,6 @@ body {
 }
 .card-icon.review { background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); color: #fff; }
 .card-icon.next { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: #fff; }
-.card-icon.editor { background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%); color: #fff; }
 .card-tag {
   position: absolute; top: 24px; right: 24px;
   font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
@@ -115,7 +114,6 @@ body {
 }
 .card-tag.review { background: #e0f2fe; color: #0369a1; }
 .card-tag.next { background: #ede9fe; color: #5b21b6; }
-.card-tag.editor { background: #fee2e2; color: #991b1b; }
 .card-title {
   font-size: 22px; font-weight: 700;
   color: var(--ink);
@@ -155,6 +153,24 @@ body {
   font-weight: 800;
 }
 
+.legacy-link {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px 40px;
+  text-align: right;
+  font-size: 11px;
+  color: #94a3b8;
+}
+.legacy-link a {
+  color: #64748b;
+  text-decoration: none;
+  border-bottom: 1px dashed #cbd5e1;
+}
+.legacy-link a:hover {
+  color: #334155;
+  border-bottom-color: #94a3b8;
+}
+
 .footer {
   max-width: 1200px; margin: 0 auto;
   padding: 24px;
@@ -166,8 +182,9 @@ body {
 @media (max-width: 600px) {
   .hero { padding: 40px 16px 20px; }
   .hero h1 { font-size: 30px; }
-  .cards { padding: 16px; gap: 14px; }
+  .cards { padding: 16px; gap: 14px; grid-template-columns: 1fr; }
   .card { padding: 22px; }
+  .legacy-link { padding: 0 16px 32px; text-align: center; }
 }
 </style>
 </head>
@@ -218,23 +235,11 @@ body {
     <span class="card-cta">開く</span>
   </a>
 
-  <a class="card" href="stage_editor.html">
-    <span class="card-tag editor">LEGACY</span>
-    <div class="card-icon editor">✏️</div>
-    <div class="card-title">旧ステージエディタ</div>
-    <div class="card-desc">
-      Blockly機能を追加する前の従来版エディタ。既存の編集フローを確認したい場合や比較用に利用できます。
-    </div>
-    <ul class="card-features">
-      <li>マップを可変サイズで作成・パレットで描画</li>
-      <li>▲▼ で並び替え・グループ間移動</li>
-      <li>JSON 読込／保存・HTML 書き出し</li>
-      <li>編集内容は localStorage に自動保存</li>
-    </ul>
-    <span class="card-cta">開く</span>
-  </a>
-
 </section>
+
+<div class="legacy-link">
+  以前の編集画面を使う場合: <a href="stage_editor.html">旧ステージエディタ</a>
+</div>
 
 <footer class="footer">
   CHaser Tutorial Tools
