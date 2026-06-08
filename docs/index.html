@@ -8,6 +8,7 @@
 :root {
   --cool: #38bdf8;
   --hot:  #fb7185;
+  --next: #8b5cf6;
   --ink:  #0f172a;
   --ink-soft: #334155;
   --panel-strong: rgba(255,255,255,0.97);
@@ -68,15 +69,15 @@ body {
 .hero h1 span { color: var(--cool); }
 .hero p {
   font-size: 14px; color: var(--ink-soft);
-  max-width: 560px; margin: 0 auto;
+  max-width: 620px; margin: 0 auto;
   line-height: 1.6;
 }
 
 .cards {
-  max-width: 1000px; margin: 0 auto;
+  max-width: 1180px; margin: 0 auto;
   padding: 24px 24px 64px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 20px;
 }
 
@@ -105,6 +106,7 @@ body {
   margin-bottom: 18px;
 }
 .card-icon.review { background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); color: #fff; }
+.card-icon.next { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: #fff; }
 .card-icon.editor { background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%); color: #fff; }
 .card-tag {
   position: absolute; top: 24px; right: 24px;
@@ -112,6 +114,7 @@ body {
   padding: 4px 10px; border-radius: 999px;
 }
 .card-tag.review { background: #e0f2fe; color: #0369a1; }
+.card-tag.next { background: #ede9fe; color: #5b21b6; }
 .card-tag.editor { background: #fee2e2; color: #991b1b; }
 .card-title {
   font-size: 22px; font-weight: 700;
@@ -179,7 +182,7 @@ body {
 
 <section class="hero">
   <h1>CH<span>aser</span> チュートリアル制作ツール</h1>
-  <p>反応型プログラミング学習用ステージ群の閲覧と編集。</p>
+  <p>反応型プログラミング学習用ステージ群の閲覧・編集・Blockly実行確認。</p>
 </section>
 
 <section class="cards">
@@ -199,12 +202,28 @@ body {
     <span class="card-cta">開く</span>
   </a>
 
-  <a class="card" href="stage_editor.html">
-    <span class="card-tag editor">EDIT</span>
-    <div class="card-icon editor">✏️</div>
-    <div class="card-title">ステージエディタ</div>
+  <a class="card" href="stage_editor_next.html">
+    <span class="card-tag next">NEW</span>
+    <div class="card-icon next">🧩</div>
+    <div class="card-title">Blockly対応ステージエディタ</div>
     <div class="card-desc">
-      可変サイズのマップと全メタデータをブラウザ上で編集。番号は並び順から自動採番、JSON 保存と HTML 書き出しに対応。
+      ステージ編集に加えて、Blocklyで解答プログラムを書いてその場で実行確認できる新しいエディタ。
+    </div>
+    <ul class="card-features">
+      <li>ステージごとのブロックセットに応じてBlocklyを切替</li>
+      <li>マップをパレット描画・ASCII編集の両方で作成</li>
+      <li>Blockly実行・自動実行・リセットに対応</li>
+      <li>模範解答画像の保存に対応</li>
+    </ul>
+    <span class="card-cta">開く</span>
+  </a>
+
+  <a class="card" href="stage_editor.html">
+    <span class="card-tag editor">LEGACY</span>
+    <div class="card-icon editor">✏️</div>
+    <div class="card-title">旧ステージエディタ</div>
+    <div class="card-desc">
+      Blockly機能を追加する前の従来版エディタ。既存の編集フローを確認したい場合や比較用に利用できます。
     </div>
     <ul class="card-features">
       <li>マップを可変サイズで作成・パレットで描画</li>
