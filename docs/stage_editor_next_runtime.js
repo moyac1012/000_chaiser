@@ -15,9 +15,111 @@
   const STD_LOGIC = ['controls_if', 'logic_compare', 'logic_operation', 'logic_boolean', 'logic_negate'];
   const STD_MATH = ['math_number', 'math_arithmetic', 'math_modulo', 'math_number_property', 'math_random_int', 'math_random_float'];
 
+  const BLOCK_CATALOG = [
+    { group: 'スタート・行動', blocks: [
+      ['chaser_on_turn', '毎ターン'],
+      ['chaser_action_walk', '歩く'],
+      ['chaser_action_put', 'ブロックを置く'],
+      ['chaser_action_walk_last', '前に進んだ向きで歩く'],
+      ['chaser_action_walk_random', 'どこかに歩く'],
+      ['chaser_action_look', '見る'],
+      ['chaser_action_search', 'まっすぐ見る'],
+      ['chaser_action_look_store', '広く見た結果を変数に入れる'],
+      ['chaser_action_search_store', 'まっすぐ見た結果を変数に入れる'],
+      ['chaser_turn_end', 'ターンを終える'],
+    ] },
+    { group: 'まわりを見る', blocks: [
+      ['chaser_get_tile', '方向のマス'],
+      ['chaser_is_tile', '方向のマス判定'],
+      ['chaser_get_around', 'まわりの番号'],
+      ['chaser_view_get_around', '見た結果の番号'],
+      ['chaser_view_has_tile', '見た結果に指定マスがある'],
+      ['chaser_view_count_tile', '見た結果の指定マス数'],
+      ['chaser_discard_value', '結果を使わない'],
+      ['chaser_tile_value', 'マスの種類'],
+    ] },
+    { group: '変数・状態', blocks: [
+      ['chaser_state_create', '変数を作る'],
+      ['chaser_state_set', '変数に値を入れる'],
+      ['chaser_state_get', '変数を読む'],
+      ['chaser_state_change', '変数を増減'],
+      ['chaser_turn_number', '現在のターン数'],
+      ['chaser_last_direction', '前に進んだ向き'],
+      ['chaser_direction_value', '向き'],
+    ] },
+    { group: '条件・論理', blocks: [
+      ['controls_if', 'もし / そうでなければ'],
+      ['logic_compare', '比較'],
+      ['logic_operation', 'かつ / または'],
+      ['logic_boolean', '真 / 偽'],
+      ['logic_negate', 'ではない'],
+    ] },
+    { group: '数', blocks: [
+      ['math_number', '数'],
+      ['math_arithmetic', '四則演算'],
+      ['math_modulo', '余り'],
+      ['math_number_property', '数の性質'],
+      ['math_random_int', 'ランダムな整数'],
+      ['math_random_float', 'ランダムな小数'],
+    ] },
+  ];
+  const CATALOG_TYPES = BLOCK_CATALOG.flatMap((cat) => cat.blocks.map(([type]) => type));
+  const BLOCK_LABELS = Object.fromEntries(BLOCK_CATALOG.flatMap((cat) => cat.blocks));
+
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function defaultBlockSets() {
+    if (typeof BLOCK_SET_ALLOWED !== 'undefined') return clone(BLOCK_SET_ALLOWED);
+    return {
+      BASIC: ['chaser_on_turn', 'chaser_action_walk', 'chaser_turn_end'],
+      CHECK: ['chaser_on_turn', 'chaser_action_walk', 'chaser_turn_end', 'chaser_get_tile', 'chaser_is_tile', 'chaser_tile_value', 'controls_if', 'logic_compare', 'logic_operation', 'logic_boolean', 'logic_negate'],
+      STATE: ['chaser_on_turn', 'chaser_action_walk', 'chaser_turn_end', 'chaser_get_tile', 'chaser_is_tile', 'chaser_tile_value', 'chaser_state_create', 'chaser_state_set', 'chaser_state_get', 'chaser_state_change', 'chaser_turn_number', 'chaser_last_direction', 'chaser_direction_value', 'controls_if', 'logic_compare', 'logic_operation', 'logic_boolean', 'logic_negate', 'math_number', 'math_arithmetic', 'math_modulo', 'math_number_property', 'math_random_int', 'math_random_float'],
+      LOOK: ['chaser_on_turn', 'chaser_action_walk', 'chaser_action_look', 'chaser_action_look_store', 'chaser_turn_end', 'chaser_get_tile', 'chaser_is_tile', 'chaser_get_around', 'chaser_view_get_around', 'chaser_view_has_tile', 'chaser_discard_value', 'chaser_tile_value', 'chaser_state_create', 'chaser_state_set', 'chaser_state_get', 'chaser_state_change', 'chaser_turn_number', 'chaser_last_direction', 'chaser_direction_value', 'controls_if', 'logic_compare', 'logic_operation', 'logic_boolean', 'logic_negate', 'math_number', 'math_arithmetic', 'math_modulo', 'math_number_property', 'math_random_int', 'math_random_float'],
+      SEARCH: ['chaser_on_turn', 'chaser_action_walk', 'chaser_action_put', 'chaser_action_look', 'chaser_action_search', 'chaser_action_look_store', 'chaser_action_search_store', 'chaser_turn_end', 'chaser_get_tile', 'chaser_is_tile', 'chaser_get_around', 'chaser_view_get_around', 'chaser_view_has_tile', 'chaser_discard_value', 'chaser_tile_value', 'chaser_state_create', 'chaser_state_set', 'chaser_state_get', 'chaser_state_change', 'chaser_turn_number', 'chaser_last_direction', 'chaser_direction_value', 'controls_if', 'logic_compare', 'logic_operation', 'logic_boolean', 'logic_negate', 'math_number', 'math_arithmetic', 'math_modulo', 'math_number_property', 'math_random_int', 'math_random_float'],
+      ENEMY: ['chaser_on_turn', 'chaser_action_walk', 'chaser_action_put', 'chaser_action_walk_last', 'chaser_action_walk_random', 'chaser_action_look', 'chaser_action_search', 'chaser_action_look_store', 'chaser_action_search_store', 'chaser_turn_end', 'chaser_get_tile', 'chaser_is_tile', 'chaser_get_around', 'chaser_view_get_around', 'chaser_view_has_tile', 'chaser_discard_value', 'chaser_tile_value', 'chaser_state_create', 'chaser_state_set', 'chaser_state_get', 'chaser_state_change', 'chaser_turn_number', 'chaser_last_direction', 'chaser_direction_value', 'controls_if', 'logic_compare', 'logic_operation', 'logic_boolean', 'logic_negate', 'math_number', 'math_arithmetic', 'math_modulo', 'math_number_property', 'math_random_int', 'math_random_float'],
+      COUNT: ['chaser_on_turn', 'chaser_action_walk', 'chaser_action_put', 'chaser_action_walk_last', 'chaser_action_walk_random', 'chaser_action_look', 'chaser_action_search', 'chaser_action_look_store', 'chaser_action_search_store', 'chaser_turn_end', 'chaser_get_tile', 'chaser_is_tile', 'chaser_get_around', 'chaser_view_get_around', 'chaser_view_has_tile', 'chaser_view_count_tile', 'chaser_discard_value', 'chaser_tile_value', 'chaser_state_create', 'chaser_state_set', 'chaser_state_get', 'chaser_state_change', 'chaser_turn_number', 'chaser_last_direction', 'chaser_direction_value', 'controls_if', 'logic_compare', 'logic_operation', 'logic_boolean', 'logic_negate', 'math_number', 'math_arithmetic', 'math_modulo', 'math_number_property', 'math_random_int', 'math_random_float'],
+    };
+  }
+
+  const DEFAULT_BLOCK_SETS = defaultBlockSets();
+
+  function normalizeAllowed(list, fallback) {
+    const source = Array.isArray(list) ? list : fallback;
+    const seen = new Set();
+    const allowed = [];
+    source.forEach((type) => {
+      if (type === 'chaser_on_start') return;
+      if (!CATALOG_TYPES.includes(type)) return;
+      if (seen.has(type)) return;
+      seen.add(type);
+      allowed.push(type);
+    });
+    return allowed;
+  }
+
+  function applyBlockSets(source) {
+    const next = {};
+    const setNames = typeof SETS !== 'undefined' ? SETS : Object.keys(DEFAULT_BLOCK_SETS);
+    setNames.forEach((set) => {
+      next[set] = normalizeAllowed(source && source[set], DEFAULT_BLOCK_SETS[set] || []);
+      if (typeof BLOCK_SET_ALLOWED !== 'undefined') BLOCK_SET_ALLOWED[set] = [...next[set]];
+    });
+    window.st.blockSets = next;
+    return next;
+  }
+
+  function currentBlockSets() {
+    return window.st.blockSets || applyBlockSets(undefined);
+  }
+
   function allowedFor(set) {
-    if (typeof BLOCK_SET_ALLOWED !== 'undefined' && BLOCK_SET_ALLOWED[set]) return BLOCK_SET_ALLOWED[set];
-    return ['chaser_on_turn', 'chaser_action_walk', 'chaser_turn_end'];
+    return (currentBlockSets()[set] || DEFAULT_BLOCK_SETS[set] || []).filter((type) => type !== 'chaser_on_start');
+  }
+
+  function editorPayload() {
+    return { version: 2, blockSets: clone(currentBlockSets()), phases: window.st.phases };
   }
 
   window.fullToolbox = function fullToolbox() {
@@ -132,6 +234,15 @@
     g.forBlock.chaser_discard_value = (b) => `${g.valueToCode(b, 'VALUE', 0) || 'undefined'};`;
     g.forBlock.chaser_tile_value = (b) => [b.getFieldValue('TILE') || '0', 0];
   };
+
+  function syncGlobalOverrides() {
+    try { fullToolbox = window.fullToolbox; } catch (_) {}
+    try { filterToolbox = window.filterToolbox; } catch (_) {}
+    try { toolbox = window.toolbox; } catch (_) {}
+    try { blockJson = window.blockJson; } catch (_) {}
+    try { registerGenerators = window.registerGenerators; } catch (_) {}
+  }
+  syncGlobalOverrides();
 
   window.compileBot = function compileBot() {
     const g = window.gen();
@@ -396,18 +507,166 @@ PHASES.forEach(ph=>{main.innerHTML+='<section class="phase-section phase-anchor"
 </body></html>`;
   };
 
-  window.exportReviewHtmlFromEditor = function exportReviewHtmlFromEditor() {
-    if (typeof window.saveXml === 'function') window.saveXml();
-    const html = window.buildReviewHtml(window.st?.phases || []);
-    const blob = new Blob([html], { type: 'text/html' });
+  function downloadText(text, name, type) {
+    const blob = new Blob([text], { type });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = 'stage_review_next.html';
+    anchor.download = name;
     anchor.click();
     URL.revokeObjectURL(url);
+  }
+
+  window.exportReviewHtmlFromEditor = function exportReviewHtmlFromEditor() {
+    if (typeof window.saveXml === 'function') window.saveXml();
+    downloadText(window.buildReviewHtml(window.st?.phases || []), 'stage_review_next.html', 'text/html');
   };
+
+  function renderBlockSetEditor() {
+    const body = document.getElementById('body');
+    const setNames = typeof SETS !== 'undefined' ? SETS : Object.keys(DEFAULT_BLOCK_SETS);
+    const selected = setNames.includes(window.st.blockSetEdit) ? window.st.blockSetEdit : setNames[0];
+    window.st.blockSetEdit = selected;
+    const allowed = new Set(allowedFor(selected));
+    const currentStage = typeof curStage === 'function' ? curStage() : null;
+    body.innerHTML = `
+      <div class="panel">
+        <div class="grid">
+          <div class="field">
+            <label>編集するブロックセット</label>
+            <select id="bs-select">${setNames.map((set) => `<option value="${set}" ${set === selected ? 'selected' : ''}>${set}</option>`).join('')}</select>
+          </div>
+          <div class="field">
+            <label>選択中ステージ</label>
+            <div class="hint">${currentStage ? `${escapeHtml(currentStage.title)} / ${escapeHtml(currentStage.blockSet)}` : '—'}</div>
+          </div>
+        </div>
+        <div class="controls">
+          <button class="btn" id="bs-check-all">すべて選択</button>
+          <button class="btn" id="bs-uncheck-all">すべて外す</button>
+          <button class="btn warn" id="bs-reset-one">このセットを既定に戻す</button>
+          <button class="btn danger" id="bs-reset-all">全セットを既定に戻す</button>
+        </div>
+        <div class="hint">「最初に1回だけやること」ブロックは、以前の指定どおりどのセットにも入れられないようにしています。</div>
+      </div>
+      <div class="grid" style="margin-top:12px">
+        ${BLOCK_CATALOG.map((cat) => `
+          <div class="panel">
+            <div class="section" style="margin-top:0">${escapeHtml(cat.group)}</div>
+            ${cat.blocks.map(([type, label]) => `
+              <label style="display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:12px">
+                <input type="checkbox" class="bs-block" value="${type}" ${allowed.has(type) ? 'checked' : ''}>
+                <span><b>${escapeHtml(label)}</b><br><span class="hint mono">${escapeHtml(type)}</span></span>
+              </label>
+            `).join('')}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    document.getElementById('bs-select').onchange = (event) => {
+      window.st.blockSetEdit = event.target.value;
+      renderBlockSetEditor();
+    };
+    document.querySelectorAll('.bs-block').forEach((input) => {
+      input.onchange = () => {
+        const selectedSet = window.st.blockSetEdit;
+        const checked = [...document.querySelectorAll('.bs-block:checked')].map((el) => el.value);
+        currentBlockSets()[selectedSet] = normalizeAllowed(checked, []);
+        applyBlockSets(currentBlockSets());
+        if (window.st.ws && typeof curStage === 'function' && curStage()?.blockSet === selectedSet) {
+          window.st.ws.updateToolbox(window.toolbox(selectedSet));
+        }
+        window.saveLocal();
+      };
+    });
+    document.getElementById('bs-check-all').onclick = () => {
+      currentBlockSets()[window.st.blockSetEdit] = [...CATALOG_TYPES];
+      applyBlockSets(currentBlockSets());
+      window.saveLocal();
+      renderBlockSetEditor();
+    };
+    document.getElementById('bs-uncheck-all').onclick = () => {
+      currentBlockSets()[window.st.blockSetEdit] = [];
+      applyBlockSets(currentBlockSets());
+      window.saveLocal();
+      renderBlockSetEditor();
+    };
+    document.getElementById('bs-reset-one').onclick = () => {
+      currentBlockSets()[window.st.blockSetEdit] = [...(DEFAULT_BLOCK_SETS[window.st.blockSetEdit] || [])];
+      applyBlockSets(currentBlockSets());
+      window.saveLocal();
+      renderBlockSetEditor();
+    };
+    document.getElementById('bs-reset-all').onclick = () => {
+      if (!confirm('全ブロックセットを既定に戻しますか？')) return;
+      applyBlockSets(DEFAULT_BLOCK_SETS);
+      window.saveLocal();
+      renderBlockSetEditor();
+    };
+  }
+
+  function installBlockSetEditorTab() {
+    if (typeof TABS !== 'undefined' && Array.isArray(TABS) && !TABS.some(([id]) => id === 'blocksets')) {
+      TABS.push(['blocksets', 'ブロックセット']);
+    }
+    const originalRenderMain = window.renderMain;
+    window.renderMain = function renderMainWithBlockSets() {
+      if (window.st.tab !== 'blocksets') return originalRenderMain();
+      const stage = typeof curStage === 'function' ? curStage() : null;
+      const main = document.getElementById('main');
+      if (!stage) {
+        main.innerHTML = '<div class=empty>JSONを読み込んでください</div>';
+        return;
+      }
+      main.innerHTML = `<div class=tabs>${TABS.map(([id, label]) => `<div class="tab ${window.st.tab === id ? 'active' : ''}" data-tab="${id}">${label}</div>`).join('')}</div><div id=body></div>`;
+      main.querySelectorAll('.tab').forEach((tab) => {
+        tab.onclick = () => {
+          if (window.st.tab === 'play' && typeof window.saveXml === 'function') window.saveXml();
+          if (typeof window.disposeBlockly === 'function') window.disposeBlockly();
+          window.st.tab = tab.dataset.tab;
+          window.renderMain();
+        };
+      });
+      renderBlockSetEditor();
+    };
+    try { renderMain = window.renderMain; } catch (_) {}
+  }
+
+  const originalSaveLocal = window.saveLocal;
+  window.saveLocal = function saveLocalWithBlockSets() {
+    localStorage.setItem(STORAGE, JSON.stringify(editorPayload()));
+  };
+  try { saveLocal = window.saveLocal; } catch (_) {}
+
+  const originalSaveJson = window.saveJson;
+  window.saveJson = function saveJsonWithBlockSets() {
+    if (typeof window.saveXml === 'function') window.saveXml();
+    downloadText(JSON.stringify(editorPayload(), null, 2), `chaiser-stages-v2-${new Date().toISOString().slice(0, 10)}.json`, 'application/json');
+  };
+  try { saveJson = window.saveJson; } catch (_) {}
+
+  const originalLoadObj = window.loadObj;
+  window.loadObj = function loadObjWithBlockSets(obj) {
+    originalLoadObj(obj);
+    applyBlockSets(obj && obj.blockSets ? obj.blockSets : undefined);
+    window.saveLocal();
+    if (typeof window.render === 'function') window.render();
+  };
+  try { loadObj = window.loadObj; } catch (_) {}
+
+  try {
+    const stored = JSON.parse(localStorage.getItem(STORAGE) || '{}');
+    applyBlockSets(stored.blockSets);
+  } catch (_) {
+    applyBlockSets(undefined);
+  }
+
+  installBlockSetEditorTab();
 
   const exportButton = document.getElementById('export-review');
   if (exportButton) exportButton.onclick = window.exportReviewHtmlFromEditor;
+  const saveButton = document.getElementById('save-json');
+  if (saveButton) saveButton.onclick = window.saveJson;
+
+  if (typeof window.renderMain === 'function') window.renderMain();
 })();
