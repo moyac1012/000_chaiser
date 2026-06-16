@@ -102,5 +102,6 @@ function reviewHtml(phases){const data=JSON.stringify(phases).replace(/<\/script
 document.getElementById('load-default').onclick=loadDefault;document.getElementById('load-json').onclick=()=>document.getElementById('json-file').click();document.getElementById('json-file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{loadObj(JSON.parse(r.result));msg('JSONを読み込みました')}catch(e){msg('読込失敗')}};r.readAsText(f);e.target.value=''};document.getElementById('save-json').onclick=saveJson;document.getElementById('export-review').onclick=exportReview;document.getElementById('clear-local').onclick=()=>{localStorage.removeItem(STORAGE);st.phases=[];disposeBlockly();render()};if(!loadLocal())render();
 </script>
 <script src="./stage_editor_next_runtime.js"></script>
+<script src="./stage_editor_next_blocksets_extra.js"></script>
 </body>
 </html>
