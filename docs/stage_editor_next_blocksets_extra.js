@@ -1,67 +1,57 @@
 (() => {
-  const STANDARD_ORDER = ['BASIC', 'CHECK', 'STATE', 'LOOK', 'SEARCH', 'ENEMY', 'COUNT'];
+  const STANDARD_SET_NAMES = ['BASIC', 'CHECK', 'STATE', 'LOOK', 'SEARCH', 'ENEMY', 'COUNT'];
+  const DELETED_KEY = `${STORAGE}:deletedBlockSets`;
   const DEFAULT_BLOCK_SETS = JSON.parse(JSON.stringify(BLOCK_SET_ALLOWED));
   const CATALOG = [
     { title: 'スタート・行動', blocks: [
-      ['chaser_on_turn', '毎ターン'],
-      ['chaser_action_walk', '歩く'],
-      ['chaser_action_put', 'ブロックを置く'],
-      ['chaser_action_walk_last', '前に進んだ向きで歩く'],
-      ['chaser_action_walk_random', 'どこかに歩く'],
-      ['chaser_action_look', '見る'],
-      ['chaser_action_search', 'まっすぐ見る'],
-      ['chaser_action_look_store', '広く見た結果を変数に入れる'],
-      ['chaser_action_search_store', 'まっすぐ見た結果を変数に入れる'],
+      ['chaser_on_turn', '毎ターン'], ['chaser_action_walk', '歩く'], ['chaser_action_put', 'ブロックを置く'],
+      ['chaser_action_walk_last', '前に進んだ向きで歩く'], ['chaser_action_walk_random', 'どこかに歩く'],
+      ['chaser_action_look', '見る'], ['chaser_action_search', 'まっすぐ見る'],
+      ['chaser_action_look_store', '広く見た結果を変数に入れる'], ['chaser_action_search_store', 'まっすぐ見た結果を変数に入れる'],
       ['chaser_turn_end', 'ターンを終える'],
     ] },
     { title: 'まわりを見る', blocks: [
-      ['chaser_get_tile', '方向のマス'],
-      ['chaser_is_tile', '方向のマス判定'],
-      ['chaser_get_around', 'まわりの番号'],
-      ['chaser_view_get_around', '見た結果の番号'],
-      ['chaser_view_has_tile', '見た結果に指定マスがある'],
-      ['chaser_view_count_tile', '見た結果の指定マス数'],
-      ['chaser_discard_value', '結果を使わない'],
-      ['chaser_tile_value', 'マスの種類'],
+      ['chaser_get_tile', '方向のマス'], ['chaser_is_tile', '方向のマス判定'], ['chaser_get_around', 'まわりの番号'],
+      ['chaser_view_get_around', '見た結果の番号'], ['chaser_view_has_tile', '見た結果に指定マスがある'],
+      ['chaser_view_count_tile', '見た結果の指定マス数'], ['chaser_discard_value', '結果を使わない'], ['chaser_tile_value', 'マスの種類'],
     ] },
     { title: '変数・状態', blocks: [
-      ['chaser_state_create', '変数を作る'],
-      ['chaser_state_set', '変数に値を入れる'],
-      ['chaser_state_get', '変数を読む'],
-      ['chaser_state_change', '変数を増減'],
-      ['chaser_turn_number', '現在のターン数'],
-      ['chaser_last_direction', '前に進んだ向き'],
-      ['chaser_direction_value', '向き'],
+      ['chaser_state_create', '変数を作る'], ['chaser_state_set', '変数に値を入れる'], ['chaser_state_get', '変数を読む'],
+      ['chaser_state_change', '変数を増減'], ['chaser_turn_number', '現在のターン数'], ['chaser_last_direction', '前に進んだ向き'], ['chaser_direction_value', '向き'],
     ] },
     { title: '条件・論理', blocks: [
-      ['controls_if', 'もし / そうでなければ'],
-      ['logic_compare', '比較'],
-      ['logic_operation', 'かつ / または'],
-      ['logic_boolean', '真 / 偽'],
-      ['logic_negate', 'ではない'],
+      ['controls_if', 'もし / そうでなければ'], ['logic_compare', '比較'], ['logic_operation', 'かつ / または'], ['logic_boolean', '真 / 偽'], ['logic_negate', 'ではない'],
     ] },
     { title: '数', blocks: [
-      ['math_number', '数'],
-      ['math_arithmetic', '四則演算'],
-      ['math_modulo', '余り'],
-      ['math_number_property', '数の性質'],
-      ['math_random_int', 'ランダムな整数'],
-      ['math_random_float', 'ランダムな小数'],
+      ['math_number', '数'], ['math_arithmetic', '四則演算'], ['math_modulo', '余り'], ['math_number_property', '数の性質'], ['math_random_int', 'ランダムな整数'], ['math_random_float', 'ランダムな小数'],
     ] },
   ];
   const ALL_TYPES = CATALOG.flatMap((group) => group.blocks.map(([type]) => type));
+
+  function replaceGlobal(name, value) {
+    window[name] = value;
+    try { Function('value', `${name}=value`)(value); } catch (_) {}
+  }
 
   function clone(value) {
     return JSON.parse(JSON.stringify(value));
   }
 
-  function replaceGlobal(name, value) {
-    window[name] = value;
-    try { eval(`${name} = value`); } catch (_) {}
-  }
-
   function toast(text) {
     if (typeof msg === 'function') msg(text);
+  }
+
+  function readDeleted() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(DELETED_KEY) || '[]');
+      return new Set(Array.isArray(stored) ? stored.filter((name) => typeof name === 'string') : []);
+    } catch (_) {
+      return new Set();
+    }
+  }
+
+  function writeDeleted(names) {
+    localStorage.setItem(DELETED_KEY, JSON.stringify([...names]));
   }
 
   function normalizeName(value) {
@@ -75,10 +65,6 @@
     return '';
   }
 
-  function readStored() {
-    try { return JSON.parse(localStorage.getItem(STORAGE) || '{}'); } catch (_) { return {}; }
-  }
-
   function normalizeAllowed(list) {
     const seen = new Set();
     return (Array.isArray(list) ? list : []).filter((type) => {
@@ -88,25 +74,33 @@
     });
   }
 
-  function normalizeSetNames(blockSets, order) {
+  function setNamesFrom(source, order, deleted) {
     const names = [];
-    const used = new Set();
+    const seen = new Set();
     const append = (name) => {
-      if (!name || used.has(name)) return;
-      used.add(name);
+      if (!name || seen.has(name) || deleted.has(name)) return;
+      seen.add(name);
       names.push(name);
     };
-    (Array.isArray(order) ? order : []).forEach(append);
-    STANDARD_ORDER.forEach(append);
-    Object.keys(blockSets || {}).forEach(append);
-    SETS.forEach(append);
-    SETS.splice(0, SETS.length, ...names);
+    const hasSavedDefinition = Object.keys(source || {}).length > 0 || (Array.isArray(order) && order.length > 0);
+    if (hasSavedDefinition) {
+      (Array.isArray(order) ? order : []).forEach(append);
+      Object.keys(source || {}).forEach(append);
+    } else {
+      STANDARD_SET_NAMES.forEach(append);
+      SETS.forEach(append);
+    }
     return names;
   }
 
-  function syncBlockSets(source, order) {
+  function syncBlockSets(source, order, deleted = readDeleted()) {
     const input = source && typeof source === 'object' ? source : {};
-    const names = normalizeSetNames(input, order);
+    const names = setNamesFrom(input, order, deleted);
+    if (!names.length) {
+      const fallback = STANDARD_SET_NAMES.find((name) => !deleted.has(name)) || 'BASIC';
+      names.push(fallback);
+    }
+    SETS.splice(0, SETS.length, ...names);
     const result = {};
     names.forEach((name) => {
       const fallback = DEFAULT_BLOCK_SETS[name] || BLOCK_SET_ALLOWED[name] || [];
@@ -123,28 +117,48 @@
 
   function currentBlockSets() {
     if (!st.blockSets) {
-      const stored = readStored();
-      syncBlockSets(stored.blockSets, stored.blockSetOrder);
+      let loaded = {};
+      try { loaded = JSON.parse(localStorage.getItem(STORAGE) || '{}'); } catch (_) {}
+      syncBlockSets(loaded.blockSets, loaded.blockSetOrder);
     }
     return st.blockSets;
   }
 
-  function editorPayload() {
+  function replacementFor(name) {
+    if (name !== 'BASIC' && SETS.includes('BASIC')) return 'BASIC';
+    const index = SETS.indexOf(name);
+    return SETS[index + 1] || SETS[index - 1] || null;
+  }
+
+  function replaceStageSet(oldName, nextName) {
+    (st.phases || []).forEach((phase) => {
+      (phase.stages || []).forEach((stage) => {
+        if (stage.blockSet === oldName) stage.blockSet = nextName;
+      });
+    });
+  }
+
+  function usageCount(name) {
+    return (st.phases || []).reduce((total, phase) => total + (phase.stages || []).filter((stage) => stage.blockSet === name).length, 0);
+  }
+
+  function payload() {
     return {
       version: 2,
       blockSets: clone(currentBlockSets()),
       blockSetOrder: [...SETS],
+      deletedBlockSets: [...readDeleted()],
       phases: st.phases || [],
     };
   }
 
   function saveAll() {
-    localStorage.setItem(STORAGE, JSON.stringify(editorPayload()));
+    localStorage.setItem(STORAGE, JSON.stringify(payload()));
   }
 
   function downloadJson() {
     if (typeof saveXml === 'function') saveXml();
-    const blob = new Blob([JSON.stringify(editorPayload(), null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(payload(), null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -153,23 +167,26 @@
     URL.revokeObjectURL(url);
   }
 
-  function updateCurrentWorkspace() {
+  function refreshCurrentWorkspace() {
     const stage = curStage();
     if (st.ws && stage && typeof toolbox === 'function') st.ws.updateToolbox(toolbox(stage.blockSet));
   }
 
   function addBlockSet() {
-    const source = st.blockSetEdit && SETS.includes(st.blockSetEdit) ? st.blockSetEdit : 'BASIC';
+    const sourceName = st.blockSetEdit && SETS.includes(st.blockSetEdit) ? st.blockSetEdit : SETS[0];
     let name = prompt('新しいブロックセット名を入力してください（例: LOOP）', '');
     if (name == null) return;
     name = normalizeName(name);
     const error = validateName(name);
     if (error) return alert(error);
+    const copySource = confirm(`現在の ${sourceName} のブロック構成をコピーして作成しますか？\nキャンセルすると空のセットとして作成します。`);
 
-    const copySource = confirm(`現在の ${source} のブロック構成をコピーして作成しますか？\nキャンセルすると空のセットとして作成します。`);
+    const deleted = readDeleted();
+    deleted.delete(name);
+    writeDeleted(deleted);
     const sets = currentBlockSets();
     SETS.push(name);
-    sets[name] = copySource ? [...(sets[source] || [])] : [];
+    sets[name] = copySource ? [...(sets[sourceName] || [])] : [];
     BLOCK_SET_ALLOWED[name] = [...sets[name]];
     st.blockSetEdit = name;
     st.blockSetOrder = [...SETS];
@@ -195,14 +212,46 @@
     delete sets[before];
     BLOCK_SET_ALLOWED[name] = [...sets[name]];
     delete BLOCK_SET_ALLOWED[before];
-    st.phases.forEach((phase) => phase.stages.forEach((stage) => {
-      if (stage.blockSet === before) stage.blockSet = name;
-    }));
+    replaceStageSet(before, name);
+    const deleted = readDeleted();
+    deleted.delete(name);
+    writeDeleted(deleted);
     st.blockSetEdit = name;
     st.blockSetOrder = [...SETS];
     saveAll();
     render();
     toast('ブロックセット名を変更しました');
+  }
+
+  function deleteBlockSet() {
+    const name = st.blockSetEdit;
+    if (!name || !SETS.includes(name)) return;
+    if (SETS.length <= 1) {
+      alert('最後のブロックセットは削除できません');
+      return;
+    }
+    const replacement = replacementFor(name);
+    if (!replacement) return alert('代替となるブロックセットがありません');
+    const count = usageCount(name);
+    const text = count > 0
+      ? `ブロックセット「${name}」を削除しますか？\n\n使用中の ${count} ステージは「${replacement}」へ変更されます。`
+      : `ブロックセット「${name}」を削除しますか？\n\nステージでは使用されていません。`;
+    if (!confirm(text)) return;
+
+    const index = SETS.indexOf(name);
+    SETS.splice(index, 1);
+    const sets = currentBlockSets();
+    delete sets[name];
+    delete BLOCK_SET_ALLOWED[name];
+    replaceStageSet(name, replacement);
+    const deleted = readDeleted();
+    deleted.add(name);
+    writeDeleted(deleted);
+    st.blockSetEdit = replacement;
+    st.blockSetOrder = [...SETS];
+    saveAll();
+    render();
+    toast('ブロックセットを削除しました');
   }
 
   function moveBlockSet(direction) {
@@ -237,6 +286,7 @@
             <div class="controls" style="margin:0">
               <button class="btn primary" id="bs-add">＋ 追加</button>
               <button class="btn" id="bs-rename">名前変更</button>
+              <button class="btn danger" id="bs-delete" ${SETS.length <= 1 ? 'disabled' : ''}>削除</button>
               <button class="btn" id="bs-up" ${index <= 0 ? 'disabled' : ''}>▲ 上へ</button>
               <button class="btn" id="bs-down" ${index < 0 || index >= SETS.length - 1 ? 'disabled' : ''}>▼ 下へ</button>
             </div>
@@ -247,32 +297,30 @@
           <button class="btn" id="bs-none">すべて外す</button>
           <button class="btn warn" id="bs-apply">現在ステージに適用</button>
         </div>
-        <div class="hint">並び順はステージ編集画面の選択肢とJSONの <span class="mono">blockSetOrder</span> に反映されます。「最初に1回だけやること」は追加対象外です。</div>
+        <div class="hint">削除したセットを使っているステージは、確認後に代替セットへ変更されます。順序はステージ編集画面の選択肢とJSONの <span class="mono">blockSetOrder</span> に反映されます。</div>
       </div>
       <div class="grid" style="margin-top:12px">
         ${CATALOG.map((group) => `<div class="panel"><div class="section" style="margin-top:0">${group.title}</div>${group.blocks.map(([type, label]) => `<label style="display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:12px"><input type="checkbox" class="bs-block" value="${type}" ${allowed.has(type) ? 'checked' : ''}><span><b>${label}</b><br><span class="hint mono">${type}</span></span></label>`).join('')}</div>`).join('')}
       </div>`;
 
-    document.getElementById('bs-select').onchange = (event) => {
-      st.blockSetEdit = event.target.value;
-      renderBlockSetTab();
-    };
+    document.getElementById('bs-select').onchange = (event) => { st.blockSetEdit = event.target.value; renderBlockSetTab(); };
     document.getElementById('bs-add').onclick = addBlockSet;
     document.getElementById('bs-rename').onclick = renameBlockSet;
+    document.getElementById('bs-delete').onclick = deleteBlockSet;
     document.getElementById('bs-up').onclick = () => moveBlockSet(-1);
     document.getElementById('bs-down').onclick = () => moveBlockSet(1);
     document.getElementById('bs-all').onclick = () => {
       currentBlockSets()[active] = [...ALL_TYPES];
       BLOCK_SET_ALLOWED[active] = [...ALL_TYPES];
       saveAll();
-      updateCurrentWorkspace();
+      refreshCurrentWorkspace();
       renderBlockSetTab();
     };
     document.getElementById('bs-none').onclick = () => {
       currentBlockSets()[active] = [];
       BLOCK_SET_ALLOWED[active] = [];
       saveAll();
-      updateCurrentWorkspace();
+      refreshCurrentWorkspace();
       renderBlockSetTab();
     };
     document.getElementById('bs-apply').onclick = () => {
@@ -289,7 +337,7 @@
         currentBlockSets()[active] = normalizeAllowed(list);
         BLOCK_SET_ALLOWED[active] = [...currentBlockSets()[active]];
         saveAll();
-        updateCurrentWorkspace();
+        refreshCurrentWorkspace();
       };
     });
   }
@@ -331,17 +379,17 @@
     });
   }
 
-  const baseHandleSideAction = window.handleSideAction || handleSideAction;
+  const originalHandleSideAction = window.handleSideAction || handleSideAction;
   replaceGlobal('handleSideAction', function handleSideActionWithGroupOrder(data) {
     if (data.act === 'move-phase-up') return moveGroup(data.ph, -1);
     if (data.act === 'move-phase-down') return moveGroup(data.ph, 1);
-    return baseHandleSideAction(data);
+    return originalHandleSideAction(data);
   });
   replaceGlobal('renderSide', renderSideWithGroupOrder);
 
-  const baseRenderMain = window.renderMain || renderMain;
+  const originalRenderMain = window.renderMain || renderMain;
   replaceGlobal('renderMain', function renderMainWithBlockSetTools() {
-    if (st.tab !== 'blocksets') return baseRenderMain();
+    if (st.tab !== 'blocksets') return originalRenderMain();
     const stage = curStage();
     const main = document.getElementById('main');
     if (!stage) {
@@ -360,13 +408,17 @@
     renderBlockSetTab();
   });
 
-  const baseLoadObj = window.loadObj || loadObj;
+  const originalLoadObj = window.loadObj || loadObj;
   replaceGlobal('loadObj', function loadObjWithBlockSetTools(obj) {
-    const blockSets = obj && obj.blockSets ? obj.blockSets : null;
-    const blockSetOrder = obj && obj.blockSetOrder ? obj.blockSetOrder : null;
-    if (blockSets) syncBlockSets(blockSets, blockSetOrder);
-    baseLoadObj(obj);
-    syncBlockSets(blockSets || st.blockSets, blockSetOrder || st.blockSetOrder);
+    const importedSets = obj && obj.blockSets ? obj.blockSets : null;
+    const importedOrder = obj && obj.blockSetOrder ? obj.blockSetOrder : null;
+    const importedDeleted = new Set(Array.isArray(obj?.deletedBlockSets)
+      ? obj.deletedBlockSets
+      : (importedSets ? STANDARD_SET_NAMES.filter((name) => !Object.prototype.hasOwnProperty.call(importedSets, name)) : []));
+    writeDeleted(importedDeleted);
+    if (importedSets) syncBlockSets(importedSets, importedOrder, importedDeleted);
+    originalLoadObj(obj);
+    syncBlockSets(importedSets || st.blockSets, importedOrder || st.blockSetOrder, importedDeleted);
     saveAll();
     render();
   });
@@ -375,8 +427,11 @@
   replaceGlobal('saveJson', downloadJson);
 
   if (!TABS.some(([id]) => id === 'blocksets')) TABS.push(['blocksets', 'ブロックセット']);
-  const saved = readStored();
-  syncBlockSets(saved.blockSets, saved.blockSetOrder);
+  let initial = {};
+  try { initial = JSON.parse(localStorage.getItem(STORAGE) || '{}'); } catch (_) {}
+  const deleted = new Set(Array.isArray(initial.deletedBlockSets) ? initial.deletedBlockSets : [...readDeleted()]);
+  writeDeleted(deleted);
+  syncBlockSets(initial.blockSets, initial.blockSetOrder, deleted);
 
   const saveButton = document.getElementById('save-json');
   if (saveButton) saveButton.onclick = downloadJson;
