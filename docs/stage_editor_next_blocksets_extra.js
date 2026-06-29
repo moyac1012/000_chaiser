@@ -55,9 +55,9 @@
     return JSON.parse(JSON.stringify(value));
   }
 
-  function setGlobal(name, value) {
+  function replaceGlobal(name, value) {
     window[name] = value;
-    try { Function('value', `${name}=value`)(value); } catch (_) {}
+    try { eval(`${name} = value`); } catch (_) {}
   }
 
   function toast(text) {
@@ -75,7 +75,7 @@
     return '';
   }
 
-  function storedData() {
+  function readStored() {
     try { return JSON.parse(localStorage.getItem(STORAGE) || '{}'); } catch (_) { return {}; }
   }
 
@@ -88,29 +88,29 @@
     });
   }
 
-  function ensureNames(blockSets, order) {
+  function normalizeSetNames(blockSets, order) {
     const names = [];
-    const seen = new Set();
-    const add = (name) => {
-      if (!name || seen.has(name)) return;
-      seen.add(name);
+    const used = new Set();
+    const append = (name) => {
+      if (!name || used.has(name)) return;
+      used.add(name);
       names.push(name);
     };
-    (Array.isArray(order) ? order : []).forEach(add);
-    STANDARD_ORDER.forEach(add);
-    Object.keys(blockSets || {}).forEach(add);
-    SETS.forEach(add);
+    (Array.isArray(order) ? order : []).forEach(append);
+    STANDARD_ORDER.forEach(append);
+    Object.keys(blockSets || {}).forEach(append);
+    SETS.forEach(append);
     SETS.splice(0, SETS.length, ...names);
     return names;
   }
 
-  function syncBlockSets(input, order) {
-    const source = input && typeof input === 'object' ? input : {};
-    const names = ensureNames(source, order);
+  function syncBlockSets(source, order) {
+    const input = source && typeof source === 'object' ? source : {};
+    const names = normalizeSetNames(input, order);
     const result = {};
     names.forEach((name) => {
       const fallback = DEFAULT_BLOCK_SETS[name] || BLOCK_SET_ALLOWED[name] || [];
-      result[name] = normalizeAllowed(source[name] == null ? fallback : source[name]);
+      result[name] = normalizeAllowed(input[name] == null ? fallback : input[name]);
       BLOCK_SET_ALLOWED[name] = [...result[name]];
     });
     Object.keys(BLOCK_SET_ALLOWED).forEach((name) => {
@@ -123,45 +123,42 @@
 
   function currentBlockSets() {
     if (!st.blockSets) {
-      const saved = storedData();
-      syncBlockSets(saved.blockSets, saved.blockSetOrder);
+      const stored = readStored();
+      syncBlockSets(stored.blockSets, stored.blockSetOrder);
     }
     return st.blockSets;
   }
 
-  function payload() {
-    const sets = currentBlockSets();
+  function editorPayload() {
     return {
       version: 2,
-      blockSets: clone(sets),
+      blockSets: clone(currentBlockSets()),
       blockSetOrder: [...SETS],
       phases: st.phases || [],
     };
   }
 
   function saveAll() {
-    localStorage.setItem(STORAGE, JSON.stringify(payload()));
+    localStorage.setItem(STORAGE, JSON.stringify(editorPayload()));
   }
 
   function downloadJson() {
     if (typeof saveXml === 'function') saveXml();
-    const blob = new Blob([JSON.stringify(payload(), null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(editorPayload(), null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `chaiser-stages-v2-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `chaiser-stages-v2-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.click();
     URL.revokeObjectURL(url);
   }
 
   function updateCurrentWorkspace() {
     const stage = curStage();
-    if (st.ws && stage && typeof toolbox === 'function') {
-      st.ws.updateToolbox(toolbox(stage.blockSet));
-    }
+    if (st.ws && stage && typeof toolbox === 'function') st.ws.updateToolbox(toolbox(stage.blockSet));
   }
 
-  function addSet() {
+  function addBlockSet() {
     const source = st.blockSetEdit && SETS.includes(st.blockSetEdit) ? st.blockSetEdit : 'BASIC';
     let name = prompt('新しいブロックセット名を入力してください（例: LOOP）', '');
     if (name == null) return;
@@ -169,10 +166,10 @@
     const error = validateName(name);
     if (error) return alert(error);
 
-    const copy = confirm(`現在の ${source} のブロック構成をコピーして作成しますか？\nキャンセルすると空のセットとして作成します。`);
+    const copySource = confirm(`現在の ${source} のブロック構成をコピーして作成しますか？\nキャンセルすると空のセットとして作成します。`);
     const sets = currentBlockSets();
     SETS.push(name);
-    sets[name] = copy ? [...(sets[source] || [])] : [];
+    sets[name] = copySource ? [...(sets[source] || [])] : [];
     BLOCK_SET_ALLOWED[name] = [...sets[name]];
     st.blockSetEdit = name;
     st.blockSetOrder = [...SETS];
@@ -181,37 +178,36 @@
     toast('ブロックセットを追加しました');
   }
 
-  function renameSet() {
-    const oldName = st.blockSetEdit;
-    if (!oldName || !SETS.includes(oldName)) return;
-    let next = prompt('新しいブロックセット名を入力してください', oldName);
-    if (next == null) return;
-    next = normalizeName(next);
-    const error = validateName(next, oldName);
+  function renameBlockSet() {
+    const before = st.blockSetEdit;
+    if (!before || !SETS.includes(before)) return;
+    let name = prompt('新しいブロックセット名を入力してください', before);
+    if (name == null) return;
+    name = normalizeName(name);
+    const error = validateName(name, before);
     if (error) return alert(error);
-    if (next === oldName) return;
+    if (name === before) return;
 
-    const index = SETS.indexOf(oldName);
-    SETS[index] = next;
+    const index = SETS.indexOf(before);
+    SETS[index] = name;
     const sets = currentBlockSets();
-    sets[next] = [...(sets[oldName] || [])];
-    delete sets[oldName];
-    BLOCK_SET_ALLOWED[next] = [...sets[next]];
-    delete BLOCK_SET_ALLOWED[oldName];
-
+    sets[name] = [...(sets[before] || [])];
+    delete sets[before];
+    BLOCK_SET_ALLOWED[name] = [...sets[name]];
+    delete BLOCK_SET_ALLOWED[before];
     st.phases.forEach((phase) => phase.stages.forEach((stage) => {
-      if (stage.blockSet === oldName) stage.blockSet = next;
+      if (stage.blockSet === before) stage.blockSet = name;
     }));
-    st.blockSetEdit = next;
+    st.blockSetEdit = name;
     st.blockSetOrder = [...SETS];
     saveAll();
     render();
     toast('ブロックセット名を変更しました');
   }
 
-  function moveSet(delta) {
+  function moveBlockSet(direction) {
     const index = SETS.indexOf(st.blockSetEdit);
-    const target = index + delta;
+    const target = index + direction;
     if (index < 0 || target < 0 || target >= SETS.length) return;
     [SETS[index], SETS[target]] = [SETS[target], SETS[index]];
     st.blockSetOrder = [...SETS];
@@ -251,7 +247,7 @@
           <button class="btn" id="bs-none">すべて外す</button>
           <button class="btn warn" id="bs-apply">現在ステージに適用</button>
         </div>
-        <div class="hint">並び順は、ステージ編集画面のブロックセット選択肢とJSONの <span class="mono">blockSetOrder</span> に反映されます。「最初に1回だけやること」は追加対象外です。</div>
+        <div class="hint">並び順はステージ編集画面の選択肢とJSONの <span class="mono">blockSetOrder</span> に反映されます。「最初に1回だけやること」は追加対象外です。</div>
       </div>
       <div class="grid" style="margin-top:12px">
         ${CATALOG.map((group) => `<div class="panel"><div class="section" style="margin-top:0">${group.title}</div>${group.blocks.map(([type, label]) => `<label style="display:flex;gap:8px;align-items:flex-start;margin:6px 0;font-size:12px"><input type="checkbox" class="bs-block" value="${type}" ${allowed.has(type) ? 'checked' : ''}><span><b>${label}</b><br><span class="hint mono">${type}</span></span></label>`).join('')}</div>`).join('')}
@@ -261,23 +257,23 @@
       st.blockSetEdit = event.target.value;
       renderBlockSetTab();
     };
-    document.getElementById('bs-add').onclick = addSet;
-    document.getElementById('bs-rename').onclick = renameSet;
-    document.getElementById('bs-up').onclick = () => moveSet(-1);
-    document.getElementById('bs-down').onclick = () => moveSet(1);
+    document.getElementById('bs-add').onclick = addBlockSet;
+    document.getElementById('bs-rename').onclick = renameBlockSet;
+    document.getElementById('bs-up').onclick = () => moveBlockSet(-1);
+    document.getElementById('bs-down').onclick = () => moveBlockSet(1);
     document.getElementById('bs-all').onclick = () => {
       currentBlockSets()[active] = [...ALL_TYPES];
       BLOCK_SET_ALLOWED[active] = [...ALL_TYPES];
       saveAll();
-      renderBlockSetTab();
       updateCurrentWorkspace();
+      renderBlockSetTab();
     };
     document.getElementById('bs-none').onclick = () => {
       currentBlockSets()[active] = [];
       BLOCK_SET_ALLOWED[active] = [];
       saveAll();
-      renderBlockSetTab();
       updateCurrentWorkspace();
+      renderBlockSetTab();
     };
     document.getElementById('bs-apply').onclick = () => {
       const current = curStage();
@@ -298,8 +294,53 @@
     });
   }
 
+  function moveGroup(groupId, direction) {
+    const index = st.phases.findIndex((phase) => phase.id === groupId);
+    const target = index + direction;
+    if (index < 0 || target < 0 || target >= st.phases.length) return;
+    const selectedStage = curStage();
+    [st.phases[index], st.phases[target]] = [st.phases[target], st.phases[index]];
+    if (selectedStage && typeof selectByStageRef === 'function') selectByStageRef(selectedStage);
+    renumberAll();
+    saveAll();
+    render();
+    toast('グループの順序を変更しました');
+  }
+
+  function renderSideWithGroupOrder() {
+    const side = document.getElementById('side');
+    if (!st.phases.length) {
+      side.innerHTML = '<div class=empty>JSONを読み込んでください</div>';
+      return;
+    }
+    let html = '<div class=section>グループ／ステージ</div>';
+    st.phases.forEach((phase, phaseIndex) => {
+      html += `<div class=phase><div class=ph><span class=ph-title>${esc(phase.id)} · ${esc(phase.name)}</span><span class=ph-count>${phase.stages.length}</span><span class=ph-actions><button class=side-mini data-act=move-phase-up data-ph='${esc(phase.id)}' title='グループを上へ移動' ${phaseIndex === 0 ? 'disabled' : ''}>▲</button><button class=side-mini data-act=move-phase-down data-ph='${esc(phase.id)}' title='グループを下へ移動' ${phaseIndex === st.phases.length - 1 ? 'disabled' : ''}>▼</button><button class=side-mini data-act=edit-phase data-ph='${esc(phase.id)}' title='グループ名変更'>名</button><button class=side-mini data-act=rename-phase-id data-ph='${esc(phase.id)}' title='グループID変更'>ID</button><button class=side-mini data-act=delete-phase data-ph='${esc(phase.id)}' title='グループ削除'>×</button></span></div>`;
+      phase.stages.forEach((stage, index) => {
+        html += `<div class='st ${phase.id === st.phase && index === st.idx ? 'active' : ''}' data-act=sel data-ph='${esc(phase.id)}' data-i='${index}'><span class=st-no>${String(stage.no).padStart(2, '0')}</span><span class=st-title>${esc(stage.title)}</span><span class=st-actions><button class=side-mini data-act=move-up data-ph='${esc(phase.id)}' data-i='${index}' title='上へ'>▲</button><button class=side-mini data-act=move-down data-ph='${esc(phase.id)}' data-i='${index}' title='下へ'>▼</button><button class=side-mini data-act=copy-stage data-ph='${esc(phase.id)}' data-i='${index}' title='複製'>C</button><button class=side-mini data-act=delete-stage data-ph='${esc(phase.id)}' data-i='${index}' title='削除'>×</button></span></div>`;
+      });
+      html += `<button class=side-add data-act=add-stage data-ph='${esc(phase.id)}'>＋ ステージ追加</button></div>`;
+    });
+    html += '<button class=side-add data-act=add-phase>＋ グループ追加</button>';
+    side.innerHTML = html;
+    side.querySelectorAll('[data-act]').forEach((element) => {
+      element.onclick = (event) => {
+        event.stopPropagation();
+        handleSideAction(element.dataset);
+      };
+    });
+  }
+
+  const baseHandleSideAction = window.handleSideAction || handleSideAction;
+  replaceGlobal('handleSideAction', function handleSideActionWithGroupOrder(data) {
+    if (data.act === 'move-phase-up') return moveGroup(data.ph, -1);
+    if (data.act === 'move-phase-down') return moveGroup(data.ph, 1);
+    return baseHandleSideAction(data);
+  });
+  replaceGlobal('renderSide', renderSideWithGroupOrder);
+
   const baseRenderMain = window.renderMain || renderMain;
-  setGlobal('renderMain', function renderMainWithBlockSetTools() {
+  replaceGlobal('renderMain', function renderMainWithBlockSetTools() {
     if (st.tab !== 'blocksets') return baseRenderMain();
     const stage = curStage();
     const main = document.getElementById('main');
@@ -320,21 +361,21 @@
   });
 
   const baseLoadObj = window.loadObj || loadObj;
-  setGlobal('loadObj', function loadObjWithBlockSetTools(obj) {
-    const sets = obj && obj.blockSets ? obj.blockSets : null;
-    const order = obj && obj.blockSetOrder ? obj.blockSetOrder : null;
-    if (sets) syncBlockSets(sets, order);
+  replaceGlobal('loadObj', function loadObjWithBlockSetTools(obj) {
+    const blockSets = obj && obj.blockSets ? obj.blockSets : null;
+    const blockSetOrder = obj && obj.blockSetOrder ? obj.blockSetOrder : null;
+    if (blockSets) syncBlockSets(blockSets, blockSetOrder);
     baseLoadObj(obj);
-    syncBlockSets(sets || st.blockSets, order || st.blockSetOrder);
+    syncBlockSets(blockSets || st.blockSets, blockSetOrder || st.blockSetOrder);
     saveAll();
     render();
   });
 
-  setGlobal('saveLocal', saveAll);
-  setGlobal('saveJson', downloadJson);
+  replaceGlobal('saveLocal', saveAll);
+  replaceGlobal('saveJson', downloadJson);
 
   if (!TABS.some(([id]) => id === 'blocksets')) TABS.push(['blocksets', 'ブロックセット']);
-  const saved = storedData();
+  const saved = readStored();
   syncBlockSets(saved.blockSets, saved.blockSetOrder);
 
   const saveButton = document.getElementById('save-json');
