@@ -168,4 +168,9 @@
   gameRules.src = './stage_editor_next_game_rules.js';
   gameRules.async = false;
   document.body.appendChild(gameRules);
+
+  const difficulty = document.createElement('script');
+  difficulty.src = './stage_editor_next_difficulty.js';
+  difficulty.async = false;
+  document.body.appendChild(difficulty);
 })();
