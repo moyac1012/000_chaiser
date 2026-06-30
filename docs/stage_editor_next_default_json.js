@@ -115,6 +115,18 @@
     }
   }
 
+  function hasUsableLocalStages() {
+    const storageKey = globalValue('STORAGE', 'chaiserStageBlockly');
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (!raw) return false;
+      const saved = JSON.parse(raw);
+      return Array.isArray(saved?.phases) && saved.phases.length > 0;
+    } catch (_) {
+      return false;
+    }
+  }
+
   setGlobal('loadDefault', async function loadDefaultFromRepository() {
     try {
       await loadRepositoryDefault();
@@ -127,6 +139,11 @@
   const defaultButton = document.getElementById('load-default');
   if (defaultButton) defaultButton.onclick = () => window.loadDefault();
   addDefaultExportButton();
+
+  if (!hasUsableLocalStages() && !window.__chaserDefaultAutoLoadStarted) {
+    window.__chaserDefaultAutoLoadStarted = true;
+    window.loadDefault();
+  }
 
   window.chaserDefaultJson = {
     path: 'docs/data/default-stages.json',
