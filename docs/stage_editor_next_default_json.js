@@ -1,6 +1,6 @@
 (() => {
   const DEFAULT_JSON_URL = './data/default-stages.json';
-  const LEGACY_DEFAULT_JSON_URL = '../json/chaiser-stages-2026-05-15%20(8).json';
+  const LEGACY_REVIEW_URL = './stage_review.html';
 
   function setGlobal(name, value) {
     window[name] = value;
@@ -65,15 +65,39 @@
     toolbar.insertBefore(button, before || null);
   }
 
+  function cacheBustedUrl(url) {
+    return `${url}${url.includes('?') ? '&' : '?'}v=${Date.now()}`;
+  }
+
   async function fetchJson(url) {
-    const response = await fetch(`${url}${url.includes('?') ? '&' : '?'}v=${Date.now()}`, { cache: 'no-store' });
+    const response = await fetch(cacheBustedUrl(url), { cache: 'no-store' });
     if (!response.ok) throw new Error(String(response.status));
     return response.json();
   }
 
+  async function loadStagesFromReviewHtml() {
+    const response = await fetch(cacheBustedUrl(LEGACY_REVIEW_URL), { cache: 'no-store' });
+    if (!response.ok) throw new Error(`review HTML: ${response.status}`);
+    const html = await response.text();
+    const marker = 'const PHASES = ';
+    const start = html.indexOf(marker);
+    if (start < 0) throw new Error('review HTMLにPHASESがありません');
+    const bodyStart = start + marker.length;
+    const endings = [
+      ';\nconst BLOCK_SETS_INFO',
+      ';\nconst esc=',
+      ';\nconst esc =',
+    ].map((ending) => html.indexOf(ending, bodyStart)).filter((index) => index >= 0);
+    const end = endings.length ? Math.min(...endings) : -1;
+    if (end < 0) throw new Error('review HTMLのPHASES終端が見つかりません');
+    const phases = JSON.parse(html.slice(bodyStart, end));
+    if (!Array.isArray(phases) || phases.length === 0) throw new Error('review HTMLのフェーズが空です');
+    return { version: 2, phases };
+  }
+
   async function loadRepositoryDefault() {
     let payload = null;
-    let usedLegacy = false;
+    let usedReviewFallback = false;
     try {
       const candidate = await fetchJson(DEFAULT_JSON_URL);
       if (candidate?.defaultPlaceholder || !Array.isArray(candidate?.phases) || candidate.phases.length === 0) {
@@ -81,24 +105,22 @@
       }
       payload = candidate;
     } catch (_) {
-      payload = await fetchJson(LEGACY_DEFAULT_JSON_URL);
-      usedLegacy = true;
+      payload = await loadStagesFromReviewHtml();
+      usedReviewFallback = true;
     }
 
     loadObj(payload);
     if (typeof msg === 'function') {
-      msg(usedLegacy ? '既定JSONを読み込みました（旧データを使用中）' : '既定JSONを読み込みました');
+      msg(usedReviewFallback ? '既定JSONを読み込みました（移行前データを使用中）' : '既定JSONを読み込みました');
     }
   }
 
-  const previousLoadDefault = window.loadDefault || loadDefault;
   setGlobal('loadDefault', async function loadDefaultFromRepository() {
     try {
       await loadRepositoryDefault();
     } catch (error) {
       console.error(error);
-      if (typeof msg === 'function') msg('既定JSON読込に失敗しました');
-      return previousLoadDefault();
+      if (typeof msg === 'function') msg('既定JSON読込に失敗しました。default-stages.json を登録してください');
     }
   });
 
