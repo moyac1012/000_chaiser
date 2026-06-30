@@ -163,4 +163,9 @@
   (st.phases || []).forEach((phase) => (phase.stages || []).forEach(normalizeExportFlag));
   bindExportButtons();
   render();
+
+  const gameRules = document.createElement('script');
+  gameRules.src = './stage_editor_next_game_rules.js';
+  gameRules.async = false;
+  document.body.appendChild(gameRules);
 })();
