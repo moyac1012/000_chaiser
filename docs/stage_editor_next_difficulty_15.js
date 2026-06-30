@@ -132,4 +132,9 @@
   protectRandomHotWalkGenerator();
   (st.phases || []).forEach((phase) => (phase.stages || []).forEach(normalizeDifficulty));
   if (typeof render === 'function') render();
+
+  const phaseMeta = document.createElement('script');
+  phaseMeta.src = './stage_editor_next_phase_meta.js';
+  phaseMeta.async = false;
+  document.body.appendChild(phaseMeta);
 })();
