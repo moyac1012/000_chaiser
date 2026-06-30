@@ -96,8 +96,7 @@
     return result;
   }
 
-  function exportPayload() {
-    const phases = exportedPhases();
+  function buildPayload(phases) {
     const names = Array.isArray(SETS) ? [...SETS] : [];
     const source = st.blockSets && typeof st.blockSets === 'object' ? st.blockSets : BLOCK_SET_ALLOWED;
     const blockSets = {};
@@ -109,6 +108,14 @@
       deletedBlockSets: Array.isArray(st.deletedBlockSets) ? [...st.deletedBlockSets] : [],
       phases,
     };
+  }
+
+  function exportPayload() {
+    return buildPayload(exportedPhases());
+  }
+
+  function jsonPayload() {
+    return buildPayload(clone(st.phases || []));
   }
 
   function download(text, filename, type) {
@@ -124,7 +131,7 @@
   function saveExportJson() {
     if (typeof saveXml === 'function') saveXml();
     download(
-      JSON.stringify(exportPayload(), null, 2),
+      JSON.stringify(jsonPayload(), null, 2),
       `chaiser-stages-v2-${new Date().toISOString().slice(0, 10)}.json`,
       'application/json'
     );
