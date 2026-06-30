@@ -116,7 +116,7 @@
   if (typeof render === 'function') render();
 
   const hotBlockly = document.createElement('script');
-  hotBlockly.src = './stage_editor_next_hot_blockly_v2.js';
+  hotBlockly.src = './stage_editor_next_hot_blockly_v3.js';
   hotBlockly.async = false;
   hotBlockly.onload = () => {
     const hotStateFix = document.createElement('script');
