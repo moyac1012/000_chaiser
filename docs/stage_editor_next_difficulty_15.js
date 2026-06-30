@@ -25,7 +25,7 @@
   function optionsHtml(selected) {
     const options = ['<option value="0">未設定</option>'];
     for (let level = 1; level <= MAX_DIFFICULTY; level++) {
-      options.push(`<option value="${level}" ${selected === level ? 'selected' : ''}>★ ${level} / ${MAX_DIFFICULTY}</option>`);
+      options.push(`<option value="${level}" ${selected === level ? 'selected' : ''}>★ ${level} / ${MAX_DIFFICY}</option>`);
     }
     return options.join('');
   }
@@ -101,6 +101,13 @@
     renderDifficultyBadges();
   });
 
+  function fixRandomHotWalk() {
+    if (!window.Blockly || typeof window.gen !== 'function') return;
+    const generator = window.gen();
+    generator.forBlock.chaser_hot_walk_random = () => "(()=>{const dirs=['Up','Down','Left','Right'];const indices={Up:1,Down:7,Left:3,Right:5};const available=dirs.filter(d=>api.around[indices[d]]!==2);const pool=available.length?available:dirs;const direction=pool[Math.floor(Math.random()*pool.length)];const walk=api['walk'+direction];if(typeof walk==='function'){walk();}})();";
+  }
+
+  fixRandomHotWalk();
   (st.phases || []).forEach((phase) => (phase.stages || []).forEach(normalizeDifficulty));
   if (typeof render === 'function') render();
 })();
