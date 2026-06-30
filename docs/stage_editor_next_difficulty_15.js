@@ -67,7 +67,7 @@
       const badge = document.createElement('span');
       badge.className = `difficulty-badge difficulty-${difficulty}`;
       badge.textContent = difficulty ? `★${difficulty}` : '難?';
-      badge.title = difficulty ? `難易度 ★${difficulty} / ${MAX_DIFFICY}` : '難易度 未設定';
+      badge.title = difficulty ? `難易度 ★${difficulty} / ${MAX_DIFFICULTY}` : '難易度 未設定';
       badge.style.color = colorFor(difficulty);
       number.insertAdjacentElement('afterend', badge);
     });
