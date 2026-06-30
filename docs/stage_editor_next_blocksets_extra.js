@@ -32,6 +32,9 @@
     window[name] = value;
     try { Function('value', `${name}=value`)(value); } catch (_) {}
   }
+  function replaceGlobal(name, value) {
+    setGlobal(name, value);
+  }
   function clone(value) { return JSON.parse(JSON.stringify(value)); }
   function toast(text) { if (typeof msg === 'function') msg(text); }
   function readMeta() {
