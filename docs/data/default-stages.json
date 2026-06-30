@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "defaultPlaceholder": true,
+  "note": "このファイルをエディタから書き出した default-stages.json で置き換えると、その内容が既定JSONになります。置き換えるまで旧既定JSONへ自動フォールバックします。",
+  "phases": []
+}
