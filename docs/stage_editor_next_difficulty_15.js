@@ -136,5 +136,11 @@
   const phaseMeta = document.createElement('script');
   phaseMeta.src = './stage_editor_next_phase_meta.js';
   phaseMeta.async = false;
+  phaseMeta.onload = () => {
+    const defaultJson = document.createElement('script');
+    defaultJson.src = './stage_editor_next_default_json.js';
+    defaultJson.async = false;
+    document.body.appendChild(defaultJson);
+  };
   document.body.appendChild(phaseMeta);
 })();
