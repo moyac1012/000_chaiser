@@ -1,0 +1,64 @@
+{
+  "title": "CHaser 開発進捗",
+  "tagline": "Blocklyで学ぶ反応型プログラミング教材",
+  "updatedAt": "2026-06-30",
+  "status": "active",
+  "statusLabel": "開発中",
+  "headline": "ステージ制作とエディタ機能を継続的に拡張しています",
+  "summary": "CHaserは、マップ上の状況を読み取りながら行動を決める反応型プログラミングを学ぶための教材です。Blockly対応のステージエディタを基盤に、チュートリアルステージとゲームルールを制作しています。",
+  "metrics": [
+    { "label": "開発状況", "value": "継続中", "note": "機能追加・ステージ設計を進行中" },
+    { "label": "公開ステージ", "value": "準備中", "note": "公開用ステージJSONの同期後に自動集計" },
+    { "label": "最新更新", "value": "2026.06", "note": "HOT行動・難易度・公開基盤" }
+  ],
+  "highlights": [
+    "ステージごとのBlockly対応エディタ",
+    "15段階の難易度設定と一覧表示",
+    "HOTの行動をBlocklyで設計",
+    "アイテム取得・ブロック設置・囲い込み判定などのゲームルール"
+  ],
+  "milestones": [
+    {
+      "title": "ステージエディタ基盤",
+      "state": "done",
+      "label": "完了",
+      "detail": "マップ編集、Blockly編集、JSON保存・読込、レビューHTML出力を実装。"
+    },
+    {
+      "title": "ステージ設計支援",
+      "state": "done",
+      "label": "完了",
+      "detail": "出力対象の切替、難易度設定、複数マップ、クリア条件を追加。"
+    },
+    {
+      "title": "HOT行動の拡張",
+      "state": "active",
+      "label": "進行中",
+      "detail": "HOT専用Blocklyによる移動・ランダム移動・ブロック設置を拡張中。"
+    },
+    {
+      "title": "公開ステージJSONの同期",
+      "state": "planned",
+      "label": "次の予定",
+      "detail": "公開用に整形したステージJSONを接続し、ステージ数・フェーズ数を自動表示。"
+    }
+  ],
+  "updates": [
+    {
+      "date": "2026-06-30",
+      "title": "公開進捗ページを追加",
+      "detail": "外部共有用に、JSONを読み込んで開発状況を表示するページを追加。"
+    },
+    {
+      "date": "2026-06-30",
+      "title": "HOT行動と難易度を拡張",
+      "detail": "HOTのBlockly行動設定と、15段階の難易度設定を追加。"
+    }
+  ],
+  "next": "公開用ステージJSONを同期し、ステージ数・フェーズ別の進捗をページ上で自動集計する予定です。",
+  "links": [
+    { "label": "ステージ一覧", "href": "stage_review.html" },
+    { "label": "ステージエディタ", "href": "stage_editor_next.html" }
+  ],
+  "stageJsonUrl": null
+}
