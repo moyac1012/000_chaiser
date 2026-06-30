@@ -114,4 +114,9 @@
   installStyle();
   (st.phases || []).forEach((phase) => (phase.stages || []).forEach(normalizeDifficulty));
   if (typeof render === 'function') render();
+
+  const hotBlockly = document.createElement('script');
+  hotBlockly.src = './stage_editor_next_hot_blockly.js';
+  hotBlockly.async = false;
+  document.body.appendChild(hotBlockly);
 })();
