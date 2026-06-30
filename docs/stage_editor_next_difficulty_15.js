@@ -101,13 +101,35 @@
     renderDifficultyBadges();
   });
 
-  function fixRandomHotWalk() {
-    if (!window.Blockly || typeof window.gen !== 'function') return;
-    const generator = window.gen();
-    generator.forBlock.chaser_hot_walk_random = () => "(()=>{const dirs=['Up','Down','Left','Right'];const indices={Up:1,Down:7,Left:3,Right:5};const available=dirs.filter(d=>api.around[indices[d]]!==2);const pool=available.length?available:dirs;const direction=pool[Math.floor(Math.random()*pool.length)];const walk=api['walk'+direction];if(typeof walk==='function'){walk();}})();";
+  const fixedRandomHotWalk = () => "(()=>{const dirs=['Up','Down','Left','Right'];const indices={Up:1,Down:7,Left:3,Right:5};const available=dirs.filter(d=>api.around[indices[d]]!==2);const pool=available.length?available:dirs;const direction=pool[Math.floor(Math.random()*pool.length)];const walk=api['walk'+direction];if(typeof walk==='function'){walk();}})();";
+
+  function protectRandomHotWalkGenerator() {
+    if (!window.gen || window.__hotRandomWalkGeneratorProtected) return;
+    const originalGen = window.gen;
+
+    function protect(generator) {
+      if (!generator?.forBlock || generator.forBlock.__hotRandomWalkProtected) return generator;
+      const blocks = generator.forBlock;
+      let implementation = fixedRandomHotWalk;
+      Object.defineProperty(blocks, 'chaser_hot_walk_random', {
+        configurable: true,
+        enumerable: true,
+        get: () => implementation,
+        set: () => { implementation = fixedRandomHotWalk; },
+      });
+      Object.defineProperty(blocks, '__hotRandomWalkProtected', { value: true });
+      blocks.chaser_hot_walk_random = fixedRandomHotWalk;
+      return generator;
+    }
+
+    window.gen = function guardedGenerator(...args) {
+      return protect(originalGen.apply(this, args));
+    };
+    window.__hotRandomWalkGeneratorProtected = true;
+    try { protect(originalGen()); } catch (_) {}
   }
 
-  fixRandomHotWalk();
+  protectRandomHotWalkGenerator();
   (st.phases || []).forEach((phase) => (phase.stages || []).forEach(normalizeDifficulty));
   if (typeof render === 'function') render();
 })();
