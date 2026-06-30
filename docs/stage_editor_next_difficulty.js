@@ -122,6 +122,12 @@
     const hotStateFix = document.createElement('script');
     hotStateFix.src = './stage_editor_next_hot_state_fix.js';
     hotStateFix.async = false;
+    hotStateFix.onload = () => {
+      const difficulty15 = document.createElement('script');
+      difficulty15.src = './stage_editor_next_difficulty_15.js';
+      difficulty15.async = false;
+      document.body.appendChild(difficulty15);
+    };
     document.body.appendChild(hotStateFix);
   };
   document.body.appendChild(hotBlockly);
