@@ -118,5 +118,11 @@
   const hotBlockly = document.createElement('script');
   hotBlockly.src = './stage_editor_next_hot_blockly_v2.js';
   hotBlockly.async = false;
+  hotBlockly.onload = () => {
+    const hotStateFix = document.createElement('script');
+    hotStateFix.src = './stage_editor_next_hot_state_fix.js';
+    hotStateFix.async = false;
+    document.body.appendChild(hotStateFix);
+  };
   document.body.appendChild(hotBlockly);
 })();
