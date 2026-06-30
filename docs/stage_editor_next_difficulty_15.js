@@ -25,7 +25,7 @@
   function optionsHtml(selected) {
     const options = ['<option value="0">未設定</option>'];
     for (let level = 1; level <= MAX_DIFFICULTY; level++) {
-      options.push(`<option value="${level}" ${selected === level ? 'selected' : ''}>★ ${level} / ${MAX_DIFFICY}</option>`);
+      options.push(`<option value="${level}" ${selected === level ? 'selected' : ''}>★ ${level} / ${MAX_DIFFICULTY}</option>`);
     }
     return options.join('');
   }
@@ -67,7 +67,7 @@
       const badge = document.createElement('span');
       badge.className = `difficulty-badge difficulty-${difficulty}`;
       badge.textContent = difficulty ? `★${difficulty}` : '難?';
-      badge.title = difficulty ? `難易度 ★${difficulty} / ${MAX_DIFFICULTY}` : '難易度 未設定';
+      badge.title = difficulty ? `難易度 ★${difficulty} / ${MAX_DIFFICY}` : '難易度 未設定';
       badge.style.color = colorFor(difficulty);
       number.insertAdjacentElement('afterend', badge);
     });
