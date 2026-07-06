@@ -39,9 +39,23 @@
       "logic_operation",
       "logic_negate"
     ],
-    "STATE1": [
+    "BASIC_PUT": [
       "chaser_on_turn",
       "chaser_action_walk",
+      "chaser_action_put",
+      "chaser_action_walk_random",
+      "chaser_turn_end",
+      "chaser_get_tile",
+      "chaser_is_tile",
+      "controls_if",
+      "logic_compare",
+      "logic_operation",
+      "logic_negate"
+    ],
+    "STATE_MN": [
+      "chaser_on_turn",
+      "chaser_action_walk",
+      "chaser_action_put",
       "chaser_turn_end",
       "chaser_get_tile",
       "chaser_is_tile",
@@ -68,6 +82,7 @@
     "STATE2": [
       "chaser_on_turn",
       "chaser_action_walk",
+      "chaser_action_put",
       "chaser_action_walk_last",
       "chaser_turn_end",
       "chaser_get_tile",
@@ -240,7 +255,8 @@
     "CHECK",
     "CHECK_AND",
     "MN_PUT",
-    "STATE1",
+    "BASIC_PUT",
+    "STATE_MN",
     "STATE2",
     "LOOK",
     "SEARCH",
@@ -255,8 +271,8 @@
       "id": "A",
       "name": "条件なし",
       "range": "01〜03",
-      "color": "#64748b",
-      "bg": "#f1f5f9",
+      "color": "#acd89c",
+      "bg": "#f5faf3",
       "desc": "毎ターン同じ行動を繰り返す。プログラム構造の習得。",
       "stages": [
         {
@@ -886,14 +902,64 @@
       ]
     },
     {
-      "id": "B2",
+      "id": "C",
       "name": "アイテム・そうでなくもし",
-      "color": "#64748b",
-      "bg": "#f1f5f9",
+      "color": "#ead08b",
+      "bg": "#fcf9f1",
       "stages": [
         {
           "no": 13,
-          "id": "step-13-new-copy-copy",
+          "id": "step-13-new-copy-copy-copy-2",
+          "title": "アイテムをとろう",
+          "blockSet": "CHECK",
+          "variants": 1,
+          "cond": "items1+goal",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "#######",
+                "#######",
+                "#..I..#",
+                "#G.I.C#",
+                "#..I..#",
+                "#######",
+                "#######"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "collectItemsAndGoal",
+              "maxActions": null,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"GLZF~Vm8VMXn},aT]8y0\" x=\"47\" y=\"141\"><statement name=\"DO\"><block type=\"chaser_action_walk\" id=\"TasP/P|*vXA|L~?CqkSg\"><field name=\"DIR\">Left</field><next><block type=\"chaser_turn_end\" id=\"syaCFq)F@e|(Xl/ggGU[\"></block></next></block></statement></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "includeInExport": true,
+          "difficulty": 0,
+          "hotBehavior": {
+            "enabled": false,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\"></block></statement></block></xml>"
+          },
+          "hotEnabled": false
+        },
+        {
+          "no": 14,
+          "id": "step-14-new-copy-copy",
           "title": "アイテムをとろう",
           "blockSet": "CHECK",
           "variants": 1,
@@ -943,8 +1009,8 @@
           "hotEnabled": false
         },
         {
-          "no": 14,
-          "id": "step-14-new-copy-copy-copy",
+          "no": 15,
+          "id": "step-15-new-copy-copy-copy",
           "title": "アイテムをとろう（コピー）",
           "blockSet": "CHECK",
           "variants": 1,
@@ -977,56 +1043,6 @@
             },
             "defaultVariantIndex": 0,
             "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"GLZF~Vm8VMXn},aT]8y0\" x=\"47\" y=\"141\"><statement name=\"DO\"><block type=\"controls_if\" id=\"Q(?)_0fo^_S;O[;K;_},\"><mutation elseif=\"2\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"mp`|Ov4.[rQd2q!|=iwF\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"TasP/P|*vXA|L~?CqkSg\"><field name=\"DIR\">Right</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"OzR=t%TrxuwGdNr4M|H(\"><field name=\"DIR\">Down</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"O`_wrB8]x.Jr)b(h#Mfa\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"N^9IAKsH^JITAe`[Oy1#\"><field name=\"DIR\">Left</field><field name=\"TILE\">3</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_walk\" id=\"cCpU$8]O4o(qMDtBT%wi\"><field name=\"DIR\">Left</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"s2pSYew#5R)i^)rt7-5K\"><field name=\"DIR\">Left</field></block></statement><next><block type=\"chaser_turn_end\" id=\"syaCFq)F@e|(Xl/ggGU[\"></block></next></block></statement></block></xml>"
-          },
-          "solution": {
-            "imageDataUrl": "",
-            "imageName": "",
-            "imageMimeType": "",
-            "note": "",
-            "updatedAt": ""
-          },
-          "includeInExport": true,
-          "difficulty": 0,
-          "hotBehavior": {
-            "enabled": false,
-            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\"></block></statement></block></xml>"
-          },
-          "hotEnabled": false
-        },
-        {
-          "no": 15,
-          "id": "step-15-new",
-          "title": "取ってはいけないアイテム",
-          "blockSet": "CHECK_AND",
-          "variants": 1,
-          "cond": "goal",
-          "goal": "",
-          "rule": "",
-          "maps": [
-            {
-              "label": "マップ A",
-              "rows": [
-                "#######",
-                "#..G..#",
-                "#.#I#.#",
-                "##I.I##",
-                "#.#I#.#",
-                "#CI.I##",
-                "###H###"
-              ],
-              "note": ""
-            }
-          ],
-          "play": {
-            "validation": {
-              "kind": "reachGoal",
-              "maxActions": null,
-              "minItems": 1,
-              "minTurns": 10,
-              "requireAllItems": false
-            },
-            "defaultVariantIndex": 0,
-            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"></xml>"
           },
           "solution": {
             "imageDataUrl": "",
@@ -1147,11 +1163,11 @@
         },
         {
           "no": 18,
-          "id": "step-18-new-copy-copy-2",
-          "title": "アイテムをたどってゴールしよう1（コピー）",
+          "id": "step-18-new-copy-copy-copy-2-copy",
+          "title": "アイテムをとろう（コピー）",
           "blockSet": "CHECK",
           "variants": 1,
-          "cond": "items23+goal",
+          "cond": "items3+goal",
           "goal": "",
           "rule": "",
           "maps": [
@@ -1159,13 +1175,12 @@
               "label": "マップ A",
               "rows": [
                 "#######",
-                "#IIIIG#",
-                "#IIIII#",
-                "#IIIII#",
-                "#IIIII#",
-                "#CIIII#",
                 "#######",
-                "####.H#"
+                "#G.I..#",
+                "#..I.C#",
+                "#..I..#",
+                "#######",
+                "#######"
               ],
               "note": ""
             }
@@ -1174,12 +1189,12 @@
             "validation": {
               "kind": "collectItemsAndGoal",
               "maxActions": null,
-              "minItems": 23,
+              "minItems": 3,
               "minTurns": 10,
-              "requireAllItems": true
+              "requireAllItems": false
             },
             "defaultVariantIndex": 0,
-            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"GLZF~Vm8VMXn},aT]8y0\" x=\"47\" y=\"141\"><statement name=\"DO\"><block type=\"controls_if\" id=\"Q(?)_0fo^_S;O[;K;_},\"><mutation elseif=\"2\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"mp`|Ov4.[rQd2q!|=iwF\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"TasP/P|*vXA|L~?CqkSg\"><field name=\"DIR\">Right</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"=#dqy])8tfWervn=]Iu^\"><field name=\"DIR\">Left</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"xyxf?!X0e+qJwsb?!HB]\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"OzR=t%TrxuwGdNr4M|H(\"><field name=\"DIR\">Up</field><field name=\"TILE\">3</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_walk\" id=\"O`_wrB8]x.Jr)b(h#Mfa\"><field name=\"DIR\">Up</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"(GpDCgRc9/DdWKsW50):\"><field name=\"DIR\">Right</field></block></statement><next><block type=\"chaser_turn_end\" id=\"syaCFq)F@e|(Xl/ggGU[\"></block></next></block></statement></block></xml>"
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"GLZF~Vm8VMXn},aT]8y0\" x=\"47\" y=\"141\"><statement name=\"DO\"><block type=\"controls_if\" id=\"r!#n6sgtLRKKc0a3IQq}\"><mutation elseif=\"2\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"_6%.29ksPM;13/jotZHn\"><field name=\"DIR\">Down</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"TasP/P|*vXA|L~?CqkSg\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\":sAzI+C*avT*ueOO5JhR\"><field name=\"DIR\">Left</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"V35`=zO*GBA~f8q]%?S?\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"[.p+-dbvB-^%.}6P:x%.\"><field name=\"DIR\">Up</field><field name=\"TILE\">0</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_walk\" id=\"FBZ!sK$s2B|:+XQM9k4H\"><field name=\"DIR\">Up</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"h2$U/V/{[Gmm/xC.,]0c\"><field name=\"DIR\">Left</field></block></statement><next><block type=\"chaser_turn_end\" id=\"syaCFq)F@e|(Xl/ggGU[\"></block></next></block></statement></block></xml>"
           },
           "solution": {
             "imageDataUrl": "",
@@ -1198,57 +1213,7 @@
         },
         {
           "no": 19,
-          "id": "step-19-new-sparse-copy-copy",
-          "title": "アイテムをたどってゴールしよう2",
-          "blockSet": "CHECK_AND",
-          "variants": 1,
-          "cond": "items17+goal",
-          "goal": "",
-          "rule": "",
-          "maps": [
-            {
-              "label": "マップ A",
-              "rows": [
-                "#########",
-                "#.C.#.I.G",
-                "#.I.#.I.#",
-                "#.I.#.I.#",
-                "#II...II#",
-                "#IIIIIII#",
-                "#.I...I.#",
-                "#######.H"
-              ],
-              "note": ""
-            }
-          ],
-          "play": {
-            "validation": {
-              "kind": "collectItemsAndGoal",
-              "maxActions": null,
-              "minItems": 17,
-              "minTurns": 10,
-              "requireAllItems": false
-            },
-            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"lzzp|}8QKCZhY1oeasPN\" x=\"16\" y=\"105\"><statement name=\"DO\"><block type=\"controls_if\" id=\"tIqp^5y;!rT^kqv[Bfst\"><mutation elseif=\"3\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"D%SW~-JSsRr!DR9[q#Ap\"><field name=\"DIR\">Left</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"k`J.P73y^y_]6iVXJPxs\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"rS-wqUQrHz$b+Oj6TANM\"><field name=\"DIR\">Down</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"QT_E2c-6i^sGSEC?%F~S\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"HH5|^!u3KB3/my7R=a;G\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_walk\" id=\":ZlH.fJCh1iyG;#zYE|Q\"><field name=\"DIR\">Right</field></block></statement><value name=\"IF3\"><block type=\"chaser_is_tile\" id=\"D{y+SPip0laUuFR^l4KX\"><field name=\"DIR\">Up</field><field name=\"TILE\">3</field></block></value><statement name=\"DO3\"><block type=\"chaser_action_walk\" id=\"4@Um}p~{3[NeCV8pWq{c\"><field name=\"DIR\">Up</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"J-#$mWmy!eV,;;@3puRz\"><field name=\"DIR\">Right</field></block></statement><next><block type=\"chaser_turn_end\" id=\"JZ[(W~$F~2n0jdLyR:2n\"></block></next></block></statement></block></xml>"
-          },
-          "solution": {
-            "imageDataUrl": "",
-            "imageName": "",
-            "imageMimeType": "",
-            "note": "",
-            "updatedAt": ""
-          },
-          "includeInExport": true,
-          "difficulty": 0,
-          "hotBehavior": {
-            "enabled": false,
-            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\"></block></statement></block></xml>"
-          },
-          "hotEnabled": false
-        },
-        {
-          "no": 20,
-          "id": "step-20-serpentine3-copy",
+          "id": "step-19-serpentine3-copy",
           "title": "アイテムに騙されないで",
           "blockSet": "CHECK",
           "variants": 1,
@@ -1281,6 +1246,57 @@
               "requireAllItems": false
             },
             "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"dv~,z+l0sYV((02~mSN4\" x=\"34\" y=\"151\"><statement name=\"DO\"><block type=\"controls_if\" id=\"o)Ca=.1p9aw;bOqj7vm9\"><mutation elseif=\"1\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"YtK0h}w?STIJgb4.kU_.\"><field name=\"DIR\">Down</field><field name=\"TILE\">0</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"dm6*7bBo]p)W@:Ls~fj+\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"6`.wkDlC.=*a5b6h:tYT\"><field name=\"DIR\">Down</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"n#d^0`_ww`(@m|9OHc),\"><field name=\"DIR\">Left</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"A,h|2+$#7-wu/bQP|Ums\"><field name=\"DIR\">Right</field></block></statement><next><block type=\"chaser_turn_end\" id=\"U[t|sEhEoIrt_/wqLgQ[\"></block></next></block></statement></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "includeInExport": true,
+          "difficulty": 0,
+          "hotBehavior": {
+            "enabled": false,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\"></block></statement></block></xml>"
+          },
+          "hotEnabled": false
+        },
+        {
+          "no": 20,
+          "id": "step-20-serpentine3-copy-copy-copy-copy",
+          "title": "とってはいけないアイテム",
+          "blockSet": "CHECK",
+          "variants": 1,
+          "cond": "items9+goal",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "#######",
+                "#CIIII#",
+                "###I###",
+                "###I###",
+                "###I###",
+                "###I###",
+                "###I###",
+                "#IIIIG#",
+                "#######"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "collectItemsAndGoal",
+              "maxActions": null,
+              "minItems": 9,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"dv~,z+l0sYV((02~mSN4\" x=\"-59\" y=\"144\"><statement name=\"DO\"><block type=\"controls_if\" id=\"o)Ca=.1p9aw;bOqj7vm9\"><mutation elseif=\"1\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"sscW/8tk}oF?s82IC9Xh\"><field name=\"DIR\">Down</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"T~jf7#Q+S{Ef5ez7Q0Z-\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"6`.wkDlC.=*a5b6h:tYT\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"A,h|2+$#7-wu/bQP|Ums\"><field name=\"DIR\">Right</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"*Yq23S+4vz}EKfCV;Pj,\"><field name=\"DIR\">Right</field></block></statement><next><block type=\"chaser_turn_end\" id=\"U[t|sEhEoIrt_/wqLgQ[\"></block></next></block></statement></block></xml>"
           },
           "solution": {
             "imageDataUrl": "",
@@ -1347,50 +1363,42 @@
             "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\"></block></statement></block></xml>"
           },
           "hotEnabled": false
-        }
-      ],
-      "desc": ""
-    },
-    {
-      "id": "B3",
-      "name": "「「かつ」」",
-      "color": "#64748b",
-      "bg": "#f1f5f9",
-      "stages": [
+        },
         {
           "no": 22,
-          "id": "step-22-new-sparse-copy",
-          "title": "条件「かつ」を使おう",
-          "blockSet": "CHECK_AND",
+          "id": "step-22-new-copy-copy-2",
+          "title": "アイテムをたどってゴールしよう1（コピー）",
+          "blockSet": "CHECK",
           "variants": 1,
-          "cond": "goal",
+          "cond": "items23+goal",
           "goal": "",
           "rule": "",
           "maps": [
             {
               "label": "マップ A",
               "rows": [
-                "########",
-                "#H.#####",
-                "#..#G.I#",
-                "#####.##",
-                "#####.##",
-                "#####.##",
-                "#C....I#",
-                "########"
+                "#######",
+                "#IIIIG#",
+                "#IIIII#",
+                "#IIIII#",
+                "#IIIII#",
+                "#CIIII#",
+                "#######",
+                "####.H#"
               ],
               "note": ""
             }
           ],
           "play": {
             "validation": {
-              "kind": "reachGoal",
+              "kind": "collectItemsAndGoal",
               "maxActions": null,
-              "minItems": 1,
+              "minItems": 23,
               "minTurns": 10,
-              "requireAllItems": false
+              "requireAllItems": true
             },
-            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"lzzp|}8QKCZhY1oeasPN\" x=\"16\" y=\"105\"><statement name=\"DO\"><block type=\"controls_if\" id=\"tIqp^5y;!rT^kqv[Bfst\"><mutation elseif=\"1\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"logic_operation\" id=\"evh9+,cPeI8lM+r:p[7p\"><field name=\"OP\">AND</field><value name=\"A\"><block type=\"chaser_is_tile\" id=\"OnyZeV3A1}FO*O!=Hw4I\"><field name=\"DIR\">Up</field><field name=\"TILE\">2</field></block></value><value name=\"B\"><block type=\"chaser_is_tile\" id=\"rS-wqUQrHz$b+Oj6TANM\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"QT_E2c-6i^sGSEC?%F~S\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"D%SW~-JSsRr!DR9[q#Ap\"><field name=\"DIR\">Right</field><field name=\"TILE\">0</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\":ZlH.fJCh1iyG;#zYE|Q\"><field name=\"DIR\">Right</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"J-#$mWmy!eV,;;@3puRz\"><field name=\"DIR\">Up</field></block></statement><next><block type=\"chaser_turn_end\" id=\"JZ[(W~$F~2n0jdLyR:2n\"></block></next></block></statement></block></xml>"
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"GLZF~Vm8VMXn},aT]8y0\" x=\"47\" y=\"141\"><statement name=\"DO\"><block type=\"controls_if\" id=\"Q(?)_0fo^_S;O[;K;_},\"><mutation elseif=\"2\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"mp`|Ov4.[rQd2q!|=iwF\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"TasP/P|*vXA|L~?CqkSg\"><field name=\"DIR\">Right</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"=#dqy])8tfWervn=]Iu^\"><field name=\"DIR\">Left</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"xyxf?!X0e+qJwsb?!HB]\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"OzR=t%TrxuwGdNr4M|H(\"><field name=\"DIR\">Up</field><field name=\"TILE\">3</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_walk\" id=\"O`_wrB8]x.Jr)b(h#Mfa\"><field name=\"DIR\">Up</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"(GpDCgRc9/DdWKsW50):\"><field name=\"DIR\">Right</field></block></statement><next><block type=\"chaser_turn_end\" id=\"syaCFq)F@e|(Xl/ggGU[\"></block></next></block></statement></block></xml>"
           },
           "solution": {
             "imageDataUrl": "",
@@ -1409,46 +1417,45 @@
         },
         {
           "no": 23,
-          "id": "step-23-new",
-          "title": "かつを使おう",
+          "id": "step-23-new-sparse-copy-copy",
+          "title": "アイテムをたどってゴールしよう2",
           "blockSet": "CHECK_AND",
           "variants": 1,
-          "cond": "goal",
+          "cond": "items17+goal",
           "goal": "",
           "rule": "",
           "maps": [
             {
               "label": "マップ A",
               "rows": [
-                "#######",
-                "#H.##C#",
-                "#..##.#",
-                "#####.#",
-                "#####.#",
-                "#G#...#",
-                "#I.I#I#",
-                "#######"
+                "#########",
+                "#.C.#.I.G",
+                "#.I.#.I.#",
+                "#.I.#.I.#",
+                "#II...II#",
+                "#IIIIIII#",
+                "#.I...I.#",
+                "#######.H"
               ],
               "note": ""
             }
           ],
           "play": {
             "validation": {
-              "kind": "reachGoal",
+              "kind": "collectItemsAndGoal",
               "maxActions": null,
-              "minItems": 1,
+              "minItems": 17,
               "minTurns": 10,
               "requireAllItems": false
             },
-            "defaultVariantIndex": 0,
-            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"?t_P3~`!hOB,3!s?F@9Q\" x=\"5\" y=\"171\"><statement name=\"DO\"><block type=\"controls_if\" id=\"+l7UADX]WW5BV@B:NrB/\"><mutation elseif=\"3\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"L=Vzi@V{9Kq/0FDN|n;k\"><field name=\"DIR\">Down</field><field name=\"TILE\">0</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"Hr0n(O!$[LI^1N2R3h)z\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF1\"><block type=\"logic_operation\" id=\"-ksFmO+}hB}G]!o^l)ZN\"><field name=\"OP\">AND</field><value name=\"A\"><block type=\"chaser_is_tile\" id=\"pZs{,sot#M?=L[_|)G?d\"><field name=\"DIR\">Down</field><field name=\"TILE\">3</field></block></value><value name=\"B\"><block type=\"chaser_is_tile\" id=\"F]h4pqn;3e3fsb{pgH_)\"><field name=\"DIR\">Left</field><field name=\"TILE\">2</field></block></value></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\").+pkFqZCR#XfwxX.DJ5\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"?IH}FSq^D)x)ck%P0AM)\"><field name=\"DIR\">Left</field><field name=\"TILE\">3</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_walk\" id=\"2)Q(BwMM#^Yh1n/L@{?{\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF3\"><block type=\"chaser_is_tile\" id=\"c:Lm;bYO2:2c%^lf.,UL\"><field name=\"DIR\">Left</field><field name=\"TILE\">2</field></block></value><statement name=\"DO3\"><block type=\"chaser_action_walk\" id=\"!OnXkkq(`$dY~2SQgX_Q\"><field name=\"DIR\">Up</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"80V0Jd~u4s|ys;m#{ZIX\"><field name=\"DIR\">Left</field></block></statement><next><block type=\"chaser_turn_end\" id=\"p94,!IB3r.r%6q7$7Foa\"></block></next></block></statement></block></xml>"
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"lzzp|}8QKCZhY1oeasPN\" x=\"16\" y=\"105\"><statement name=\"DO\"><block type=\"controls_if\" id=\"tIqp^5y;!rT^kqv[Bfst\"><mutation elseif=\"3\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"D%SW~-JSsRr!DR9[q#Ap\"><field name=\"DIR\">Left</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"k`J.P73y^y_]6iVXJPxs\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"rS-wqUQrHz$b+Oj6TANM\"><field name=\"DIR\">Down</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"QT_E2c-6i^sGSEC?%F~S\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"HH5|^!u3KB3/my7R=a;G\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_walk\" id=\":ZlH.fJCh1iyG;#zYE|Q\"><field name=\"DIR\">Right</field></block></statement><value name=\"IF3\"><block type=\"chaser_is_tile\" id=\"D{y+SPip0laUuFR^l4KX\"><field name=\"DIR\">Up</field><field name=\"TILE\">3</field></block></value><statement name=\"DO3\"><block type=\"chaser_action_walk\" id=\"4@Um}p~{3[NeCV8pWq{c\"><field name=\"DIR\">Up</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"J-#$mWmy!eV,;;@3puRz\"><field name=\"DIR\">Right</field></block></statement><next><block type=\"chaser_turn_end\" id=\"JZ[(W~$F~2n0jdLyR:2n\"></block></next></block></statement></block></xml>"
           },
           "solution": {
             "imageDataUrl": "",
             "imageName": "",
             "imageMimeType": "",
-            "note": "むずめ",
-            "updatedAt": "2026-06-30T08:00:11.474Z"
+            "note": "",
+            "updatedAt": ""
           },
           "includeInExport": true,
           "difficulty": 0,
@@ -1464,8 +1471,8 @@
     {
       "id": "D1",
       "name": "対戦チュートリアル1",
-      "color": "#64748b",
-      "bg": "#f1f5f9",
+      "color": "#cf6868",
+      "bg": "#f9eded",
       "stages": [
         {
           "no": 24,
@@ -1519,8 +1526,109 @@
         },
         {
           "no": 25,
-          "id": "step-25-new",
-          "title": "敵をたおしてみよう",
+          "id": "step-25-new-copy-2-copy",
+          "title": "てきを倒そう",
+          "blockSet": "MN_PUT",
+          "variants": 1,
+          "cond": "defeatEnemy",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "#######",
+                "#H..###",
+                "#...###",
+                "#.....#",
+                "###...#",
+                "###..C#",
+                "#######"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "defeatEnemy",
+              "maxActions": null,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"xDOiQ6#sLOrb7?Y8n5c7\" x=\"30\" y=\"88\"><statement name=\"DO\"><block type=\"controls_if\" id=\"lpboL8/(]w4jc`j[bA[H\"><mutation elseif=\"1\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\")T+wI9Gm!27!7UU4VO;E\"><field name=\"DIR\">Left</field><field name=\"TILE\">1</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_put\" id=\"#{$+vi|g(Mm%o3(d1Q=8\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"S0/4tRi?w_7$_rOl4}ba\"><field name=\"DIR\">Up</field><field name=\"TILE\">0</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"y=:`sT`*a]i0Hp(M%$Wt\"><field name=\"DIR\">Up</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"0C2{6HUX$6U*r2m*=b`X\"><field name=\"DIR\">Left</field></block></statement><next><block type=\"chaser_turn_end\" id=\":jeIA?k=-({qZV]wOgWr\"></block></next></block></statement></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "hotEnabled": false,
+          "hotBehavior": {
+            "enabled": false,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" id=\"?I-#^-Slq50xaotM?i{f\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\" id=\"q=.?eedEUzp{l#-Omg:e\"></block></statement></block></xml>"
+          },
+          "includeInExport": true,
+          "difficulty": 0
+        },
+        {
+          "no": 26,
+          "id": "step-26-new-copy-4",
+          "title": "動く敵をたおそう（コピー）",
+          "blockSet": "MN_PUT",
+          "variants": 1,
+          "cond": "defeatEnemy",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "#########",
+                "###.H.###",
+                "###...###",
+                "###...###",
+                "###...###",
+                "####.####",
+                "####C####",
+                "#########"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "defeatEnemy",
+              "maxActions": null,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"xDOiQ6#sLOrb7?Y8n5c7\" x=\"30\" y=\"88\"><statement name=\"DO\"><block type=\"controls_if\" id=\"lpboL8/(]w4jc`j[bA[H\"><mutation else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"uB5_kOM*k:3H[u=*,!MT\"><field name=\"DIR\">Up</field><field name=\"TILE\">0</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"LSz;CT=Nfj$(6}{vs]qE\"><field name=\"DIR\">Up</field></block></statement><statement name=\"ELSE\"><block type=\"controls_if\" id=\"%Qqr$w)#.f#=`xFf1lQ7\"><mutation elseif=\"2\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\")T+wI9Gm!27!7UU4VO;E\"><field name=\"DIR\">Up</field><field name=\"TILE\">1</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_put\" id=\"PETzBsgtlc[OglgL-I;I\"><field name=\"DIR\">Up</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"_sN_qtpS((,e,Ac6Irz|\"><field name=\"DIR\">Right</field><field name=\"TILE\">1</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_put\" id=\"=Serw5:i/6MS-Gi?*=qY\"><field name=\"DIR\">Right</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"SWOCk{`q(^R]4U_xas{5\"><field name=\"DIR\">Left</field><field name=\"TILE\">1</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_put\" id=\"}afh+m`iI?zjk=cn3LvE\"><field name=\"DIR\">Left</field></block></statement></block></statement><next><block type=\"chaser_turn_end\" id=\":jeIA?k=-({qZV]wOgWr\"></block></next></block></statement></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "hotEnabled": true,
+          "hotBehavior": {
+            "enabled": true,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" id=\"wYUAAyTu.bvuW[H*d,#6\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_walk_random\" id=\"2xj(,p%hv.BFIDF0A7Sb\"><next><block type=\"chaser_hot_turn_end\" id=\"DrG@VRLQ-X6n.1%CR`+4\"></block></next></block></statement></block></xml>"
+          },
+          "includeInExport": true,
+          "difficulty": 0
+        },
+        {
+          "no": 27,
+          "id": "step-27-new",
+          "title": "動く敵をたおそう",
           "blockSet": "MN_PUT",
           "variants": 1,
           "cond": "defeatEnemy",
@@ -1551,7 +1659,7 @@
               "requireAllItems": false
             },
             "defaultVariantIndex": 0,
-            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"xDOiQ6#sLOrb7?Y8n5c7\" x=\"30\" y=\"88\"><statement name=\"DO\"><block type=\"controls_if\" id=\"lpboL8/(]w4jc`j[bA[H\"><mutation else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"uB5_kOM*k:3H[u=*,!MT\"><field name=\"DIR\">Right</field><field name=\"TILE\">0</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"LSz;CT=Nfj$(6}{vs]qE\"><field name=\"DIR\">Right</field></block></statement><statement name=\"ELSE\"><block type=\"controls_if\" id=\"%Qqr$w)#.f#=`xFf1lQ7\"><mutation elseif=\"3\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\")T+wI9Gm!27!7UU4VO;E\"><field name=\"DIR\">Left</field><field name=\"TILE\">1</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_put\" id=\"#{$+vi|g(Mm%o3(d1Q=8\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"=-|#e9fEU`Ab-ox^4ytA\"><field name=\"DIR\">Right</field><field name=\"TILE\">1</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_put\" id=\"YKB4_pBh$}pSDT;~QT,@\"><field name=\"DIR\">Right</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"UkZE0@z_RDEFYo.JhHb^\"><field name=\"DIR\">Up</field><field name=\"TILE\">1</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_put\" id=\"Hn3qjzl[)LQk.X|dF9.1\"><field name=\"DIR\">Up</field></block></statement><value name=\"IF3\"><block type=\"chaser_is_tile\" id=\"4y2YnR`tKV+4teSG)Q74\"><field name=\"DIR\">Down</field><field name=\"TILE\">1</field></block></value><statement name=\"DO3\"><block type=\"chaser_action_put\" id=\"PETzBsgtlc[OglgL-I;I\"><field name=\"DIR\">Down</field></block></statement></block></statement><next><block type=\"chaser_turn_end\" id=\":jeIA?k=-({qZV]wOgWr\"></block></next></block></statement></block></xml>"
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"xDOiQ6#sLOrb7?Y8n5c7\" x=\"30\" y=\"88\"><statement name=\"DO\"><block type=\"controls_if\" id=\"lpboL8/(]w4jc`j[bA[H\"><mutation else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"uB5_kOM*k:3H[u=*,!MT\"><field name=\"DIR\">Right</field><field name=\"TILE\">0</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"LSz;CT=Nfj$(6}{vs]qE\"><field name=\"DIR\">Right</field></block></statement><statement name=\"ELSE\"><block type=\"controls_if\" id=\"%Qqr$w)#.f#=`xFf1lQ7\"><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\")T+wI9Gm!27!7UU4VO;E\"><field name=\"DIR\">Down</field><field name=\"TILE\">1</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_put\" id=\"PETzBsgtlc[OglgL-I;I\"><field name=\"DIR\">Down</field></block></statement></block></statement><next><block type=\"chaser_turn_end\" id=\":jeIA?k=-({qZV]wOgWr\"></block></next></block></statement></block></xml>"
           },
           "solution": {
             "imageDataUrl": "",
@@ -1567,12 +1675,454 @@
           },
           "includeInExport": true,
           "difficulty": 0
+        },
+        {
+          "no": 28,
+          "id": "step-28-new-copy-3",
+          "title": "動く敵をたおそう（コピー）",
+          "blockSet": "MN_PUT",
+          "variants": 1,
+          "cond": "defeatEnemy",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "#########",
+                "##IIIIII#",
+                "##I.##.I#",
+                "##I.##.I#",
+                "##I.##.I#",
+                "##I.##.I#",
+                "#CI.##HI#",
+                "#########"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "defeatEnemy",
+              "maxActions": null,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"xDOiQ6#sLOrb7?Y8n5c7\" x=\"30\" y=\"88\"><statement name=\"DO\"><block type=\"controls_if\" id=\"lpboL8/(]w4jc`j[bA[H\"><mutation elseif=\"2\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"uB5_kOM*k:3H[u=*,!MT\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"LSz;CT=Nfj$(6}{vs]qE\"><field name=\"DIR\">Right</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"XdW=15KF,2]-Nu#)5l79\"><field name=\"DIR\">Up</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"w@-Ua|5!fHWKqhWJXFGO\"><field name=\"DIR\">Up</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"`@?ZxtgNg4{mNPFvxjtj\"><field name=\"DIR\">Down</field><field name=\"TILE\">3</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_walk\" id=\"6QIlv8ZQ!~!Ng%m5WFz8\"><field name=\"DIR\">Down</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_put\" id=\"g0(5K7J]RJtw25:6LlS)\"><field name=\"DIR\">Left</field></block></statement><next><block type=\"chaser_turn_end\" id=\":jeIA?k=-({qZV]wOgWr\"></block></next></block></statement></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "hotEnabled": true,
+          "hotBehavior": {
+            "enabled": true,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" id=\"wYUAAyTu.bvuW[H*d,#6\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_walk_random\" id=\"9PI{Z=/S*v](*Jzdf`a)\"><next><block type=\"chaser_hot_turn_end\" id=\"mf+0T`s],KqKPb80+o#*\"></block></next></block></statement></block></xml>"
+          },
+          "includeInExport": true,
+          "difficulty": 0
+        },
+        {
+          "no": 29,
+          "id": "step-29-new-copy-2-copy-copy",
+          "title": "てきを倒そう（コピー）",
+          "blockSet": "MN_PUT",
+          "variants": 1,
+          "cond": "defeatEnemy",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "#########",
+                "#...I..H#",
+                "#..#....#",
+                "#.#..I#I#",
+                "#I#I..#.#",
+                "#....#..#",
+                "#C..I...#",
+                "#########"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "defeatEnemy",
+              "maxActions": 50,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"xDOiQ6#sLOrb7?Y8n5c7\" x=\"26\" y=\"211\"><statement name=\"DO\"><block type=\"controls_if\" id=\"i3/N7iRfSYef8=b{!h3H\"><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"ypaCO~PxX}5dsBJf)X$9\"><field name=\"DIR\">Up</field></block></statement><next><block type=\"chaser_turn_end\" id=\":jeIA?k=-({qZV]wOgWr\"></block></next></block></statement></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "hotEnabled": true,
+          "hotBehavior": {
+            "enabled": true,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" id=\"?I-#^-Slq50xaotM?i{f\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_walk_random\" id=\"k-Gf;nhRNix,5dGyn$4/\"><next><block type=\"chaser_hot_turn_end\" id=\"q=.?eedEUzp{l#-Omg:e\"></block></next></block></statement></block></xml>"
+          },
+          "includeInExport": true,
+          "difficulty": 0
+        },
+        {
+          "no": 30,
+          "id": "step-30-new-copy-2-copy-copy-copy",
+          "title": "てきを倒そう（コピー）（コピー）",
+          "blockSet": "MN_PUT",
+          "variants": 1,
+          "cond": "defeatEnemy",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "############",
+                "#H....I..II#",
+                "#.I..##..II#",
+                "##..I..I...#",
+                "#..#.##.#..#",
+                "#..#.##.#..#",
+                "#...I..I..##",
+                "#II..##..I.#",
+                "#II..I....C#",
+                "############"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "defeatEnemy",
+              "maxActions": null,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"xDOiQ6#sLOrb7?Y8n5c7\" x=\"30\" y=\"88\"><statement name=\"DO\"><block type=\"chaser_action_walk\" id=\"NG)D=NHFq.(O,W[eH.$8\"><field name=\"DIR\">Up</field><next><block type=\"chaser_turn_end\" id=\":jeIA?k=-({qZV]wOgWr\"></block></next></block></statement></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "hotEnabled": true,
+          "hotBehavior": {
+            "enabled": true,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" id=\"?I-#^-Slq50xaotM?i{f\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_walk_random\" id=\"k-Gf;nhRNix,5dGyn$4/\"><next><block type=\"chaser_hot_turn_end\" id=\"q=.?eedEUzp{l#-Omg:e\"></block></next></block></statement></block></xml>"
+          },
+          "includeInExport": true,
+          "difficulty": 0
         }
       ],
       "desc": ""
     },
     {
-      "id": "C",
+      "id": "D2",
+      "name": "対戦チュートリアル2",
+      "color": "#8f0000",
+      "bg": "#f2e0e0",
+      "stages": [
+        {
+          "no": 31,
+          "id": "step-31-new",
+          "title": "アイテム数で敵を上回ろう",
+          "blockSet": "BASIC_PUT",
+          "variants": 1,
+          "cond": "HOTを倒す または 10ターン後にアイテム数でHOTを上回る",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "#########",
+                "#H.#IIII#",
+                "#I.#.#.I#",
+                "#I.#.#.I#",
+                "#I.#.#.I#",
+                "#I.#.#.I#",
+                "#I.#.#.I#",
+                "#IIII#.C#",
+                "#########"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "defeatEnemy",
+              "maxActions": null,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"lXyaJ+`HZ0(r7I#o(99:\" x=\"-35\" y=\"169\"><statement name=\"DO\"><block type=\"controls_if\" id=\"F^RL:A)}v1Bs!iVwExu@\"><mutation elseif=\"2\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"dIc5TK82FwG8Fx2W~+l)\"><field name=\"DIR\">Up</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"WaG7q*u9wrV^oxRNbifa\"><field name=\"DIR\">Up</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"_LUv}C}U#W[}GU+(GXbW\"><field name=\"DIR\">Left</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"%?1(iz]HJ74(%~vYd!vt\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"$8_Zd|_)dZ$@9U!3r;Tl\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_walk\" id=\"_:L]]304n[~SfHb5qX8z\"><field name=\"DIR\">Right</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk_random\" id=\"z+QJMv%*Pv/TtHh+Ly3@\"></block></statement><next><block type=\"chaser_turn_end\" id=\"B4*=KRL#n--_q$8*F*}J\"></block></next></block></statement></block><block type=\"controls_if\" id=\"EMnFh9~ruqJ^[oJV[_03\" x=\"-311\" y=\"566\"></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "hotEnabled": true,
+          "hotBehavior": {
+            "enabled": true,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" id=\"p_0{cfK#jZ6UG;rtJ{T,\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_walk_random\" id=\"Pt-O~%S:G}B#gm%Nsy(M\"><next><block type=\"chaser_hot_turn_end\" id=\"!QhD|,-GWK:5p?#hKi*i\"></block></next></block></statement></block></xml>"
+          },
+          "includeInExport": true,
+          "difficulty": 0,
+          "hotCompetition": {
+            "enabled": true,
+            "turns": 10
+          }
+        },
+        {
+          "no": 32,
+          "id": "step-32-new-copy-5-copy",
+          "title": "アイテム数で敵を上回ろう（コピー）（コピー）",
+          "blockSet": "BASIC_PUT",
+          "variants": 1,
+          "cond": "HOTを倒す または 20ターン後にアイテム数でHOTを上回る",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "#########",
+                "#.I.#.IC#",
+                "#I.I#I.I#",
+                "#I.I#I.I#",
+                "#.I.#.I.#",
+                "#I.I#I.I#",
+                "#I.I#I.I#",
+                "#HI.#.I.#",
+                "#########"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "defeatEnemy",
+              "maxActions": null,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"lXyaJ+`HZ0(r7I#o(99:\" x=\"-35\" y=\"169\"><statement name=\"DO\"><block type=\"chaser_action_walk_random\" id=\"WU9Ia41;gPVZ8Jz2gS}:\"><next><block type=\"chaser_turn_end\" id=\"B4*=KRL#n--_q$8*F*}J\"></block></next></block></statement></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "hotEnabled": true,
+          "hotBehavior": {
+            "enabled": true,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" id=\"p_0{cfK#jZ6UG;rtJ{T,\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"controls_if\" id=\"^BU}]:1Aw:*Y^u/{pC0H\"><mutation elseif=\"4\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_hot_is_tile\" id=\"D4w]5srsXhHK:J7lt7RI\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_hot_walk\" id=\"2Lt+GQ~0P1oIfy]p=V:r\"><field name=\"DIR\">Right</field></block></statement><value name=\"IF1\"><block type=\"chaser_hot_is_tile\" id=\"17m0[4E4rAEYbP,6!v;8\"><field name=\"DIR\">Up</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_hot_walk\" id=\";:I~f5;Y{KA.UMqbR4BO\"><field name=\"DIR\">Up</field></block></statement><value name=\"IF2\"><block type=\"chaser_hot_is_tile\" id=\"waw+tZMW:4Jyo^^EyOmZ\"><field name=\"DIR\">Left</field><field name=\"TILE\">3</field></block></value><statement name=\"DO2\"><block type=\"chaser_hot_walk\" id=\";D6MB727=^=#.-zcm=^F\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF3\"><block type=\"chaser_hot_is_tile\" id=\"|[#Gs`p=M6fTUI0-`AGR\"><field name=\"DIR\">Down</field><field name=\"TILE\">3</field></block></value><statement name=\"DO3\"><block type=\"chaser_hot_walk\" id=\"K^p2R?QJ}xL9AJhb{bVs\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF4\"><block type=\"chaser_hot_is_tile\" id=\"e$hPhu|?edwKE%*N7vZ,\"><field name=\"DIR\">Left</field><field name=\"TILE\">0</field></block></value><statement name=\"DO4\"><block type=\"chaser_hot_walk\" id=\"mor)7FOAGqc:uk$g%jG!\"><field name=\"DIR\">Left</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_hot_walk_random\" id=\"k`(-XeolV4,)7a:`0oHi\"></block></statement><next><block type=\"chaser_hot_turn_end\" id=\"!QhD|,-GWK:5p?#hKi*i\"></block></next></block></statement></block></xml>"
+          },
+          "includeInExport": true,
+          "difficulty": 0,
+          "hotCompetition": {
+            "enabled": true,
+            "turns": 20
+          }
+        },
+        {
+          "no": 33,
+          "id": "step-33-new-copy-5",
+          "title": "アイテム数で敵を上回ろう（コピー）",
+          "blockSet": "BASIC_PUT",
+          "variants": 1,
+          "cond": "HOTを倒す または 20ターン後にアイテム数でHOTを上回る",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "#########",
+                "#HI#I.I.#",
+                "#I.I#...#",
+                "##I#I.I.#",
+                "#..III..#",
+                "#.I.I#I##",
+                "#...#I.I#",
+                "#.I.I#IC#",
+                "#########"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "defeatEnemy",
+              "maxActions": null,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"lXyaJ+`HZ0(r7I#o(99:\" x=\"-35\" y=\"169\"><statement name=\"DO\"><block type=\"controls_if\" id=\"F^RL:A)}v1Bs!iVwExu@\"><mutation elseif=\"2\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"dIc5TK82FwG8Fx2W~+l)\"><field name=\"DIR\">Up</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"WaG7q*u9wrV^oxRNbifa\"><field name=\"DIR\">Up</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"_LUv}C}U#W[}GU+(GXbW\"><field name=\"DIR\">Left</field><field name=\"TILE\">3</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"%?1(iz]HJ74(%~vYd!vt\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"$8_Zd|_)dZ$@9U!3r;Tl\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_walk\" id=\"_:L]]304n[~SfHb5qX8z\"><field name=\"DIR\">Right</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk_random\" id=\"z+QJMv%*Pv/TtHh+Ly3@\"></block></statement><next><block type=\"chaser_turn_end\" id=\"B4*=KRL#n--_q$8*F*}J\"></block></next></block></statement></block><block type=\"controls_if\" id=\"EMnFh9~ruqJ^[oJV[_03\" x=\"-311\" y=\"566\"></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "hotEnabled": true,
+          "hotBehavior": {
+            "enabled": true,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" id=\"p_0{cfK#jZ6UG;rtJ{T,\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"controls_if\" id=\"^BU}]:1Aw:*Y^u/{pC0H\"><mutation elseif=\"1\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_hot_is_tile\" id=\"17m0[4E4rAEYbP,6!v;8\"><field name=\"DIR\">Down</field><field name=\"TILE\">3</field></block></value><statement name=\"DO0\"><block type=\"chaser_hot_walk\" id=\";:I~f5;Y{KA.UMqbR4BO\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF1\"><block type=\"chaser_hot_is_tile\" id=\"D4w]5srsXhHK:J7lt7RI\"><field name=\"DIR\">Right</field><field name=\"TILE\">0</field></block></value><statement name=\"DO1\"><block type=\"chaser_hot_walk\" id=\"2Lt+GQ~0P1oIfy]p=V:r\"><field name=\"DIR\">Right</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_hot_walk_last\" id=\"60^[^fwz?a;d_Jx8`sz(\"><field name=\"DIR\">Right</field></block></statement><next><block type=\"chaser_hot_turn_end\" id=\"!QhD|,-GWK:5p?#hKi*i\"></block></next></block></statement></block></xml>"
+          },
+          "includeInExport": true,
+          "difficulty": 0,
+          "hotCompetition": {
+            "enabled": true,
+            "turns": 20
+          }
+        }
+      ],
+      "desc": ""
+    },
+    {
+      "id": "E",
+      "name": "「「かつ」」",
+      "color": "#64748b",
+      "bg": "#f1f5f9",
+      "stages": [
+        {
+          "no": 34,
+          "id": "step-34-new-sparse-copy",
+          "title": "条件「かつ」を使おう",
+          "blockSet": "CHECK_AND",
+          "variants": 1,
+          "cond": "goal",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "########",
+                "#H.#####",
+                "#..#G.I#",
+                "#####.##",
+                "#####.##",
+                "#####.##",
+                "#C....I#",
+                "########"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "reachGoal",
+              "maxActions": null,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"lzzp|}8QKCZhY1oeasPN\" x=\"16\" y=\"105\"><statement name=\"DO\"><block type=\"controls_if\" id=\"tIqp^5y;!rT^kqv[Bfst\"><mutation elseif=\"1\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"logic_operation\" id=\"evh9+,cPeI8lM+r:p[7p\"><field name=\"OP\">AND</field><value name=\"A\"><block type=\"chaser_is_tile\" id=\"OnyZeV3A1}FO*O!=Hw4I\"><field name=\"DIR\">Up</field><field name=\"TILE\">2</field></block></value><value name=\"B\"><block type=\"chaser_is_tile\" id=\"rS-wqUQrHz$b+Oj6TANM\"><field name=\"DIR\">Right</field><field name=\"TILE\">3</field></block></value></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"QT_E2c-6i^sGSEC?%F~S\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"D%SW~-JSsRr!DR9[q#Ap\"><field name=\"DIR\">Right</field><field name=\"TILE\">0</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\":ZlH.fJCh1iyG;#zYE|Q\"><field name=\"DIR\">Right</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"J-#$mWmy!eV,;;@3puRz\"><field name=\"DIR\">Up</field></block></statement><next><block type=\"chaser_turn_end\" id=\"JZ[(W~$F~2n0jdLyR:2n\"></block></next></block></statement></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "includeInExport": true,
+          "difficulty": 0,
+          "hotBehavior": {
+            "enabled": false,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\"></block></statement></block></xml>"
+          },
+          "hotEnabled": false
+        },
+        {
+          "no": 35,
+          "id": "step-35-new",
+          "title": "かつを使おう",
+          "blockSet": "CHECK_AND",
+          "variants": 1,
+          "cond": "goal",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "#######",
+                "#H.##C#",
+                "#..##.#",
+                "#####.#",
+                "#####.#",
+                "#G#...#",
+                "#I.I#I#",
+                "#######"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "reachGoal",
+              "maxActions": null,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"?t_P3~`!hOB,3!s?F@9Q\" x=\"5\" y=\"171\"><statement name=\"DO\"><block type=\"controls_if\" id=\"+l7UADX]WW5BV@B:NrB/\"><mutation elseif=\"3\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"L=Vzi@V{9Kq/0FDN|n;k\"><field name=\"DIR\">Down</field><field name=\"TILE\">0</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"Hr0n(O!$[LI^1N2R3h)z\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF1\"><block type=\"logic_operation\" id=\"-ksFmO+}hB}G]!o^l)ZN\"><field name=\"OP\">AND</field><value name=\"A\"><block type=\"chaser_is_tile\" id=\"pZs{,sot#M?=L[_|)G?d\"><field name=\"DIR\">Down</field><field name=\"TILE\">3</field></block></value><value name=\"B\"><block type=\"chaser_is_tile\" id=\"F]h4pqn;3e3fsb{pgH_)\"><field name=\"DIR\">Left</field><field name=\"TILE\">2</field></block></value></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\").+pkFqZCR#XfwxX.DJ5\"><field name=\"DIR\">Down</field></block></statement><value name=\"IF2\"><block type=\"chaser_is_tile\" id=\"?IH}FSq^D)x)ck%P0AM)\"><field name=\"DIR\">Left</field><field name=\"TILE\">3</field></block></value><statement name=\"DO2\"><block type=\"chaser_action_walk\" id=\"2)Q(BwMM#^Yh1n/L@{?{\"><field name=\"DIR\">Left</field></block></statement><value name=\"IF3\"><block type=\"chaser_is_tile\" id=\"c:Lm;bYO2:2c%^lf.,UL\"><field name=\"DIR\">Left</field><field name=\"TILE\">2</field></block></value><statement name=\"DO3\"><block type=\"chaser_action_walk\" id=\"!OnXkkq(`$dY~2SQgX_Q\"><field name=\"DIR\">Up</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"80V0Jd~u4s|ys;m#{ZIX\"><field name=\"DIR\">Left</field></block></statement><next><block type=\"chaser_turn_end\" id=\"p94,!IB3r.r%6q7$7Foa\"></block></next></block></statement></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "むずめ",
+            "updatedAt": "2026-06-30T08:00:11.474Z"
+          },
+          "includeInExport": true,
+          "difficulty": 0,
+          "hotBehavior": {
+            "enabled": false,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\"></block></statement></block></xml>"
+          },
+          "hotEnabled": false
+        }
+      ],
+      "desc": ""
+    },
+    {
+      "id": "F",
       "name": "複数マップ（前に進んだ向きで歩く）",
       "range": "08〜12",
       "color": "#8b5cf6",
@@ -1580,10 +2130,10 @@
       "desc": "同コードで複数マップ対応。詰み体験→変数の必要性を自己発見。",
       "stages": [
         {
-          "no": 26,
-          "id": "step-26-up-down-branch",
+          "no": 36,
+          "id": "step-36-up-down-branch",
           "title": "進む方向を覚えよう",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "同コードで2バリアント対応。マップによって最適行動が変わることを体験。",
@@ -1624,7 +2174,7 @@
               "minTurns": 10,
               "requireAllItems": false
             },
-            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"EM[`n!5q(9MbSlQ47PJE\" x=\"11\" y=\"152\"><statement name=\"DO\"><block type=\"controls_if\" id=\"jAy9!K[Vl*|PG2TSN=^_\"><mutation elseif=\"1\" else=\"1\"></mutation><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"/]!RzX#lI|N;L6i419wi\"><field name=\"DIR\">Down</field><field name=\"TILE\">2</field></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"=1%OxpxPZ@D|@t:5YhF1\"><field name=\"DIR\">Up</field></block></statement><value name=\"IF1\"><block type=\"chaser_is_tile\" id=\"(T=+/Z1]MJ(W$4o!.+P;\"><field name=\"DIR\">Up</field><field name=\"TILE\">2</field></block></value><statement name=\"DO1\"><block type=\"chaser_action_walk\" id=\"D-O#r_iBsTu~8qfD-G]`\"><field name=\"DIR\">Down</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk_last\" id=\"WK4au]%!S?[u((}3e[Fu\"><field name=\"DIR\">Up</field></block></statement><next><block type=\"chaser_turn_end\" id=\"C*6?h?4EiV[i607MVdpc\"></block></next></block></statement></block></xml>"
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><variables><variable id=\"F_f0..12Z/$`M)VVv-Ss\">x</variable></variables><block type=\"chaser_on_turn\" id=\"EM[`n!5q(9MbSlQ47PJE\" x=\"130\" y=\"138\"><statement name=\"DO\"><block type=\"chaser_state_create\" id=\"*.iBwq?W_0CA^%Sa_8T#\"><field name=\"VAR\" id=\"F_f0..12Z/$`M)VVv-Ss\">x</field><next><block type=\"controls_if\" id=\"jAy9!K[Vl*|PG2TSN=^_\"><value name=\"IF0\"><block type=\"chaser_is_tile\" id=\"/]!RzX#lI|N;L6i419wi\"><field name=\"DIR\">Down</field><field name=\"TILE\">2</field></block></value><statement name=\"DO0\"><block type=\"chaser_state_set\" id=\"K!a)|+AN1Fd;=f-;.~M(\"><field name=\"VAR\" id=\"F_f0..12Z/$`M)VVv-Ss\">x</field><value name=\"VALUE\"><block type=\"math_number\" id=\"AW)u)QM3g)L(zBl:FzKK\"><field name=\"NUM\">0</field></block></value></block></statement><next><block type=\"controls_if\" id=\"Fx{tm]4eDloZVGmU+L*S\"><mutation else=\"1\"></mutation><value name=\"IF0\"><block type=\"logic_compare\" id=\"mG0UR8iPHOu[|`?W+PY@\"><field name=\"OP\">EQ</field><value name=\"A\"><block type=\"chaser_state_get\" id=\"1D@ow[^Qpf0SN!G)(k/Y\"><field name=\"VAR\" id=\"F_f0..12Z/$`M)VVv-Ss\">x</field></block></value><value name=\"B\"><block type=\"math_number\" id=\"WSd2jLdF~H|bxr0[hm*~\"><field name=\"NUM\">0</field></block></value></block></value><statement name=\"DO0\"><block type=\"chaser_action_walk\" id=\"$KqPP%x95l3xU`ixk,/q\"><field name=\"DIR\">Up</field></block></statement><statement name=\"ELSE\"><block type=\"chaser_action_walk\" id=\"Rxyn~0qVbMX!6z-PPtY,\"><field name=\"DIR\">Down</field></block></statement><next><block type=\"chaser_turn_end\" id=\"C*6?h?4EiV[i607MVdpc\"></block></next></block></next></block></next></block></statement></block></xml>"
           },
           "solution": {
             "imageDataUrl": "",
@@ -1637,15 +2187,15 @@
           "difficulty": 0,
           "hotBehavior": {
             "enabled": false,
-            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\"></block></statement></block></xml>"
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" id=\",PH%|RTn^i}~/_0tw3O7\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\" id=\"TY/9xra86sPq;,}OE!,i\"></block></statement></block></xml>"
           },
           "hotEnabled": false
         },
         {
-          "no": 27,
-          "id": "step-27-up-down-branch-copy",
+          "no": 37,
+          "id": "step-37-up-down-branch-copy",
           "title": "進む方向を覚えよう（コピー）",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "同コードで2バリアント対応。マップによって最適行動が変わることを体験。",
@@ -1699,15 +2249,15 @@
           "difficulty": 0,
           "hotBehavior": {
             "enabled": false,
-            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\"></block></statement></block></xml>"
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" id=\".jU|u~KDr?hm4IXV!z%M\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\" id=\"r4T#q4@f}gMY[)q$z..Q\"></block></statement></block></xml>"
           },
           "hotEnabled": false
         },
         {
-          "no": 28,
-          "id": "step-28-right-left-branch",
+          "no": 38,
+          "id": "step-38-right-left-branch",
           "title": "右か左か",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "",
@@ -1766,10 +2316,10 @@
           "hotEnabled": false
         },
         {
-          "no": 29,
-          "id": "step-29-up-down-branch2",
+          "no": 39,
+          "id": "step-39-up-down-branch2",
           "title": "右か左か下か",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "",
@@ -1828,10 +2378,10 @@
           "hotEnabled": false
         },
         {
-          "no": 30,
-          "id": "step-30-right-left-down",
+          "no": 40,
+          "id": "step-40-right-left-down",
           "title": "行ける方向へ？",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "",
@@ -1890,10 +2440,10 @@
           "hotEnabled": false
         },
         {
-          "no": 31,
-          "id": "step-31-branch-left-right",
+          "no": 41,
+          "id": "step-41-branch-left-right",
           "title": "左右の分岐を選ぼう",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "「上がふさがったとき左右どちらが開いているか」という2段階条件判断（ネストif）。",
@@ -1952,10 +2502,10 @@
           "hotEnabled": false
         },
         {
-          "no": 32,
-          "id": "step-32-branch-up-down",
+          "no": 42,
+          "id": "step-42-branch-up-down",
           "title": "上下の分岐を選ぼう",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "",
@@ -2014,10 +2564,10 @@
           "hotEnabled": false
         },
         {
-          "no": 33,
-          "id": "step-33-zigzag1",
+          "no": 43,
+          "id": "step-43-zigzag1",
           "title": "二つのジグザグ",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "",
@@ -2076,10 +2626,10 @@
           "hotEnabled": false
         },
         {
-          "no": 34,
-          "id": "step-34-branch-left-right2",
+          "no": 44,
+          "id": "step-44-branch-left-right2",
           "title": "向きを変数ブロックを覚えよう",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "",
@@ -2142,10 +2692,10 @@
           "hotEnabled": false
         },
         {
-          "no": 35,
-          "id": "step-35-remember-direction1",
+          "no": 45,
+          "id": "step-45-remember-direction1",
           "title": "向きを変数に覚えよう",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "chaser_on_start と変数の初登場。「過去の観測結果を覚えておく」という状態管理の基本。",
@@ -2204,10 +2754,10 @@
           "hotEnabled": false
         },
         {
-          "no": 36,
-          "id": "step-36-remember-direction2-copy",
+          "no": 46,
+          "id": "step-46-remember-direction2-copy",
           "title": "向きを変数に覚えよう2",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "",
@@ -2266,10 +2816,10 @@
           "hotEnabled": false
         },
         {
-          "no": 37,
-          "id": "step-37-remember-direction2",
+          "no": 47,
+          "id": "step-47-remember-direction2",
           "title": "向きを変数に覚えよう3",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "",
@@ -2334,10 +2884,10 @@
           "hotEnabled": false
         },
         {
-          "no": 38,
-          "id": "step-38-right-left-down-copy",
+          "no": 48,
+          "id": "step-48-right-left-down-copy",
           "title": "3方向にすすもう",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 1,
           "cond": "goal",
           "goal": "",
@@ -2383,8 +2933,8 @@
           "hotEnabled": false
         },
         {
-          "no": 39,
-          "id": "step-39-right-left-down-up",
+          "no": 49,
+          "id": "step-49-right-left-down-up",
           "title": "4方向にすすもう",
           "blockSet": "CHECK",
           "variants": 1,
@@ -2434,10 +2984,10 @@
           "hotEnabled": false
         },
         {
-          "no": 40,
-          "id": "step-40-zigzag2",
+          "no": 50,
+          "id": "step-50-zigzag2",
           "title": "ジグザグもどき",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "chaser_last_direction の活用。前回の向きを使って横→縦→横→縦のリズムを実現。",
@@ -2504,8 +3054,8 @@
       "bg": "#f1f5f9",
       "stages": [
         {
-          "no": 41,
-          "id": "step-41-new",
+          "no": 51,
+          "id": "step-51-new",
           "title": "新規ステージ",
           "blockSet": "BASIC",
           "variants": 1,
@@ -2517,11 +3067,11 @@
               "label": "マップ A",
               "rows": [
                 "#######",
-                "#G....#",
-                "#.....#",
-                "#.....#",
-                "#.....#",
-                "#....C#",
+                "#C.####",
+                "##..###",
+                "###..##",
+                "####..#",
+                "#####G#",
                 "#######"
               ],
               "note": ""
@@ -2565,10 +3115,10 @@
       "desc": "LOOK/SEARCH不使用。around[]とis_tileでアイテムを扱う。ブロック生成の仕組みを習得。",
       "stages": [
         {
-          "no": 42,
-          "id": "step-42-item-intro",
+          "no": 52,
+          "id": "step-52-item-intro",
           "title": "はじめてのアイテム",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 1,
           "cond": "goal+items",
           "goal": "アイテムを踏むと自動取得・直前マスにブロック生成。コードは walkRight のままでよい。",
@@ -2612,10 +3162,10 @@
           "hotEnabled": false
         },
         {
-          "no": 43,
-          "id": "step-43-collect-two",
+          "no": 53,
+          "id": "step-53-collect-two",
           "title": "アイテムを全部取ってゴール",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 1,
           "cond": "goal+items",
           "goal": "複数アイテム取得とブロック連鎖生成。全てのブロックは後方に生成されるため前方の道は安全。",
@@ -2661,10 +3211,10 @@
           "hotEnabled": false
         },
         {
-          "no": 44,
-          "id": "step-44-item-detour",
+          "no": 54,
+          "id": "step-54-item-detour",
           "title": "寄り道してアイテムを取ろう",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal+items",
           "goal": "アイテム検出（is_tile）と壁判定の複合条件。Step04のルールにアイテム検出を追加する形。",
@@ -2723,10 +3273,10 @@
           "hotEnabled": false
         },
         {
-          "no": 45,
-          "id": "step-45-collect-all",
+          "no": 55,
+          "id": "step-55-collect-all",
           "title": "アイテムを全部集めてゴールへ",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal+items",
           "goal": "全アイテムを拾う順番を考える。取得後のブロック生成を意識したルート選択。",
@@ -2785,10 +3335,10 @@
           "hotEnabled": false
         },
         {
-          "no": 46,
-          "id": "step-46-avoid-trap",
+          "no": 56,
+          "id": "step-56-avoid-trap",
           "title": "危険なアイテムを避けよう",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "3方向が壁に囲まれたアイテムは取ると閉じ込め。around[]で壁数を確認して回避。",
@@ -2847,10 +3397,10 @@
           "hotEnabled": false
         },
         {
-          "no": 47,
-          "id": "step-47-safe-and-danger",
+          "no": 57,
+          "id": "step-57-safe-and-danger",
           "title": "2つのアイテム、安全な方だけ取ろう",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal",
           "goal": "危険アイテム回避＋安全アイテム収集の組み合わせ。壁数確認と安全ルートの統合。",
@@ -2911,10 +3461,10 @@
           "hotEnabled": false
         },
         {
-          "no": 48,
-          "id": "step-48-find-items",
+          "no": 58,
+          "id": "step-58-find-items",
           "title": "探してアイテムを回収",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal+items",
           "goal": "アイテムが壁で区切られた場所にある。around[]で隣接アイテムを検出しながら内側通路を進む。",
@@ -2973,10 +3523,10 @@
           "hotEnabled": false
         },
         {
-          "no": 49,
-          "id": "step-49-synthesis",
+          "no": 59,
+          "id": "step-59-synthesis",
           "title": "総合：アイテムを集めてゴールへ",
-          "blockSet": "STATE1",
+          "blockSet": "STATE_MN",
           "variants": 2,
           "cond": "goal+items",
           "goal": "フェーズD総まとめ。4個のアイテムを全収集してゴールへ。around[]・ブロック生成考慮・安全確認を組み合わせる。",
@@ -3047,8 +3597,8 @@
       "bg": "#f1f5f9",
       "stages": [
         {
-          "no": 50,
-          "id": "step-50-new",
+          "no": 60,
+          "id": "step-60-new",
           "title": "新規ステージ",
           "blockSet": "BASIC",
           "variants": 1,
@@ -3097,8 +3647,8 @@
           "hotEnabled": false
         },
         {
-          "no": 51,
-          "id": "step-51-serpentine3-copy-copy-copy-2",
+          "no": 61,
+          "id": "step-61-serpentine3-copy-copy-copy-2",
           "title": "アイテムに騙されないで3",
           "blockSet": "CHECK",
           "variants": 1,
@@ -3148,8 +3698,8 @@
           "hotEnabled": false
         },
         {
-          "no": 52,
-          "id": "step-52-serpentine3-copy-copy-copy-2-copy",
+          "no": 62,
+          "id": "step-62-serpentine3-copy-copy-copy-2-copy",
           "title": "アイテムに騙されないで3（コピー）",
           "blockSet": "CHECK",
           "variants": 1,
@@ -3197,12 +3747,63 @@
             "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\"></block></statement></block></xml>"
           },
           "hotEnabled": false
+        },
+        {
+          "no": 63,
+          "id": "step-63-new",
+          "title": "取ってはいけないアイテム",
+          "blockSet": "CHECK_AND",
+          "variants": 1,
+          "cond": "goal",
+          "goal": "",
+          "rule": "",
+          "maps": [
+            {
+              "label": "マップ A",
+              "rows": [
+                "#I######",
+                "I..II.G#",
+                "#..##..#",
+                "#I#H.#I#",
+                "#I#..#I#",
+                "#..##..#",
+                "#C.II..I",
+                "######I#"
+              ],
+              "note": ""
+            }
+          ],
+          "play": {
+            "validation": {
+              "kind": "reachGoal",
+              "maxActions": null,
+              "minItems": 1,
+              "minTurns": 10,
+              "requireAllItems": false
+            },
+            "defaultVariantIndex": 0,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_on_turn\" id=\"N!zdjyC^(QIK3]?WZt!t\" x=\"67\" y=\"78\"></block></xml>"
+          },
+          "solution": {
+            "imageDataUrl": "",
+            "imageName": "",
+            "imageMimeType": "",
+            "note": "",
+            "updatedAt": ""
+          },
+          "includeInExport": true,
+          "difficulty": 0,
+          "hotBehavior": {
+            "enabled": false,
+            "savedBlocklyXml": "<xml xmlns=\"https://developers.google.com/blockly/xml\"><block type=\"chaser_hot_on_turn\" x=\"24\" y=\"24\"><statement name=\"DO\"><block type=\"chaser_hot_turn_end\"></block></statement></block></xml>"
+          },
+          "hotEnabled": false
         }
       ],
       "desc": ""
     },
     {
-      "id": "E",
+      "id": "U4",
       "name": "LOOK / SEARCH",
       "range": "21〜28",
       "color": "#14b8a6",
@@ -3210,8 +3811,8 @@
       "desc": "1ターン使って先の様子を観測し、結果を変数に保存して次ターンで使う。",
       "stages": [
         {
-          "no": 53,
-          "id": "step-53-look-intro",
+          "no": 64,
+          "id": "step-64-look-intro",
           "title": "先を見て分岐を選ぼう",
           "blockSet": "LOOK",
           "variants": 2,
@@ -3272,8 +3873,8 @@
           "hotEnabled": false
         },
         {
-          "no": 54,
-          "id": "step-54-look-dead-end",
+          "no": 65,
+          "id": "step-65-look-dead-end",
           "title": "LOOKで行き止まりを見抜く",
           "blockSet": "LOOK",
           "variants": 1,
@@ -3321,8 +3922,8 @@
           "hotEnabled": false
         },
         {
-          "no": 55,
-          "id": "step-55-search-intro",
+          "no": 66,
+          "id": "step-66-search-intro",
           "title": "遠くまで一直線に見よう",
           "blockSet": "SEARCH",
           "variants": 2,
@@ -3383,8 +3984,8 @@
           "hotEnabled": false
         },
         {
-          "no": 56,
-          "id": "step-56-search-dead-end",
+          "no": 67,
+          "id": "step-67-search-dead-end",
           "title": "SEARCHで遠回りを避ける",
           "blockSet": "SEARCH",
           "variants": 1,
@@ -3432,8 +4033,8 @@
           "hotEnabled": false
         },
         {
-          "no": 57,
-          "id": "step-57-look-search-combo",
+          "no": 68,
+          "id": "step-68-look-search-combo",
           "title": "LOOKとSEARCHを使い分けよう",
           "blockSet": "SEARCH",
           "variants": 2,
@@ -3502,8 +4103,8 @@
           "hotEnabled": false
         },
         {
-          "no": 58,
-          "id": "step-58-look-items",
+          "no": 69,
+          "id": "step-69-look-items",
           "title": "LOOKでアイテムを見つけよう",
           "blockSet": "LOOK",
           "variants": 2,
@@ -3564,8 +4165,8 @@
           "hotEnabled": false
         },
         {
-          "no": 59,
-          "id": "step-59-search-items",
+          "no": 70,
+          "id": "step-70-search-items",
           "title": "SEARCHでアイテムの方向を探そう",
           "blockSet": "SEARCH",
           "variants": 1,
@@ -3613,8 +4214,8 @@
           "hotEnabled": false
         },
         {
-          "no": 60,
-          "id": "step-60-observation-synthesis",
+          "no": 71,
+          "id": "step-71-observation-synthesis",
           "title": "観測総合：探索してゴールへ",
           "blockSet": "SEARCH",
           "variants": 2,
@@ -3677,7 +4278,7 @@
       ]
     },
     {
-      "id": "F",
+      "id": "U3",
       "name": "PUT・静止敵",
       "range": "29〜32",
       "color": "#ef4444",
@@ -3685,8 +4286,8 @@
       "desc": "putアクションの習得。静止した敵の位置を確認してPUTで勝利。",
       "stages": [
         {
-          "no": 61,
-          "id": "step-61-put-intro",
+          "no": 72,
+          "id": "step-72-put-intro",
           "title": "ブロックで勝ってみよう",
           "blockSet": "SEARCH",
           "variants": 2,
@@ -3747,8 +4348,8 @@
           "hotEnabled": false
         },
         {
-          "no": 62,
-          "id": "step-62-approach-put",
+          "no": 73,
+          "id": "step-73-approach-put",
           "title": "近づいてブロックを置く",
           "blockSet": "SEARCH",
           "variants": 1,
@@ -3796,8 +4397,8 @@
           "hotEnabled": false
         },
         {
-          "no": 63,
-          "id": "step-63-put-caution",
+          "no": 74,
+          "id": "step-74-put-caution",
           "title": "自分が囲まれないよう注意",
           "blockSet": "SEARCH",
           "variants": 2,
@@ -3858,8 +4459,8 @@
           "hotEnabled": false
         },
         {
-          "no": 64,
-          "id": "step-64-hunt-put",
+          "no": 75,
+          "id": "step-75-hunt-put",
           "title": "探索して敵を見つけ PUT しよう",
           "blockSet": "SEARCH",
           "variants": 2,
@@ -3930,7 +4531,7 @@
       ]
     },
     {
-      "id": "G",
+      "id": "U2",
       "name": "動く敵",
       "range": "33〜42",
       "color": "#f97316",
@@ -3938,8 +4539,8 @@
       "desc": "敵がproximit/randomで移動する。around[]で敵を検知し反応する。敵はプレイヤーの位置をグローバルに知らない。",
       "stages": [
         {
-          "no": 65,
-          "id": "step-65-enemy-intro",
+          "no": 76,
+          "id": "step-76-enemy-intro",
           "title": "敵が動き始めた！",
           "blockSet": "ENEMY",
           "variants": 1,
@@ -3988,8 +4589,8 @@
           "hotEnabled": false
         },
         {
-          "no": 66,
-          "id": "step-66-enemy-corridor",
+          "no": 77,
+          "id": "step-77-enemy-corridor",
           "title": "通路で敵をやり過ごす",
           "blockSet": "ENEMY",
           "variants": 2,
@@ -4053,8 +4654,8 @@
           "hotEnabled": false
         },
         {
-          "no": 67,
-          "id": "step-67-survive-proximity",
+          "no": 78,
+          "id": "step-78-survive-proximity",
           "title": "近づいてくる敵から逃げよう",
           "blockSet": "ENEMY",
           "variants": 1,
@@ -4105,8 +4706,8 @@
           "hotEnabled": false
         },
         {
-          "no": 68,
-          "id": "step-68-escape-proximity",
+          "no": 79,
+          "id": "step-79-escape-proximity",
           "title": "敵が来たら反対方向へ逃げよう",
           "blockSet": "ENEMY",
           "variants": 2,
@@ -4168,8 +4769,8 @@
           "hotEnabled": false
         },
         {
-          "no": 69,
-          "id": "step-69-avoid-and-goal",
+          "no": 80,
+          "id": "step-80-avoid-and-goal",
           "title": "敵を避けながらゴールへ",
           "blockSet": "ENEMY",
           "variants": 2,
@@ -4231,8 +4832,8 @@
           "hotEnabled": false
         },
         {
-          "no": 70,
-          "id": "step-70-put-moving",
+          "no": 81,
+          "id": "step-81-put-moving",
           "title": "動く敵を倒してみよう",
           "blockSet": "ENEMY",
           "variants": 1,
@@ -4281,8 +4882,8 @@
           "hotEnabled": false
         },
         {
-          "no": 71,
-          "id": "step-71-counter-proximity",
+          "no": 82,
+          "id": "step-82-counter-proximity",
           "title": "近づいた敵を返り討ち",
           "blockSet": "ENEMY",
           "variants": 2,
@@ -4344,8 +4945,8 @@
           "hotEnabled": false
         },
         {
-          "no": 72,
-          "id": "step-72-items-enemy",
+          "no": 83,
+          "id": "step-83-items-enemy",
           "title": "敵がいてもアイテムを集めよう",
           "blockSet": "ENEMY",
           "variants": 2,
@@ -4411,8 +5012,8 @@
           "hotEnabled": false
         },
         {
-          "no": 73,
-          "id": "step-73-wall-trap",
+          "no": 84,
+          "id": "step-84-wall-trap",
           "title": "壁で敵を封じ込めよう",
           "blockSet": "ENEMY",
           "variants": 2,
@@ -4474,8 +5075,8 @@
           "hotEnabled": false
         },
         {
-          "no": 74,
-          "id": "step-74-choose-strategy",
+          "no": 85,
+          "id": "step-85-choose-strategy",
           "title": "倒すかゴールか判断しよう",
           "blockSet": "ENEMY",
           "variants": 2,
@@ -4543,7 +5144,7 @@
       ]
     },
     {
-      "id": "H",
+      "id": "U1",
       "name": "SEARCH × アイテム総合",
       "range": "43〜50",
       "color": "#a855f7",
@@ -4551,8 +5152,8 @@
       "desc": "SEARCH結果のアイテム数カウント。バリアントごとにアイテム位置が変わるため必ずSEARCHが必要。敵あり段階はrandom AIのみ（SEARCH中に不利にならないため）。",
       "stages": [
         {
-          "no": 75,
-          "id": "step-75-count-items",
+          "no": 86,
+          "id": "step-86-count-items",
           "title": "アイテムの数を数えよう",
           "blockSet": "COUNT",
           "variants": 3,
@@ -4630,8 +5231,8 @@
           "hotEnabled": false
         },
         {
-          "no": 76,
-          "id": "step-76-go-to-most",
+          "no": 87,
+          "id": "step-87-go-to-most",
           "title": "多い方向に進もう",
           "blockSet": "COUNT",
           "variants": 4,
@@ -4722,8 +5323,8 @@
           "hotEnabled": false
         },
         {
-          "no": 77,
-          "id": "step-77-shift-search",
+          "no": 88,
+          "id": "step-88-shift-search",
           "title": "1マスずらして探索しよう",
           "blockSet": "COUNT",
           "variants": 3,
@@ -4800,8 +5401,8 @@
           "hotEnabled": false
         },
         {
-          "no": 78,
-          "id": "step-78-collect-n",
+          "no": 89,
+          "id": "step-89-collect-n",
           "title": "N個以上アイテムを集めよう",
           "blockSet": "COUNT",
           "variants": 4,
@@ -4892,8 +5493,8 @@
           "hotEnabled": false
         },
         {
-          "no": 79,
-          "id": "step-79-multi-pattern",
+          "no": 90,
+          "id": "step-90-multi-pattern",
           "title": "4パターンを同じコードでクリア",
           "blockSet": "COUNT",
           "variants": 4,
@@ -4984,8 +5585,8 @@
           "hotEnabled": false
         },
         {
-          "no": 80,
-          "id": "step-80-enemy-and-items",
+          "no": 91,
+          "id": "step-91-enemy-and-items",
           "title": "敵を避けながらアイテム回収",
           "blockSet": "COUNT",
           "variants": 3,
@@ -5063,8 +5664,8 @@
           "hotEnabled": false
         },
         {
-          "no": 81,
-          "id": "step-81-collect-avoid",
+          "no": 92,
+          "id": "step-92-collect-avoid",
           "title": "敵をかわしながらアイテムを集めよう",
           "blockSet": "COUNT",
           "variants": 3,
@@ -5144,8 +5745,8 @@
           "hotEnabled": false
         },
         {
-          "no": 82,
-          "id": "step-82-grand-finale",
+          "no": 93,
+          "id": "step-93-grand-finale",
           "title": "総仕上げ：探索して敵を見つけ勝利せよ",
           "blockSet": "COUNT",
           "variants": 3,
