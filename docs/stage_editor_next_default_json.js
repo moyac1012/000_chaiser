@@ -136,18 +136,27 @@
     }
   });
 
+  function autoLoadInitialStages() {
+    if (!hasUsableLocalStages() && !window.__chaserDefaultAutoLoadStarted) {
+      window.__chaserDefaultAutoLoadStarted = true;
+      window.loadDefault();
+    }
+  }
+
   const defaultButton = document.getElementById('load-default');
   if (defaultButton) defaultButton.onclick = () => window.loadDefault();
   addDefaultExportButton();
-
-  if (!hasUsableLocalStages() && !window.__chaserDefaultAutoLoadStarted) {
-    window.__chaserDefaultAutoLoadStarted = true;
-    window.loadDefault();
-  }
 
   window.chaserDefaultJson = {
     path: 'docs/data/default-stages.json',
     download: downloadDefaultJson,
     payload: buildDefaultPayload,
   };
+
+  const hotCompetition = document.createElement('script');
+  hotCompetition.src = './stage_editor_next_hot_competition.js';
+  hotCompetition.async = false;
+  hotCompetition.onload = autoLoadInitialStages;
+  hotCompetition.onerror = autoLoadInitialStages;
+  document.body.appendChild(hotCompetition);
 })();
