@@ -138,6 +138,7 @@
   (async () => {
     await loadScript('./stage_editor_next_hot_competition.js');
     await loadScript('./stage_editor_next_review_details_fix.js');
+    await loadScript('./stage_editor_next_map_delete.js');
     autoLoadInitialStages();
   })();
 })();
