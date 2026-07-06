@@ -76,4 +76,9 @@
 
   window.chaserDeleteMap = deleteMap;
   if (typeof render === 'function') render();
+
+  const statePersistence = document.createElement('script');
+  statePersistence.src = './stage_editor_next_state_persistence.js';
+  statePersistence.async = false;
+  document.body.appendChild(statePersistence);
 })();
