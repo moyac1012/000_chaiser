@@ -139,6 +139,7 @@
     await loadScript('./stage_editor_next_hot_competition.js');
     await loadScript('./stage_editor_next_review_details_fix.js');
     await loadScript('./stage_editor_next_map_delete.js');
+    await loadScript('./stage_editor_next_variable_runtime_fix.js');
     autoLoadInitialStages();
   })();
 })();
