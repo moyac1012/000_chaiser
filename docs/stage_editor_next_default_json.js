@@ -156,7 +156,14 @@
   const hotCompetition = document.createElement('script');
   hotCompetition.src = './stage_editor_next_hot_competition.js';
   hotCompetition.async = false;
-  hotCompetition.onload = autoLoadInitialStages;
+  hotCompetition.onload = () => {
+    const reviewDetails = document.createElement('script');
+    reviewDetails.src = './stage_editor_next_review_details.js';
+    reviewDetails.async = false;
+    reviewDetails.onload = autoLoadInitialStages;
+    reviewDetails.onerror = autoLoadInitialStages;
+    document.body.appendChild(reviewDetails);
+  };
   hotCompetition.onerror = autoLoadInitialStages;
   document.body.appendChild(hotCompetition);
 })();
