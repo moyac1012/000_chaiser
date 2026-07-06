@@ -38,12 +38,10 @@
     generator.forBlock.chaser_state_get = (block) => [variableName(block), generator.ORDER_ATOMIC ?? 0];
     generator.forBlock.chaser_state_change = (block) => `${variableName(block)} = (${variableName(block)} || 0) + (${value(generator, block, 'DELTA')});`;
 
-    // 標準Blockly変数ブロックが混ざった場合も動かす。
     generator.forBlock.variables_get = (block) => [variableName(block), generator.ORDER_ATOMIC ?? 0];
     generator.forBlock.variables_set = (block) => `${variableName(block)} = (${value(generator, block, 'VALUE')});`;
     generator.forBlock.math_change = (block) => `${variableName(block)} = (${variableName(block)} || 0) + (${value(generator, block, 'DELTA')});`;
 
-    // Blocklyの読み込み構成によってmath_moduloが未登録の場合の保険。
     if (!generator.forBlock.math_modulo) {
       generator.forBlock.math_modulo = (block) => {
         const dividend = value(generator, block, 'DIVIDEND');
@@ -96,4 +94,9 @@
   });
 
   window.chaserCompileBotDebug = compileBotCompat;
+
+  const solutionsExtension = document.createElement('script');
+  solutionsExtension.src = './stage_editor_next_solutions_multi.js';
+  solutionsExtension.async = false;
+  document.body.appendChild(solutionsExtension);
 })();
