@@ -7,17 +7,16 @@
 <style>
 :root {
   --cool: #38bdf8;
-  --hot:  #fb7185;
+  --hot: #fb7185;
   --next: #8b5cf6;
-  --ink:  #0f172a;
+  --ink: #0f172a;
   --ink-soft: #334155;
   --panel-strong: rgba(255,255,255,0.97);
   --border: rgba(15,23,42,0.12);
   --font-ui: "Space Grotesk", system-ui, sans-serif;
   --font-display: "Oxanium", "Space Grotesk", system-ui, sans-serif;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+* , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: var(--font-ui);
   color: var(--ink);
@@ -29,203 +28,87 @@ body {
     linear-gradient(rgba(15,23,42,0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(15,23,42,0.04) 1px, transparent 1px),
     linear-gradient(180deg, #f8fafc 0%, #f1f5f9 55%, #eef2ff 100%);
-  background-size: auto,auto,auto,26px 26px,26px 26px,auto;
+  background-size: auto, auto, auto, 26px 26px, 26px 26px, auto;
   min-height: 100vh;
 }
-
-.site-header {
-  background: linear-gradient(120deg,#0f172a 0%,#1e293b 55%,#0b1020 100%);
-  border-bottom: 1px solid rgba(148,163,184,0.2);
-  box-shadow: 0 4px 24px rgba(15,23,42,0.25);
-}
-.header-inner {
-  max-width: 1200px; margin: 0 auto;
-  padding: 14px 24px;
-  display: flex; align-items: center; gap: 16px;
-}
-.header-logo {
-  font-family: var(--font-display);
-  font-size: 22px; font-weight: 800; letter-spacing: 0.1em;
-  color: #f8fafc;
-}
+.site-header { background: linear-gradient(120deg,#0f172a 0%,#1e293b 55%,#0b1020 100%); border-bottom: 1px solid rgba(148,163,184,0.2); box-shadow: 0 4px 24px rgba(15,23,42,0.25); }
+.header-inner { max-width: 1200px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; gap: 16px; }
+.header-logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: 0.1em; color: #f8fafc; }
 .header-logo span { color: var(--cool); }
-.header-sub {
-  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-  color: rgba(148,163,184,0.8); margin-left: 8px;
-}
-
-.hero {
-  max-width: 1200px; margin: 0 auto;
-  padding: 64px 24px 32px;
-  text-align: center;
-}
-.hero h1 {
-  font-family: var(--font-display);
-  font-size: 42px; font-weight: 800;
-  letter-spacing: 0.02em;
-  color: var(--ink);
-  margin-bottom: 12px;
-}
+.header-sub { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(148,163,184,0.8); margin-left: 8px; }
+.hero { max-width: 1200px; margin: 0 auto; padding: 64px 24px 32px; text-align: center; }
+.hero h1 { font-family: var(--font-display); font-size: 42px; font-weight: 800; letter-spacing: 0.02em; color: var(--ink); margin-bottom: 12px; }
 .hero h1 span { color: var(--cool); }
-.hero p {
-  font-size: 14px; color: var(--ink-soft);
-  max-width: 620px; margin: 0 auto;
-  line-height: 1.6;
-}
-
-.cards {
-  max-width: 1000px; margin: 0 auto;
-  padding: 24px 24px 24px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  background: var(--panel-strong);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 28px 28px 24px;
-  box-shadow: 0 8px 24px rgba(15,23,42,0.08), inset 0 1px 0 rgba(255,255,255,0.7);
-  display: flex; flex-direction: column;
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.15s, box-shadow 0.15s;
-  position: relative;
-  overflow: hidden;
-}
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(15,23,42,0.14), inset 0 1px 0 rgba(255,255,255,0.7);
-}
-.card-icon {
-  width: 56px; height: 56px;
-  border-radius: 16px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px;
-  margin-bottom: 18px;
-}
+.hero p { font-size: 14px; color: var(--ink-soft); max-width: 620px; margin: 0 auto; line-height: 1.6; }
+.cards { max-width: 1000px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 20px; }
+.card { background: var(--panel-strong); border: 1px solid var(--border); border-radius: 24px; padding: 28px 28px 24px; box-shadow: 0 8px 24px rgba(15,23,42,0.08), inset 0 1px 0 rgba(255,255,255,0.7); display: flex; flex-direction: column; text-decoration: none; color: inherit; transition: transform 0.15s, box-shadow 0.15s; position: relative; overflow: hidden; }
+.card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(15,23,42,0.14), inset 0 1px 0 rgba(255,255,255,0.7); }
+.card-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 18px; }
 .card-icon.review { background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%); color: #fff; }
 .card-icon.next { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: #fff; }
-.card-tag {
-  position: absolute; top: 24px; right: 24px;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-  padding: 4px 10px; border-radius: 999px;
-}
+.card-tag { position: absolute; top: 24px; right: 24px; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
 .card-tag.review { background: #e0f2fe; color: #0369a1; }
 .card-tag.next { background: #ede9fe; color: #5b21b6; }
-.card-title {
-  font-size: 22px; font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 8px;
-}
-.card-desc {
-  font-size: 13px; color: var(--ink-soft);
-  line-height: 1.6;
-  flex: 1;
-  margin-bottom: 20px;
-}
-.card-cta {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--ink);
-  align-self: flex-start;
-}
-.card-cta::after {
-  content: '→';
-  transition: transform 0.15s;
-}
+.card-title { font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.card-desc { font-size: 13px; color: var(--ink-soft); line-height: 1.6; flex: 1; margin-bottom: 20px; }
+.card-cta { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; color: var(--ink); align-self: flex-start; }
+.card-cta::after { content: '→'; transition: transform 0.15s; }
 .card:hover .card-cta::after { transform: translateX(4px); }
-
-.card-features {
-  list-style: none;
-  margin-bottom: 18px;
-}
-.card-features li {
-  font-size: 11px; color: #64748b;
-  padding: 3px 0;
-  display: flex; align-items: center; gap: 6px;
-}
-.card-features li::before {
-  content: '·';
-  color: var(--cool);
-  font-weight: 800;
-}
-
-.legacy-link {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 24px 40px;
-  text-align: right;
-  font-size: 11px;
-  color: #94a3b8;
-}
-.legacy-link a {
-  color: #64748b;
-  text-decoration: none;
-  border-bottom: 1px dashed #cbd5e1;
-}
-.legacy-link a:hover {
-  color: #334155;
-  border-bottom-color: #94a3b8;
-}
-
-.footer {
-  max-width: 1200px; margin: 0 auto;
-  padding: 24px;
-  text-align: center;
-  font-size: 11px; color: #94a3b8;
-  letter-spacing: 0.08em;
-}
-
+.card-features { list-style: none; margin-bottom: 18px; }
+.card-features li { font-size: 11px; color: #64748b; padding: 3px 0; display: flex; align-items: center; gap: 6px; }
+.card-features li::before { content: '·'; color: var(--cool); font-weight: 800; }
+.secondary-links { max-width: 1000px; margin: 0 auto; padding: 0 24px 40px; }
+.archive { color: #64748b; font-size: 11px; }
+.archive summary { width: fit-content; margin-left: auto; cursor: pointer; color: #64748b; border-bottom: 1px dashed #cbd5e1; list-style: none; }
+.archive summary::-webkit-details-marker { display: none; }
+.archive summary::before { content: '＋'; margin-right: 6px; font-weight: 800; }
+.archive[open] summary::before { content: '－'; }
+.archive summary:hover { color: #334155; border-bottom-color: #94a3b8; }
+.archive-list { margin: 10px 0 0 auto; width: min(100%, 360px); padding: 10px 12px; border: 1px solid #dbe3ee; background: rgba(255,255,255,0.7); border-radius: 12px; display: grid; gap: 7px; }
+.archive-list a { color: #64748b; text-decoration: none; border-bottom: 1px dashed #cbd5e1; width: fit-content; }
+.archive-list a:hover { color: #334155; border-bottom-color: #94a3b8; }
+.archive-note { color: #94a3b8; font-size: 10px; margin-top: 3px; }
+.footer { max-width: 1200px; margin: 0 auto; padding: 24px; text-align: center; font-size: 11px; color: #94a3b8; letter-spacing: 0.08em; }
 @media (max-width: 600px) {
   .hero { padding: 40px 16px 20px; }
   .hero h1 { font-size: 30px; }
   .cards { padding: 16px; gap: 14px; grid-template-columns: 1fr; }
   .card { padding: 22px; }
-  .legacy-link { padding: 0 16px 32px; text-align: center; }
+  .secondary-links { padding: 0 16px 32px; }
+  .archive summary { margin-left: auto; }
+  .archive-list { margin-left: 0; width: 100%; }
 }
 </style>
 </head>
 <body>
-
 <header class="site-header">
   <div class="header-inner">
     <span class="header-logo">CH<span>aser</span></span>
     <span class="header-sub">Tool Hub</span>
   </div>
 </header>
-
 <section class="hero">
   <h1>CH<span>aser</span> チュートリアル制作ツール</h1>
   <p>反応型プログラミング学習用ステージ群の閲覧・編集・Blockly実行確認。</p>
 </section>
-
 <section class="cards">
-
-  <a class="card" href="stage_review.html">
-    <span class="card-tag review">VIEW</span>
+  <a class="card" href="stage_review_v3.html">
+    <span class="card-tag review">LATEST</span>
     <div class="card-icon review">📖</div>
     <div class="card-title">ステージ一覧</div>
-    <div class="card-desc">
-      全ステージをカード形式で一覧表示。フェーズ別に分類されたチュートリアル構成を確認するためのビュー。
-    </div>
+    <div class="card-desc">最新のレビューHTMLです。全ステージをカード形式で一覧表示し、フェーズ構成・マップ・学習目標・ルール・HOTの行動・模範解答を確認できます。</div>
     <ul class="card-features">
-      <li>フェーズ A〜H をタブで切替</li>
-      <li>ブロックセット・バリアント数・敵AIをバッジ表示</li>
-      <li>マップ・学習目標・反応型ルールを並べて閲覧</li>
+      <li>フェーズ別のチュートリアル構成を一覧表示</li>
+      <li>ブロックセット・バリアント数・勝利条件を確認</li>
+      <li>HOT行動と模範解答を含めて閲覧</li>
     </ul>
-    <span class="card-cta">開く</span>
+    <span class="card-cta">最新のステージ一覧を開く</span>
   </a>
-
   <a class="card" href="stage_editor_next.html">
     <span class="card-tag next">NEW</span>
     <div class="card-icon next">🧩</div>
     <div class="card-title">Blockly対応ステージエディタ</div>
-    <div class="card-desc">
-      ステージ編集に加えて、Blocklyで解答プログラムを書いてその場で実行確認できる新しいエディタ。
-    </div>
+    <div class="card-desc">ステージ編集に加えて、Blocklyで解答プログラムを書いてその場で実行確認できる新しいエディタ。</div>
     <ul class="card-features">
       <li>ステージごとのブロックセットに応じてBlocklyを切替</li>
       <li>マップをパレット描画・ASCII編集の両方で作成</li>
@@ -234,16 +117,17 @@ body {
     </ul>
     <span class="card-cta">開く</span>
   </a>
-
 </section>
-
-<div class="legacy-link">
-  以前の編集画面を使う場合: <a href="stage_editor.html">旧ステージエディタ</a>
-</div>
-
-<footer class="footer">
-  CHaser Tutorial Tools
-</footer>
-
+<section class="secondary-links">
+  <details class="archive">
+    <summary>過去のバージョンはこちら</summary>
+    <div class="archive-list">
+      <a href="stage_review.html">旧ステージ一覧</a>
+      <a href="stage_review_episode0.html">エピソード0のステージ一覧</a>
+      <div class="archive-note">これらは旧版の参照用です。通常は最新のステージ一覧を利用してください。</div>
+    </div>
+  </details>
+</section>
+<footer class="footer">CHaser Tutorial Tools</footer>
 </body>
 </html>
