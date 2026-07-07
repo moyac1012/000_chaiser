@@ -61,9 +61,12 @@
     return new Function(`var __chaserLastAction=null;var __chaserTurn=0;${defs}${code};return {onStart:typeof onStart==='function'?onStart:null,onTurn:typeof onTurn==='function'?onTurn:null,code:${JSON.stringify(code)}};`)();
   }
 
+  const previousResetRuntime = window.resetRuntime || resetRuntime;
   setGlobal('resetRuntime', function resetRuntimeWithVariableFix(stage) {
     if (typeof saveXml === 'function') saveXml();
     st.play = initPlay(stage, st.map);
+    st.hotBot = null;
+    st.hotBotPlay = null;
     try {
       st.bot = compileBotCompat();
       if (st.bot.onStart) st.bot.onStart(makeApi());
@@ -73,17 +76,18 @@
     }
   });
 
+  // HOT・対戦条件は、先にrunTurnをラップしている。
+  // ここではCOOL用プログラムだけを先にコンパイルし、既存の実行連鎖へ委譲する。
+  const previousRunTurn = window.runTurn || runTurn;
   setGlobal('runTurn', function runTurnWithVariableFix() {
     if (!st.play || st.play.status !== 'running') return;
     try {
       if (!st.bot) st.bot = compileBotCompat();
-      st.play.pending = null;
-      if (!st.bot.onTurn) return fail('毎ターンブロックがありません');
-      st.bot.onTurn(makeApi());
-      applyPending();
     } catch (error) {
       fail(`Blockly実行エラー: ${error.message}`);
+      return;
     }
+    previousRunTurn();
   });
 
   const previousRegisterGenerators = window.registerGenerators || registerGenerators;
