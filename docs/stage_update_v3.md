@@ -2,7 +2,8 @@
 
 ## 関連ページ
 
-- [チュートリアルステージ一覧・レビュー](./stage_review_v3.html)
+- [チュートリアルステージ一覧・レビュー](https://moyac1012.github.io/000_chaiser/stage_review_v3.html)
+    - [(元HTML)](./stage_review_v3.html)
 - [全ステージデータ（JSON）](./data/default-stages.json)
 
 本更新では、CHaserのチュートリアルステージを再構成し、全54ステージ・10グループを作成しました。
