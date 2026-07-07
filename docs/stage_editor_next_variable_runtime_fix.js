@@ -61,7 +61,6 @@
     return new Function(`var __chaserLastAction=null;var __chaserTurn=0;${defs}${code};return {onStart:typeof onStart==='function'?onStart:null,onTurn:typeof onTurn==='function'?onTurn:null,code:${JSON.stringify(code)}};`)();
   }
 
-  const previousResetRuntime = window.resetRuntime || resetRuntime;
   setGlobal('resetRuntime', function resetRuntimeWithVariableFix(stage) {
     if (typeof saveXml === 'function') saveXml();
     st.play = initPlay(stage, st.map);
@@ -76,8 +75,6 @@
     }
   });
 
-  // HOT・対戦条件は、先にrunTurnをラップしている。
-  // ここではCOOL用プログラムだけを先にコンパイルし、既存の実行連鎖へ委譲する。
   const previousRunTurn = window.runTurn || runTurn;
   setGlobal('runTurn', function runTurnWithVariableFix() {
     if (!st.play || st.play.status !== 'running') return;
@@ -102,5 +99,11 @@
   const solutionsExtension = document.createElement('script');
   solutionsExtension.src = './stage_editor_next_solutions_multi.js';
   solutionsExtension.async = false;
+  solutionsExtension.onload = () => {
+    const detailedHotReview = document.createElement('script');
+    detailedHotReview.src = './stage_editor_next_hot_review_text.js';
+    detailedHotReview.async = false;
+    document.body.appendChild(detailedHotReview);
+  };
   document.body.appendChild(solutionsExtension);
 })();
